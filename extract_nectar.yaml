@@ -1,0 +1,10 @@
+date:
+    css: 'div[data-venue-id="2376"] time.sg-events__event-date'
+    xpath: null
+    multiple: true
+    type: Text
+band:
+    css: 'div[data-venue-id="2376"] a.sg-events__event-title-link'
+    xpath: null
+    multiple: true
+    type: Text

@@ -1,0 +1,33 @@
+-----------------------------------------------------------
+CHANGING THIS PROGRAM TO USE CRON JOBS IN GOOGLE APP ENGINE
+-----------------------------------------------------------
+
+##############################################################################33
+                   ^^^^^^^^^^ SOLVED ^^^^^^^^^^^^^
+General needs:
+
+- Save show information to a CSV file once per day
+- When a user accesses the site, a function will be called that opens and reads the CSV file, and
+  sets the value of each row to a list item in SHOWS = [].
+- SHOWS is a list of lists, with each list item representing a row of information from the CSV file.
+
+
+Method:
+
+- Create a new module.  Module will contain the API-call function, as well as the scraping
+  functions.
+- Module script will run each of these functions, saving the information to a global variable
+  called SHOW_DATA.
+
+                   ^^^^^^^^^^ SOLVED ^^^^^^^^^^^^^
+###################################################################################
+
+---------------------------------
+%%%%%%%%%%% TO DO %%%%%%%%%%%%%%%
+---------------------------------
+
+- Scrape the Showbox's website.  TM isn't accurate enough anymore, so we'll need to
+  scrape it.  This is an upshot because we'll get Showbox, Showbox Sodo, and the
+  Moore Theater dates, too, all in one website call, so that actually gives us more info
+  with less bandwith use.
+

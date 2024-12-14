@@ -1,0 +1,10 @@
+dates:
+    css: 'div.funhouse-events p.fs-18.mt-1r'
+    xpath: null
+    multiple: true
+    type: Text
+bands:
+    css: 'div.funhouse-events p.fs-18 a'
+    xpath: null
+    multiple: true
+    type: Text
