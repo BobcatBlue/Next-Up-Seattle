@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, make_response
 import cronjob
 from datetime import datetime
 import pandas as pd
@@ -10,22 +10,29 @@ import io
 
 app = Flask(__name__)
 
-# Initialize the cloud storage client
-client = storage.Client()
+SHOWS = []
 
 # Reference your bucket and blob (file)
 BUCKET_NAME = "show_bucket"
 FILE_NAME = "Show_Data.csv"
-bucket = client.bucket(BUCKET_NAME)
-blob = bucket.blob(FILE_NAME)
 
-# Read the CSV file from GCS and store it in SHOWS
-csv_content = blob.download_as_text()
-SHOWS = []
-with io.StringIO(csv_content) as file:
-    reader = csv.reader(file)
-    for row in reader:
-        SHOWS.append(row)
+
+def render_shows():
+    global BUCKET_NAME
+    global FILE_NAME
+    shows = []
+    # Initialize the cloud storage client:
+    client = storage.Client()
+    bucket = client.bucket(BUCKET_NAME)
+    blob = bucket.blob(FILE_NAME)
+    # Read the CSV file from GCS and store it in SHOWS:
+    csv_content = blob.download_as_text()
+
+    with io.StringIO(csv_content) as file:
+        reader = csv.reader(file)
+        for row in reader:
+            shows.append(row)
+    return shows
 
 
 def call_shows():
@@ -43,8 +50,10 @@ def call_shows():
 
 @app.route("/")
 def index():
-    global SHOWS
-    return render_template("index.html", shows=SHOWS)
+    shows = render_shows()
+    response = make_response(render_template("index.html", shows=shows))
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @app.route("/Contact_Us")
@@ -76,8 +85,6 @@ def update_csv():
     SHOWS.append(showboxes[0])
     SHOWS.append(showboxes[1])
 
-
-
     # Pull all of the show data from TM venues, append them to SHOWS
     # This call_shows() is defined locally and is not the same as the one in cronjob.py module
     call_shows()
@@ -94,9 +101,9 @@ def update_csv():
         writer.writerows(SHOWS)
         csv_content = csvfile.getvalue()
 
-
     fn_blob.upload_from_string(csv_content, content_type="text/csv")
 
+    sleep(1.5)
 
     return "CSV update was successful.  I think.  I mean, it didn't crash, so that's good.  " \
            "Baby steps...baby steps"

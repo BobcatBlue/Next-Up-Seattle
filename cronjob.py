@@ -12,7 +12,6 @@ SHOW_DATA = []
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
-
 # Extract the url components and API key from app.yaml
 with open("app.yaml", "r") as file:
     DATA = yaml.safe_load(file)
@@ -171,8 +170,6 @@ def scrape_highdive():
     date = extractor.extract(source)["date"][0][4:]
     date = datetime.strptime(date, "%b %d %Y").strftime("%b %d, %Y")
 
-    print(band)
-    print(date)
     return band, date
 
 
