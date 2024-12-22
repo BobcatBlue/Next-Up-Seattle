@@ -115,7 +115,7 @@ def scrape_funhouse():
     return band, date
 
 
-# This one scrapes the Showbox for multiple venues: Showbox, Showbox Sodo, Moore Theater
+# This one scrapes the Showbox for multiple venues: Showbox, Showbox Sodo
 def scrape_showbox_presents():
     response = requests.get("https://www.showboxpresents.com/events/all")
     source = response.text
@@ -144,7 +144,6 @@ def scrape_showbox_presents():
     showbox_sodo_show = showbox_sodo_list[0]
     showbox_sodo_show[2] = showbox_sodo_show[2][5:]
     showbox_sodo_show[0] = "The Showbox SoDo"
-
 
     print(showbox_show, showbox_sodo_show)
 
