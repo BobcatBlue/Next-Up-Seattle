@@ -8,6 +8,7 @@ from google.cloud import storage
 import io
 
 
+
 app = Flask(__name__)
 
 SHOWS = []
@@ -17,7 +18,7 @@ BUCKET_NAME = "show_bucket"
 FILE_NAME = "Show_Data.csv"
 
 
-def render_shows():
+def download_shows():
     global BUCKET_NAME
     global FILE_NAME
     shows = []
@@ -32,6 +33,7 @@ def render_shows():
         reader = csv.reader(file)
         for row in reader:
             shows.append(row)
+
     return shows
 
 
@@ -50,7 +52,7 @@ def call_shows():
 
 @app.route("/")
 def index():
-    shows = render_shows()
+    shows = download_shows()
     response = make_response(render_template("index.html", shows=shows))
     response.headers["Cache-Control"] = "no-store"
     return response

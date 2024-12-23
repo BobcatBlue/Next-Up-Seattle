@@ -5,50 +5,112 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width-device-width, initial-scale=1.0">
     <title>Seattle Local Music</title>
+    <link href='https://fonts.googleapis.com/css?family=Lobster Two' rel='stylesheet'>
     <style>
     body {
         background-color: #c8e3f6;
-      }
-     h1 {
+     }
+
+    h1 {
         text-align: center;
         margin-top: 100px;
-     }
-     .center {
+    }
+
+    .center {
         margin-left: auto;
         margin-right: auto;
-     }
-     table {
-        min-width: 500px;
+    }
+
+    table {
+        table-layout: fixed;
         border: 1px solid;
         border-collapse: collapse;
-     }
-     th {
-        min-width: 150px;
-        max-width: 700px;
+    }
+
+    th {
         border: 1px solid;
         height: 50px;
-     }
-     td {
+    }
+
+    td {
+        font-size: 15px;
+        max-width: 200px;
         border: 1px solid;
-        padding: 15px
-     }
+        padding: 3px;
+        text-align: center;
+    }
+
+    li {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+        padding-left: 8px;
+        padding-right: 1px;
+        font-size: 15px;
+    }
+
+    ul {
+        width: 100%;
+        max-width: 700px;
+        display: table;
+        table-layout: fixed; /* optional, for equal spacing */
+        border-collapse: collapse;
+    }
+
+    div {
+        max-width: 700px;
+        margin: auto;
+    }
     </style>
 </head>
+
 <body>
-    <h1>Next Up! -- Seattle Music</h1>
-    <table class="center">
-        <tr>
-            <th>Venue</th>
-            <th>Show</th>
-            <th>Date</th>
-        </tr>
-        {% for show in shows %}
-        <tr>
+    <h1 style="font-family: 'Lobster Two'; font-size: 45px;">Next Up...Seattle!</h1>
+    <br><br><br>
+    <ul style="margin: auto;">
+        <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Venue</u></li>
+        <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Event</u></li>
+        <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Date</u></li>
+    </ul>
+    <br>
+    {% for show in shows %}
+    <div>
+        <ul>
+            {% set x = namespace(value=0) %}
             {% for item in show %}
-            <td>{{ item }}</td>
+            {% set x.value = x.value + 1 %}
+            {% if x.value == 1 %}
+                <li style="text-align: left; padding-left: 25px;">{{ item }}</li>
+            {% elif x.value == 2 %}
+                <li style="text-align: left; padding-right: 10px;">{{ item }}</li>
+
+            {% else %}
+                <li>{{ item }}</li>
+            {% endif %}
             {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
+        </ul>
+        <hr>
+    </div>
+    {% endfor %}
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+    {% set x=namespace(value=0) %}
+    <p>Counter Value before loop {{x.value}}</p>
+    {% for myloop in range(6) %}
+    {% set x.value = x.value + 1 %}
+    {{x.value}}
+    {% endfor %}
+    <p>Counter Value after loop {{x.value}}</p>
+
+    <br><br>
+    {% for show in shows %}
+    {{show[0]}}
+    <br>
+    {% endfor %}
+
 </body>
 </html>
