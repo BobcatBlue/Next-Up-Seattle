@@ -66,13 +66,14 @@
 
 <body>
     <h1 style="font-family: 'Lobster Two'; font-size: 45px;">Next Up...Seattle!</h1>
-    <br><br><br>
+    <br><br><br><br><br>
     <ul style="margin: auto;">
         <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Venue</u></li>
         <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Event</u></li>
         <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Date</u></li>
     </ul>
     <br>
+    {% set counter = namespace(value=0) %}
     {% for show in shows %}
     <div>
         <ul>
@@ -80,9 +81,10 @@
             {% for item in show %}
             {% set x.value = x.value + 1 %}
             {% if x.value == 1 %}
-                <li style="text-align: left; padding-left: 25px;">{{ item }}</li>
+                {% set url = urls[counter] %}
+                <li style="text-align: left;">{{ item }}</li>
             {% elif x.value == 2 %}
-                <li style="text-align: left; padding-right: 10px;">{{ item }}</li>
+                <li style="text-align: left; padding-right: 5px; padding-left: 4px;">{{ item }}</li>
 
             {% else %}
                 <li>{{ item }}</li>
@@ -91,26 +93,7 @@
         </ul>
         <hr>
     </div>
+    {% set counter.value = counter.value + 1 %}
     {% endfor %}
-
-    <br>
-    <br>
-    <br>
-    <br>
-
-    {% set x=namespace(value=0) %}
-    <p>Counter Value before loop {{x.value}}</p>
-    {% for myloop in range(6) %}
-    {% set x.value = x.value + 1 %}
-    {{x.value}}
-    {% endfor %}
-    <p>Counter Value after loop {{x.value}}</p>
-
-    <br><br>
-    {% for show in shows %}
-    {{show[0]}}
-    <br>
-    {% endfor %}
-
 </body>
 </html>

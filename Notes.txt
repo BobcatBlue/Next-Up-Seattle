@@ -31,3 +31,24 @@ Method:
   Moore Theater dates, too, all in one website call, so that actually gives us more info
   with less bandwith use.
 
+
+
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+    {% set x=namespace(value=0) %}
+    <p>Counter Value before loop {{x.value}}</p>
+    {% for myloop in range(6) %}
+    {% set x.value = x.value + 1 %}
+    {{x.value}}
+    {% endfor %}
+    <p>Counter Value after loop {{x.value}}</p>
+
+    <br><br>
+    {% for show in shows %}
+    {{show[0]}}
+    {% endfor %}
