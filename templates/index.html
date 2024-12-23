@@ -8,12 +8,61 @@
     <link href='https://fonts.googleapis.com/css?family=Lobster Two' rel='stylesheet'>
     <style>
     body {
-        background-color: #c8e3f6;
-     }
+        background-color: #F5F5F5;
+    }
+
+     .container {
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .bar1, .bar2, .bar3 {
+      width: 35px;
+      height: 5px;
+      background-color: #333;
+      margin: 6px 0;
+      transition: 0.4s;
+    }
+
+    .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #F5F5F5;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+      border: 1px solid black;
+    }
+
+    .sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #333;
+      display: block;
+      transition: 0.3s;
+      font-family: 'Lobster Two';
+    }
+
+    .sidenav a:hover {
+      color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
 
     h1 {
         text-align: center;
-        margin-top: 100px;
+        margin-top: 25px;
     }
 
     .center {
@@ -47,6 +96,7 @@
         padding-left: 8px;
         padding-right: 1px;
         font-size: 15px;
+        font-family: 'Arial'
     }
 
     ul {
@@ -61,10 +111,40 @@
         max-width: 700px;
         margin: auto;
     }
+
+    @media screen and (max-height: 450px) {
+      .sidenav {padding-top: 15px;}
+      .sidenav a {font-size: 18px;}
+    }
     </style>
 </head>
 
 <body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="/">Home</a>
+        <a href="/About_Us">About</a>
+        <a href="/Contact_Us">Contact</a>
+    </div>
+    <div class="container" onclick="openNav()">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+    </div>
+    <script>
+    function myFunction() {
+      x.classList.toggle("change");
+    }
+
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+    </script>
+
     <h1 style="font-family: 'Lobster Two'; font-size: 45px;">Next Up...Seattle!</h1>
     <br><br><br><br><br>
     <ul style="margin: auto;">

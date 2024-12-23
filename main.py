@@ -67,7 +67,14 @@ def index():
 
 @app.route("/Contact_Us")
 def contact_us():
-    pass
+    response = make_response(render_template("Contact Us.html"))
+    return response
+
+
+@app.route("/About_Us")
+def about_us():
+    response = make_response(render_template("About.html"))
+    return response
 
 
 @app.route("/cron")
@@ -119,7 +126,7 @@ def update_csv():
 
 
 if __name__ == "__main__":
-    # app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
-    app.run(debug=True, port=5001, use_reloader=False)
+    app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
+    # app.run(debug=True, port=5001, use_reloader=False)
 
 
