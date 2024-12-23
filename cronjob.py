@@ -5,7 +5,6 @@ import selectorlib
 import pandas as pd
 from time import sleep
 import csv
-from google.cloud import storage
 
 
 SHOW_DATA = []

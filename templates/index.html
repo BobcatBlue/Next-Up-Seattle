@@ -81,8 +81,8 @@
             {% for item in show %}
             {% set x.value = x.value + 1 %}
             {% if x.value == 1 %}
-                {% set url = urls[counter] %}
-                <li style="text-align: left;">{{ item }}</li>
+                {% set url = urls[counter.value] %}
+                <li style="text-align: left;"><a href="{{url}}">{{ item }}</a></li>
             {% elif x.value == 2 %}
                 <li style="text-align: left; padding-right: 5px; padding-left: 4px;">{{ item }}</li>
 

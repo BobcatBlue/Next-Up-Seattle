@@ -8,7 +8,6 @@ from google.cloud import storage
 import io
 
 
-
 app = Flask(__name__)
 
 SHOWS = []
