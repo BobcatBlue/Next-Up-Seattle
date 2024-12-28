@@ -11,53 +11,53 @@
         background-color: #F5F5F5;
     }
 
-     .container {
-      display: inline-block;
-      cursor: pointer;
+    .container {
+        display: inline-block;
+        cursor: pointer;
     }
 
     .bar1, .bar2, .bar3 {
-      width: 35px;
-      height: 5px;
-      background-color: #333;
-      margin: 6px 0;
-      transition: 0.4s;
+        width: 35px;
+        height: 5px;
+        background-color: #333;
+        margin: 6px 0;
+        transition: 0.4s;
     }
 
     .sidenav {
-      height: 100%;
-      width: 0;
-      position: fixed;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      background-color: #F5F5F5;
-      overflow-x: hidden;
-      transition: 0.5s;
-      padding-top: 60px;
-      border: 1px solid black;
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #F5F5F5;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+        border: 1px solid black;
     }
 
     .sidenav a {
-      padding: 8px 8px 8px 32px;
-      text-decoration: none;
-      font-size: 25px;
-      color: #333;
-      display: block;
-      transition: 0.3s;
-      font-family: 'Lobster Two';
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #333;
+        display: block;
+        transition: 0.3s;
+        font-family: 'Lobster Two';
     }
 
     .sidenav a:hover {
-      color: #f1f1f1;
+        color: #f1f1f1;
     }
 
     .sidenav .closebtn {
-      position: absolute;
-      top: 0;
-      right: 25px;
-      font-size: 36px;
-      margin-left: 50px;
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
     }
 
     h1 {
@@ -116,6 +116,49 @@
       .sidenav {padding-top: 15px;}
       .sidenav a {font-size: 18px;}
     }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .image-container {
+        text-align: center;
+    }
+
+    .toggle-container {
+        display: flex;
+        border: 1px solid black;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 200px;
+        height: 50px;
+        justify-content: center;
+        vertical-align: middle;
+        align-items: center;
+    }
+
+    .toggle-button {
+        flex: 1;
+        text-align: center;
+        line-height: 50px;
+        cursor: pointer;
+        font-size: 25px;
+        font-family: 'Lobster Two', cursive;
+        transition: background-color 0.3s, color 0.3s;
+        vertical-align: middle;
+    }
+
+    .toggle-button.active {
+        background-color: #87CEFA; /* Light blue */
+        color: black;
+    }
+
+    .toggle-button:not(.active) {
+        background-color: white;
+        color: black;
+    }
     </style>
 </head>
 
@@ -131,49 +174,82 @@
         <div class="bar2"></div>
         <div class="bar3"></div>
     </div>
-    <script>
-    function myFunction() {
-      x.classList.toggle("change");
-    }
-
-    function openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-    }
-
-    function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-    }
-    </script>
-
     <h1 style="font-family: 'Lobster Two'; font-size: 45px;">Next Up...Seattle!</h1>
-    <br><br><br><br><br>
-    <ul style="margin: auto;">
-        <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Venue</u></li>
-        <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Event</u></li>
-        <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Date</u></li>
-    </ul>
-    <br>
-    {% set counter = namespace(value=0) %}
-    {% for show in shows %}
-    <div>
-        <ul>
-            {% set x = namespace(value=0) %}
-            {% for item in show %}
-            {% set x.value = x.value + 1 %}
-            {% if x.value == 1 %}
-                {% set url = urls[counter.value] %}
-                <li style="text-align: left;"><a href="{{url}}">{{ item }}</a></li>
-            {% elif x.value == 2 %}
-                <li style="text-align: left; padding-right: 5px; padding-left: 4px;">{{ item }}</li>
+    <br><br><br>
 
-            {% else %}
-                <li>{{ item }}</li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        <hr>
+    <div class="toggle-container">
+        <div id="listButton" class="toggle-button active" onclick="toggleView('list')">List</div>
+        <div id="mapButton" class="toggle-button" onclick="toggleView('map')">Map</div>
     </div>
-    {% set counter.value = counter.value + 1 %}
-    {% endfor %}
+    <br><br><br>
+
+    <div id="listView" class="view">
+        <ul style="margin: auto;">
+            <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Venue</u></li>
+            <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Event</u></li>
+            <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Date</u></li>
+        </ul>
+        <br>
+        {% set counter = namespace(value=0) %}
+        {% for show in shows %}
+        <div>
+            <ul>
+                {% set x = namespace(value=0) %}
+                {% for item in show %}
+                {% set x.value = x.value + 1 %}
+                {% if x.value == 1 %}
+                    {% set url = urls[counter.value] %}
+                    <li style="text-align: left;"><a href="{{url}}">{{ item }}</a></li>
+                {% elif x.value == 2 %}
+                    <li style="text-align: left; padding-right: 5px; padding-left: 4px;">{{ item }}</li>
+
+                {% else %}
+                    <li>{{ item }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+            <hr>
+        </div>
+        {% set counter.value = counter.value + 1 %}
+        {% endfor %}
+    </div>
+
+    <div id="mapView" class="view" style="text-align: center;">
+        <img src="/static/Next Up Seattle Map 1.png" alt="Seattle">
+    </div>
+
+    <script>
+        function myFunction() {
+          x.classList.toggle("change");
+        }
+
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        function toggleView(view) {
+            const mapButton = document.getElementById('mapButton');
+            const listButton = document.getElementById('listButton');
+            const mapView = document.getElementById('mapView');
+            const listView = document.getElementById('listView');
+
+            if (view == "map") {
+                mapButton.classList.add('active');
+                listButton.classList.remove('active');
+                mapView.style.display = 'block';
+                listView.style.display = 'none';
+            }
+            else {
+                listButton.classList.add('active');
+                mapButton.classList.remove('active');
+                listView.style.display = 'block';
+                mapView.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>

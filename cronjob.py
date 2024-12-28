@@ -9,7 +9,8 @@ import csv
 
 SHOW_DATA = []
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like '
+                  'Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
 # Extract the url components and API key from app.yaml
 with open("app.yaml", "r") as file:
