@@ -35,7 +35,7 @@ def get_shows(venue_name, venueId):
         counter = 0
         while counter < list_length:
             date = show_data.get('_embedded')['events'][counter].get('dates').get('start').get('localDate')
-            date = datetime.strptime(date, "%Y-%m-%d")
+            date = datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y")
             counter += 1
             date_list.append(date)
         earliest = min(date_list)

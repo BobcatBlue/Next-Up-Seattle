@@ -48,11 +48,7 @@ def call_shows():
     print("Ring ring!!!  I'm inside call_shows(), calling the API")
     for index, row in df.iterrows():
         venue, band, date = cronjob.get_shows(row["Venue Name"], row["vID"])
-        if date == "No info":
-            SHOWS.append([venue, "No Info", "No Info"])
-        else:
-            date = datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y")
-            SHOWS.append([venue, band, date])
+        SHOWS.append([venue, band, date])
         sleep(0.09)
 
 
