@@ -205,5 +205,5 @@ def scrape_central_saloon():
 
 
 if __name__ == "__main__":
-    scrape_highdive()
+    print(scrape_highdive())
 

@@ -155,8 +155,48 @@
         color: black;
     }
 
-    #mapView {
-        display: none;
+    /* Scrollable frame for the SVG */
+    .scrollable-frame {
+        width: 95%;
+        height: 500px;
+        margin: 20px auto;
+        overflow: hidden; /* Hide overflow content */
+        border: 2px solid black;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: solid brown;
+    }
+
+    #zoom-container {
+        transition: transform 0.2s ease;
+    }
+
+    /* Zoom control buttons */
+    .zoom-controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        margin-bottom: 1px;
+    }
+
+    .zoom-button {
+        width: 38px;
+        height: 38px;
+        font-size: 25px;
+        font-color: #FFFFFFF
+        padding: 10px 20px;
+        margin: 0 10px;
+        cursor: pointer;
+        background-color: #708090; /* Light blue */
+        border: none;
+        border-radius: 5px;
+        color: white;
+    }
+
+    .zoom-button:hover {
+        background-color: #4682B4; /* Darker blue */
     }
 
     </style>
@@ -174,7 +214,7 @@
         <div class="bar2"></div>
         <div class="bar3"></div>
     </div>
-    <h1 style="font-family: 'Lobster Two'; font-size: 45px;">Next Up...Seattle!</h1>
+    <h1 style="font-family: 'Lobster Two'; font-size: 45px; text-align: center;">Next Up...Seattle!</h1>
     <br><br><br>
 
     <div class="toggle-container">
@@ -214,8 +254,16 @@
         {% endfor %}
     </div>
 
-    <div id="mapView" class="view" style="text-align: center;">
-        <img src="/static/Next Up Seattle Map 1.png" alt="Seattle">
+    <div id="mapView" class="view" style="display: none;">
+        <div class="zoom-controls">
+            <button class="zoom-button" onclick="zoomIn()">+</button>
+            <button class="zoom-button" onclick="zoomOut()">-</button>
+        </div>
+        <div class="scrollable-frame">
+            <div id="zoom-container">
+                <object id="map" type="image/svg+xml" data="/static/Slice 1.svg" width="500" height="700"></object>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -250,6 +298,59 @@
                 mapView.style.display = 'none';
             }
         }
+
+        const zoomContainer = document.getElementById('zoom-container');
+        let scale = 1;
+
+        function zoomIn() {
+            scale += 0.4; // Increase scale
+            applyZoom();
+        }
+
+        function zoomOut() {
+            scale -= 0.4; // Decrease scale
+            scale = Math.max(1, scale); // Prevent zooming out too much
+            applyZoom();
+        }
+
+        function applyZoom() {
+            zoomContainer.style.transform = `scale(${scale})`;
+        }
+
+        // Variables for managing dragging
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        //Enable dragging
+        zoomContainer.addEventListener("mousedown", startDrag);
+        zoomContainer.addEventListener("mouseup", stopDrag);
+        zoomContainer.addEventListener("mousemove", drag);
+        zoomContainer.addEventListener("mouseleave", stopDrag);
+
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+            zoomContainer.style.cursor = "grabbing";  // Change cursor when drag starts
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            zoomContainer.style.cursor = "grab";  // Change cursor back
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                offsetX = e.clientX - startX;
+                offsetY = e.clientY - startY;
+                zoomContainer.style.transform = `scale(${scale}) translate(${offsetX}px, ${offsetY}px)`;
+            }
+        }
+
     </script>
 </body>
 </html>
