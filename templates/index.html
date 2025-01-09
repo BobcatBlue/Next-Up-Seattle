@@ -20,28 +20,23 @@
         <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Event</u></li>
         <li style="font-family: 'Lobster Two'; font-size: 30px;"><u>Date</u></li>
     </ul>
+
     <br>
-    {% set counter = namespace(value=0) %}
-    {% for show in shows %}
+
+    {% for key, info in dictionary.items() %}
     <div>
         <ul>
-            {% set x = namespace(value=0) %}
-            {% for item in show %}
-            {% set x.value = x.value + 1 %}
-            {% if x.value == 1 %}
-                {% set url = urls[counter.value] %}
-                <li style="text-align: left;"><a href="{{url}}">{{ item }}</a></li>
-            {% elif x.value == 2 %}
-                <li style="text-align: left; padding-right: 5px; padding-left: 4px;">{{ item }}</li>
+            <li style="text-align: left;">
+                <a href="{{info[0]}}">{{key}}</a>
+                <br>
+                <p style="margin-top: 5px;"><i>{{info[1]}}</i></p>
+            </li>
 
-            {% else %}
-                <li>{{ item }}</li>
-            {% endif %}
-            {% endfor %}
+            <li style="text-align: left; padding-right: 5px; padding-left: 4px;">{{info[2]}}</li>
+            <li>{{info[3]}}</li>
         </ul>
         <hr>
     </div>
-    {% set counter.value = counter.value + 1 %}
     {% endfor %}
 </div>
 

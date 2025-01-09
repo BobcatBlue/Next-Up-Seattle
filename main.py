@@ -11,13 +11,8 @@ import io
 app = Flask(__name__)
 
 SHOWS = []
-URLS = []
-
-df_URL = pd.read_csv("URLs.csv")
-url_list = df_URL.values.tolist()
-for item in url_list:
-    URLS.append(item[0])
-
+PLACE_TIMES = pd.read_csv("URLs.csv")
+VENUE_INFO = PLACE_TIMES.values.tolist()
 
 # Reference your bucket and blob (file)
 BUCKET_NAME = "show_bucket"
@@ -58,9 +53,18 @@ def call_shows():
 
 @app.route("/")
 def index():
-    global URLS
+    global VENUE_INFO
     shows = download_shows()
-    response = make_response(render_template("index.html", shows=shows, urls=URLS))
+
+    dictionary = {}
+    counter = 0
+    for item in shows:
+        dictionary[item[0]] = item[1:]   # Assign the venue name as a dictionary key
+        dictionary[item[0]].insert(0, VENUE_INFO[counter][0])   # Add venue's website to the list
+        dictionary[item[0]].insert(1, VENUE_INFO[counter][1])   # Add venue's neighborhood to list
+        counter += 1
+
+    response = make_response(render_template("index.html", dictionary=dictionary))
     response.headers["Cache-Control"] = "no-store"
     return response
 
@@ -125,9 +129,8 @@ def update_csv():
            "Baby steps...baby steps"
 
 
-
 if __name__ == "__main__":
-    app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
-    # app.run(debug=True, port=5001, use_reloader=False)
+    # app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
+    app.run(debug=True, port=5001, use_reloader=False)
 
 
