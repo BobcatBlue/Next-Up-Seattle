@@ -1,0 +1,10 @@
+bands:
+    css: 'div.eventList__wrapper > div.eventItem h3.title.title-withTagline a'
+    xpath: null
+    multiple: true
+    type: Text
+date:
+    css: 'div.eventList__wrapper > div.eventItem:nth-of-type(6) span.m-date__singleDate span'
+    xpath: null
+    multiple: true
+    type: Text

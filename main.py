@@ -11,8 +11,8 @@ import io
 app = Flask(__name__)
 
 SHOWS = []
-PLACE_TIMES = pd.read_csv("URLs.csv")
-VENUE_INFO = PLACE_TIMES.values.tolist()
+SITES_AND_HOODS = pd.read_csv("URLs.csv")
+VENUE_INFO = SITES_AND_HOODS.values.tolist()
 
 # Reference your bucket and blob (file)
 BUCKET_NAME = "show_bucket"
@@ -95,13 +95,21 @@ def update_csv():
     funhouse = cronjob.scrape_funhouse()
     nectar = cronjob.scrape_nectar()
     highdive = cronjob.scrape_highdive()
+    tractor = cronjob.scrape_tractor_tavern()
+    crocodile = cronjob.scrape_crocodile()
+    madame_lous = cronjob.scrape_madame_lous()
     showboxes = cronjob.scrape_showbox_presents()
+    nuemos = cronjob.scrape_nuemos()
 
     SHOWS.append(["Central Saloon", central[0], central[1]])
     SHOWS.append(["El Corazon", corazon[0], corazon[1]])
     SHOWS.append(["Funhouse", funhouse[0], funhouse[1]])
     SHOWS.append(["Nectar Lounge", nectar[0], nectar[1]])
     SHOWS.append(["High Dive Seattle", highdive[0], highdive[1]])
+    SHOWS.append(["Tractor Tavern", tractor[0], tractor[1]])
+    SHOWS.append(["The Crocodile", crocodile[0], crocodile[1]]  )
+    SHOWS.append(["Madame Lou's", madame_lous[0], madame_lous[1]])
+    SHOWS.append(["Nuemos", nuemos[0], nuemos[1]])
     SHOWS.append(showboxes[0])
     SHOWS.append(showboxes[1])
 
@@ -130,7 +138,7 @@ def update_csv():
 
 
 if __name__ == "__main__":
-    # app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
-    app.run(debug=True, port=5001, use_reloader=False)
+    app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
+    # app.run(debug=True, port=5001, use_reloader=False)
 
 

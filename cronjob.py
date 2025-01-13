@@ -5,6 +5,7 @@ import selectorlib
 import pandas as pd
 from time import sleep
 import csv
+from collections import deque
 
 
 SHOW_DATA = []
@@ -58,7 +59,7 @@ def get_shows(venue_name, venueId):
 def scrape_central():
     response = requests.get("https://www.centralsaloon.com/events", headers=HEADERS)
     source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_central.yaml")
+    extractor = selectorlib.Extractor.from_yaml_file("central.yaml")
     band = extractor.extract(source)["band"][0]
     month = str(extractor.extract(source)["month"])
     day = extractor.extract(source)["day"]
@@ -75,7 +76,7 @@ def scrape_central():
 
 # Scrape El Corazon's website for their next show
 def scrape_el_corazon():
-    response = requests.get("https://elcorazonseattle.com/")
+    response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
     source = response.text
     extractor = selectorlib.Extractor.from_yaml_file("extract_corazon.yaml")
     date = extractor.extract(source)["dates"][0]
@@ -96,7 +97,7 @@ def scrape_el_corazon():
 
 # Scrape El Corazon's website for the next show at the Funhouse
 def scrape_funhouse():
-    response = requests.get("https://elcorazonseattle.com/")
+    response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
     source = response.text
     extractor = selectorlib.Extractor.from_yaml_file("extract_funhouse.yaml")
     date = extractor.extract(source)["dates"][0]
@@ -117,7 +118,7 @@ def scrape_funhouse():
 
 # This one scrapes the Showbox website for multiple venues: Showbox, Showbox Sodo
 def scrape_showbox_presents():
-    response = requests.get("https://www.showboxpresents.com/events/all")
+    response = requests.get("https://www.showboxpresents.com/events/all", headers=HEADERS)
     source = response.text
     extractor = selectorlib.Extractor.from_yaml_file("extract_showbox.yaml")
     events = extractor.extract(source)["event_name"]
@@ -145,8 +146,6 @@ def scrape_showbox_presents():
     showbox_sodo_show[2] = showbox_sodo_show[2][5:]
     showbox_sodo_show[0] = "The Showbox SoDo"
 
-    print(showbox_show, showbox_sodo_show)
-
     return showbox_show, showbox_sodo_show
 
 
@@ -171,6 +170,108 @@ def scrape_highdive():
 
     return band, date
 
+
+def scrape_crocodile():
+    url = "https://www.ticketweb.com/venue/the-crocodile-seattle-wa/10352"
+    response = requests.get(url, headers=HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("extract_crocodile.yaml")
+    annoying_string = extractor.extract(source)["band"]
+    x = 67
+    weekday = "zzz"
+    while weekday not in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"):
+        last_chars = deque(maxlen=x)
+        for char in annoying_string:
+            last_chars.append(char)
+        double_date = "".join(last_chars)
+        weekday = double_date[0:3]
+        x += 1
+
+    date = double_date[4:10].strip()
+    month = datetime.now().month
+    year = datetime.now().year
+    if month == 12 and date[0:3] == "Jan":
+        year += 1
+    date = f"{date}, {str(year)}"
+    dbl = len(annoying_string) - x
+    double_band = annoying_string[0:dbl]
+    b_length = int((dbl - 1)/2)
+    band = double_band[0:b_length]
+
+    return band, date
+
+
+def scrape_madame_lous():
+    url = "https://www.ticketweb.com/venue/madame-lou-s-seattle-wa/497135"
+    response = requests.get(url, headers=HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("madame_lous.yaml")
+    annoying_string = extractor.extract(source)["band"]
+    x = 67
+    weekday = "zzz"
+    while weekday not in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"):
+        last_chars = deque(maxlen=x)
+        for char in annoying_string:
+            last_chars.append(char)
+        double_date = "".join(last_chars)
+        weekday = double_date[0:3]
+        x += 1
+
+    date = double_date[4:10].strip()
+    month = datetime.now().month
+    year = datetime.now().year
+    if month == 12 and date[0:3] == "Jan":
+        year += 1
+    date = f"{date}, {str(year)}"
+    dbl = len(annoying_string) - x
+    double_band = annoying_string[0:dbl]
+    b_length = int((dbl - 1)/2)
+    band = double_band[0:b_length]
+
+    return band, date
+
+
+def scrape_nuemos():
+    url = "https://www.neumos.com/events"
+    response = requests.get(url, headers=HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("extract_nuemos.yaml")
+    bands = extractor.extract(source)["bands"]
+    band = bands[0]
+    date_list = extractor.extract(source)["date"]
+    month = datetime.now().month
+    if month == 12 and date_list[0] == "Jan":
+        year = datetime.now().year + 1
+    else:
+        year = datetime.now().year
+    date = f"{date_list[0]} {date_list[1]}, {year}"
+
+    return band, date
+
+
+def scrape_tractor_tavern():
+    url = "https://tractortavern.com/"
+    response = requests.get(url, headers=HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("extract_tractor.yaml")
+    band = extractor.extract(source)["band"]
+    month_day = extractor.extract(source)["date"][0][0:6]
+    month = datetime.now().month
+    if month == 12 and month_day[0:3] == "Jan":
+        year = datetime.now().year + 1
+    else:
+        year = datetime.now().year
+    date = f"{month_day}, {year}"
+
+    return band, date
+
+
+def scrape_rendezvous():
+    pass
+
+
+def scrape_seamonster():
+    pass
 
 """
 ******************************************************
@@ -205,5 +306,7 @@ def scrape_central_saloon():
 
 
 if __name__ == "__main__":
-    print(scrape_highdive())
+    print(scrape_tractor_tavern()[0])
+    print(scrape_tractor_tavern()[1])
+
 
