@@ -96,10 +96,14 @@ def update_csv():
     nectar = cronjob.scrape_nectar()
     highdive = cronjob.scrape_highdive()
     tractor = cronjob.scrape_tractor_tavern()
+    egans = cronjob.scrape_egans()
+    seamonster = cronjob.scrape_seamonster()
     crocodile = cronjob.scrape_crocodile()
     madame_lous = cronjob.scrape_madame_lous()
-    showboxes = cronjob.scrape_showbox_presents()
     nuemos = cronjob.scrape_nuemos()
+    showboxes = cronjob.scrape_showbox_presents()
+    wamu = cronjob.scrape_wamu()
+
 
     SHOWS.append(["Central Saloon", central[0], central[1]])
     SHOWS.append(["El Corazon", corazon[0], corazon[1]])
@@ -107,11 +111,14 @@ def update_csv():
     SHOWS.append(["Nectar Lounge", nectar[0], nectar[1]])
     SHOWS.append(["High Dive Seattle", highdive[0], highdive[1]])
     SHOWS.append(["Tractor Tavern", tractor[0], tractor[1]])
-    SHOWS.append(["The Crocodile", crocodile[0], crocodile[1]]  )
+    SHOWS.append(["Egan's Ballard Jam House", egans[0], egans[1]])
+    SHOWS.append(["Sea Monster Lounge", seamonster[0], seamonster[1]])
+    SHOWS.append(["The Crocodile", crocodile[0], crocodile[1]])
     SHOWS.append(["Madame Lou's", madame_lous[0], madame_lous[1]])
     SHOWS.append(["Nuemos", nuemos[0], nuemos[1]])
     SHOWS.append(showboxes[0])
     SHOWS.append(showboxes[1])
+    SHOWS.append(["WAMU Theater", wamu[0], wamu[1]])
 
     # Pull all of the show data from TM venues, append them to SHOWS
     # This call_shows() is defined locally and is not the same as the one in cronjob.py module

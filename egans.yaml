@@ -1,0 +1,5 @@
+event:
+    css: 'dl:nth-of-type(n+2)'
+    xpath: null
+    multiple: true
+    type: Text

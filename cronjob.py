@@ -6,6 +6,7 @@ import pandas as pd
 from time import sleep
 import csv
 from collections import deque
+import re
 
 
 SHOW_DATA = []
@@ -266,12 +267,83 @@ def scrape_tractor_tavern():
     return band, date
 
 
+def scrape_egans():
+
+    def remove_text_between(text, start, end):
+        return re.sub(f'{re.escape(start)}.*?{re.escape(end)}', '', text)
+
+    url = "https://www.ballardjamhouse.com/schedule.html"
+    response = requests.get(url, headers=HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("egans.yaml")
+    all_event_data = extractor.extract(source)["event"]
+
+    removed_brackets = [remove_text_between(item, "[", "]") for item in all_event_data]
+    removed_parenthesis = [remove_text_between(item, "(", ")") for item in removed_brackets]
+
+    events = [item[10:].strip(" ") for item in removed_parenthesis]
+    events = [item.strip("\r\n\r\n") for item in events]
+    events = [item.strip("\r\n") for item in events]
+
+    month_days = [item[4:10].strip(" ") for item in removed_parenthesis]
+
+    if month_days[0][0:2] == "Dec" and datetime.now().month == 1:
+        year = datetime.now().year + 1
+    else:
+        year = datetime.now().year
+
+    dates = [datetime.strptime(f"{item}, {year}", "%b %d, %Y") for item in month_days]
+    todays_date = datetime.now()
+    for index, date in enumerate(dates):
+        if todays_date < date:
+            nxt_event_index = index
+            break
+
+    date = datetime.strftime(dates[nxt_event_index], "%b %d, %Y")
+    event = events[nxt_event_index]
+
+    print(date)
+    print(event)
+
+    return event, date
+
+
+def scrape_seamonster():
+    url = "https://www.seamonsterlounge.com/"
+    response = requests.get(url, HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("sea_monsters.yaml")
+    band = extractor.extract(source)["band"]
+    day = extractor.extract(source)["date"][5:]
+    if day[0:3] == "Jan" and datetime.now().month == 12:
+        year = datetime.now().year + 1
+    else:
+        year = datetime.now().year
+    date = f"{day}, {year}"
+
+    return band, date
+
+
+def scrape_wamu():
+    url = "https://www.wamutheater.com/event-calendar?category=All+Events"
+    response = requests.get(url, headers=HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("wamu.yaml")
+    band = extractor.extract(source)["band"]
+    day = extractor.extract(source)["date"]
+    if day[0:3] == "Jan" and datetime.now().month == 12:
+        year = datetime.now().year + 1
+    else:
+        year = datetime.now().year
+    date = f"{day}, {year}"
+
+    return band, date
+
+
 def scrape_rendezvous():
     pass
 
 
-def scrape_seamonster():
-    pass
 
 """
 ******************************************************
@@ -306,7 +378,6 @@ def scrape_central_saloon():
 
 
 if __name__ == "__main__":
-    print(scrape_tractor_tavern()[0])
-    print(scrape_tractor_tavern()[1])
+    scrape_wamu()
 
 
