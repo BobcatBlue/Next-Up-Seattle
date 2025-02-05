@@ -103,6 +103,7 @@ def update_csv():
     nuemos = cronjob.scrape_nuemos()
     showboxes = cronjob.scrape_showbox_presents()
     wamu = cronjob.scrape_wamu()
+    climate_pledge = cronjob.scrape_climate_pledge()
 
 
     SHOWS.append(["Central Saloon", central[0], central[1]])
@@ -119,11 +120,14 @@ def update_csv():
     SHOWS.append(showboxes[0])
     SHOWS.append(showboxes[1])
     SHOWS.append(["WAMU Theater", wamu[0], wamu[1]])
+    SHOWS.append(["Climate Pledge Arena", climate_pledge[0], climate_pledge[1]])
 
+
+    """The following function is no longer needed since we aren't using TM anymore"""
     # Pull all of the show data from TM venues, append them to SHOWS
     # This call_shows() is defined locally and is not the same as the one in cronjob.py module
-    call_shows()
-    print(SHOWS)
+    # call_shows()
+
 
     # "fn" stands for "function"
     fn_client = storage.Client()

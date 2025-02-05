@@ -7,12 +7,14 @@ from time import sleep
 import csv
 from collections import deque
 import re
+from fake_useragent import UserAgent
 
 
 SHOW_DATA = []
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like '
                   'Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+UA = UserAgent()
 
 # Extract the url components and API key from app.yaml
 with open("app.yaml", "r") as file:
@@ -302,25 +304,29 @@ def scrape_egans():
     date = datetime.strftime(dates[nxt_event_index], "%b %d, %Y")
     event = events[nxt_event_index]
 
-    print(date)
-    print(event)
+    print("Egans")
 
     return event, date
 
 
 def scrape_seamonster():
-    url = "https://www.seamonsterlounge.com/"
-    response = requests.get(url, HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("sea_monsters.yaml")
-    band = extractor.extract(source)["band"]
-    day = extractor.extract(source)["date"][5:]
-    if day[0:3] == "Jan" and datetime.now().month == 12:
-        year = datetime.now().year + 1
-    else:
-        year = datetime.now().year
-    date = f"{day}, {year}"
+    try:
+        url = "https://www.seamonsterlounge.com/"
+        response = requests.get(url, HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("sea_monsters.yaml")
+        band = extractor.extract(source)["band"]
+        day = extractor.extract(source)["date"][5:]
+        if day[0:3] == "Jan" and datetime.now().month == 12:
+            year = datetime.now().year + 1
+        else:
+            year = datetime.now().year
+        date = f"{day}, {year}"
+    except Exception:
+        band = "No Info - Check venue's FB or Insta for upcoming shows"
+        date = "--"
 
+    print(band, date)
     return band, date
 
 
@@ -337,12 +343,44 @@ def scrape_wamu():
         year = datetime.now().year
     date = f"{day}, {year}"
 
+    print("WAMU")
     return band, date
+
+
+# This function doesn't work yet
+def scrape_conor_byrne():
+    url = "https://www.conorbyrnepub.com/#/events"
+    response = requests.get(url, headers=HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("conor_byrne.yaml")
+    event = extractor.extract(source)["events"]
+    day = extractor.extract(source)["days"]
+
+    print(event, day)
 
 
 def scrape_rendezvous():
     pass
 
+
+def scrape_climate_pledge():
+    try:
+        url = "https://www.climatepledgearena.com/events/category/concerts/"
+        response = requests.get(url, headers={'User-Agent': UA.firefox})
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("climate_pledge.yaml")
+        band = extractor.extract(source)["band"]
+        day = extractor.extract(source)["date"]
+        day = day.split("/")[0].strip(" ")
+        if day[0:2] == "Jan" and datetime.now().month == 12:
+            year = datetime.now().year + 1
+        else:
+            year = datetime.now().year
+        date = datetime.strptime(f"{day}, {year}", "%B %d, %Y")
+        date = datetime.strftime(date, "%b %d, %Y")
+        return band, date
+    except Exception:
+        return "No info. Check venue website directly.", "-"
 
 
 """
@@ -378,6 +416,4 @@ def scrape_central_saloon():
 
 
 if __name__ == "__main__":
-    scrape_wamu()
-
-
+    scrape_seamonster()

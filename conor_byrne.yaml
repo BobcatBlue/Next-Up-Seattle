@@ -1,0 +1,10 @@
+events:
+    css: div.vp-event-name
+    xpath: null
+    multiple: true
+    type: Text
+days:
+    css: span.vp-month-n-day
+    xpath: null
+    multiple: true
+    type: Text

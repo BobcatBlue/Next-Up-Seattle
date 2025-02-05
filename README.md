@@ -1,21 +1,14 @@
 <h2> Seattle Local Music web app</h2>
-<p>This is a web app built with Flask that will show people which bands and music acts
-are playing in Seattle tonight, and at which venues.</p>
-<p>It pulls the earliest event from a venue's calendar, so even if no one is playing
-at that venue tonight, it will show you the next show there.</p>
-<p>Right now the list of venues is only populated by referencing the calendars on 
-ticketing websites, but soon I will try to add other venues one-by-one via scraping
-their calendars.</p>
-<p>If you want to use this code for your own city, you'll want to sign up to get a 
-TicketMaster API key to make the API calls, and also go to their documenation pages
-to get the venue codes you will need (see Listed_Venues.csv for reference).</p>
-<p>My hope is that eventually, I'll be able to build this out so there is not just a list
-of venues, but the users will be able to toggle over to a map of the city with 
-little markers showing approx. venue locations with a little box that pops up when the 
-marker is clicked, showing the next calendar event at that venue.</p>
-<p>I'd also like to have options for users to quickly hear the bands music or see 
-genre info.</p>
-<p></p>
+<p>This is a web app built with Flask that will find and display the next musical act 
+performing at any given stage in Seattle.</p>
+<p>This project used to utilize TicketMaster's API to find shows at certain venues, but this was
+proven to be ineffective since not every show at a given venue is ticketed through 
+TicketMaster.  The call_shows() function in cronjob.py, however, is still there - commented out - 
+for your reference if you'd like to use that information.</p>
+<p>The shows are now all sourced through scraping the calendars of each venue's website.  Each 
+website gets its own scraping code block since the HTML for each site is unique.</p>
+<p>If you're wondering why I didn't program this in an object-oriented manner, it's because I felt
+that was unnecessary given the fact that each scraping module is different.</p>
 <p></p>
 <p></p>
 <p></p>

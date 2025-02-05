@@ -1,0 +1,8 @@
+band:
+    css: 'article.tribe-common-g-col.post-10000473 a.tribe-events-pro-photo__event-title-link'
+    xpath: null
+    type: Text
+date:
+    css: 'article.tribe-common-g-col.post-10000473 div.tribe-events-pro-photo__event-details span.date'
+    xpath: null
+    type: Text
