@@ -20,7 +20,7 @@ the burden to the venues' websites.</p>
 interactive, I used knowledge I ganed from Peter Collingridge's website, which can be found at 
 <a href="https://www.petercollingridge.co.uk/">PeterCollingridge.co.uk</a>.  Peter, thanks
 for making this wonderful resource!  This was invaluable and SO much fun to implement and play
-aronnd with.</p>
+around with.</p>
 
 <h3>Know BeforeYou Go...</h3>
 <p>This project utilizes TicketMaster's API to pull event data for two venues whose website's do not
