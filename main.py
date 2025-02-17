@@ -64,6 +64,8 @@ def index():
         dictionary[item[0]].insert(1, VENUE_INFO[counter][1])   # Add venue's neighborhood to list
         counter += 1
 
+    print(dictionary)
+
     response = make_response(render_template("index.html", dictionary=dictionary))
     response.headers["Cache-Control"] = "no-store"
     return response
@@ -102,8 +104,8 @@ def update_csv():
     madame_lous = cronjob.scrape_madame_lous()
     nuemos = cronjob.scrape_nuemos()
     showboxes = cronjob.scrape_showbox_presents()
-    wamu = cronjob.scrape_wamu()
-    climate_pledge = cronjob.scrape_climate_pledge()
+    # wamu = cronjob.scrape_wamu()
+    # climate_pledge = cronjob.scrape_climate_pledge()
 
 
     SHOWS.append(["Central Saloon", central[0], central[1]])
@@ -119,11 +121,15 @@ def update_csv():
     SHOWS.append(["Nuemos", nuemos[0], nuemos[1]])
     SHOWS.append(showboxes[0])
     SHOWS.append(showboxes[1])
-    SHOWS.append(["WAMU Theater", wamu[0], wamu[1]])
-    SHOWS.append(["Climate Pledge Arena", climate_pledge[0], climate_pledge[1]])
+    call_shows()
+
+    # Ideally wanted to use these scraping modules, but the websites are problematic
+    # SHOWS.append(["WAMU Theater", wamu[0], wamu[1]])
+    # SHOWS.append(["Climate Pledge Arena", climate_pledge[0], climate_pledge[1]])
 
 
     """The following function is no longer needed since we aren't using TM anymore"""
+    """I take that back, we're using it above now"""
     # Pull all of the show data from TM venues, append them to SHOWS
     # This call_shows() is defined locally and is not the same as the one in cronjob.py module
     # call_shows()

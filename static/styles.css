@@ -186,6 +186,33 @@ img {
     display: block;
 }
 
+.popup {
+    position: relative;  /* This allows the close button to be positioned inside the popup */
+    top: 20%; /* Adjust the vertical position of the popup */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background-color: white;
+    padding: 20px;
+    border: 2px solid black;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.close-btn {
+    position: absolute;  /* Position the button relative to the popup */
+    top: 10px;  /* Distance from the top of the popup */
+    right: 10px;  /* Distance from the right of the popup */
+    font-size: 30px;
+    cursor: pointer;
+    color: #333;
+}
+
+.close-btn:hover {
+    color: red;
+}
+
 .image-container {
     text-align: center;
 }

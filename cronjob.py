@@ -7,14 +7,14 @@ from time import sleep
 import csv
 from collections import deque
 import re
-from fake_useragent import UserAgent
+# from fake_useragent import UserAgent
 
 
 SHOW_DATA = []
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like '
                   'Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-UA = UserAgent()
+# UA = UserAgent()
 
 # Extract the url components and API key from app.yaml
 with open("app.yaml", "r") as file:
@@ -270,7 +270,6 @@ def scrape_tractor_tavern():
 
 
 def scrape_egans():
-
     def remove_text_between(text, start, end):
         return re.sub(f'{re.escape(start)}.*?{re.escape(end)}', '', text)
 
@@ -363,24 +362,24 @@ def scrape_rendezvous():
     pass
 
 
-def scrape_climate_pledge():
-    try:
-        url = "https://www.climatepledgearena.com/events/category/concerts/"
-        response = requests.get(url, headers={'User-Agent': UA.firefox})
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("climate_pledge.yaml")
-        band = extractor.extract(source)["band"]
-        day = extractor.extract(source)["date"]
-        day = day.split("/")[0].strip(" ")
-        if day[0:2] == "Jan" and datetime.now().month == 12:
-            year = datetime.now().year + 1
-        else:
-            year = datetime.now().year
-        date = datetime.strptime(f"{day}, {year}", "%B %d, %Y")
-        date = datetime.strftime(date, "%b %d, %Y")
-        return band, date
-    except Exception:
-        return "No info. Check venue website directly.", "-"
+# def scrape_climate_pledge():
+#     try:
+#         url = "https://www.climatepledgearena.com/events/category/concerts/"
+#         response = requests.get(url, headers={'User-Agent': UA.firefox})
+#         source = response.text
+#         extractor = selectorlib.Extractor.from_yaml_file("climate_pledge.yaml")
+#         band = extractor.extract(source)["band"]
+#         day = extractor.extract(source)["date"]
+#         day = day.split("/")[0].strip(" ")
+#         if day[0:2] == "Jan" and datetime.now().month == 12:
+#             year = datetime.now().year + 1
+#         else:
+#             year = datetime.now().year
+#         date = datetime.strptime(f"{day}, {year}", "%B %d, %Y")
+#         date = datetime.strftime(date, "%b %d, %Y")
+#         return band, date
+#     except Exception:
+#         return "No info. Check venue website directly.", "-"
 
 
 """
