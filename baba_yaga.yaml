@@ -1,0 +1,10 @@
+bands:
+    css: 'div.vp-event-row:nth-of-type(1) div.vp-event-name'
+    xpath: null
+    multiple: false
+    type: Text
+dates:
+    css: null
+    xpath: '//span[contains(concat(" ",normalize-space(@class)," ")," vp-month-n-day ")]'
+    multiple: true
+    type: Text

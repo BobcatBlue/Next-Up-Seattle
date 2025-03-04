@@ -240,14 +240,16 @@ def scrape_nuemos():
     source = response.text
     extractor = selectorlib.Extractor.from_yaml_file("extract_nuemos.yaml")
     bands = extractor.extract(source)["bands"]
+    print(bands)
     band = bands[0]
     date_list = extractor.extract(source)["date"]
+    print(date_list)
     month = datetime.now().month
-    if month == 12 and date_list[0] == "Jan":
+    if month == 12 and date_list[0][0:2] == "Jan":
         year = datetime.now().year + 1
     else:
         year = datetime.now().year
-    date = f"{date_list[0]} {date_list[1]}, {year}"
+    date = f"{date_list[0]}, {year}"
 
     return band, date
 
@@ -362,6 +364,18 @@ def scrape_rendezvous():
     pass
 
 
+def scrape_babayaga():
+    url = "https://babayagaseattle.com/about-1#/events"
+    response = requests.get(url, HEADERS)
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("baba_yaga.yaml")
+    print(source)
+    bands = extractor.extract(source)["bands"]
+    dates = extractor.extract(source)["dates"]
+    print(bands)
+    print(dates)
+
+
 # def scrape_climate_pledge():
 #     try:
 #         url = "https://www.climatepledgearena.com/events/category/concerts/"
@@ -415,4 +429,4 @@ def scrape_central_saloon():
 
 
 if __name__ == "__main__":
-    scrape_seamonster()
+    scrape_babayaga()

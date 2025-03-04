@@ -4,7 +4,7 @@ bands:
     multiple: true
     type: Text
 date:
-    css: 'div.eventList__wrapper > div.eventItem:nth-of-type(6) span.m-date__singleDate span'
+    css: 'div.eventItem div.date:nth-of-type(n+2)'
     xpath: null
     multiple: true
     type: Text
