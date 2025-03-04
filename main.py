@@ -91,8 +91,9 @@ def update_csv():
     global FILE_NAME
     SHOWS = []
 
-    # Scrape, motherfucker, SCRAPE!
+    # Scrape...SCRAAAAAAAAPE!
     central = cronjob.scrape_central()
+    baba_yaga = cronjob.scrape_babayaga()
     corazon = cronjob.scrape_el_corazon()
     funhouse = cronjob.scrape_funhouse()
     nectar = cronjob.scrape_nectar()
@@ -109,6 +110,7 @@ def update_csv():
 
 
     SHOWS.append(["Central Saloon", central[0], central[1]])
+    SHOWS.append(["Baba Yaga", baba_yaga[0], baba_yaga[1]])
     SHOWS.append(["El Corazon", corazon[0], corazon[1]])
     SHOWS.append(["Funhouse", funhouse[0], funhouse[1]])
     SHOWS.append(["Nectar Lounge", nectar[0], nectar[1]])
@@ -127,12 +129,6 @@ def update_csv():
     # SHOWS.append(["WAMU Theater", wamu[0], wamu[1]])
     # SHOWS.append(["Climate Pledge Arena", climate_pledge[0], climate_pledge[1]])
 
-
-    """The following function is no longer needed since we aren't using TM anymore"""
-    """I take that back, we're using it above now"""
-    # Pull all of the show data from TM venues, append them to SHOWS
-    # This call_shows() is defined locally and is not the same as the one in cronjob.py module
-    # call_shows()
 
 
     # "fn" stands for "function"
