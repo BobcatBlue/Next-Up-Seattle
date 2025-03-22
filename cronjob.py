@@ -449,18 +449,21 @@ def scrape_babayaga():
 
     if response.status_code == 200:
         raw_calendar_data = response.json()
-        print(raw_calendar_data)
     else:
         print(f"Failed to fetch events: {response.status_code}")
         return "No Info", "--"
 
-    event = raw_calendar_data["data"]["paginatedEvents"]["collection"][0]
-    print(event)
-    band = event["name"]
-    date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
+    today = datetime.strftime(datetime.now(), "%b %d, %Y")
+    counter = 0
+    for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
+        date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
+        if today > date:
+            counter += 1
+        else:
+            break
 
-    print(band)
-    print(date)
+    event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
+    band = event["name"]
     return band, date
 
 
@@ -568,14 +571,17 @@ def scrape_conor_byrne():
         print(f"Failed to fetch events: {response.status_code}")
         return "No Info", "--"
 
-    event = raw_calendar_data["data"]["paginatedEvents"]["collection"][0]
-    print(event)
+    today = datetime.strftime(datetime.now(), "%b %d, %Y")
+    counter = 0
+    for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
+        date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
+        if today > date:
+            counter += 1
+        else:
+            break
+
+    event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
     band = event["name"]
-    date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
-
-    print(band)
-    print(date)
-
     return band, date
 
 
@@ -634,4 +640,5 @@ def scrape_central_saloon():
 
 
 if __name__ == "__main__":
-    scrape_conor_byrne()
+    print(scrape_babayaga())
+    print(scrape_conor_byrne())

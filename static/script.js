@@ -30,41 +30,6 @@ function toggleView(view) {
     }
 }
 
-//function mapPopUp(ven) {
-//    var popup = document.getElementById("popup");
-//    var content = document.getElementById("popup-content");
-//
-//    if (!dictionary[ven]) {
-//        return;
-//    }
-//
-//    // Set the content of the popup window
-//    content.innerHTML = `<strong>${ven}</strong><br>${dictionary[ven]}`;
-//
-//    // Get the clicked circle element
-//    var circle = document.getElementById(locationName.toLowerCase().replace(/\s+/g, ''));
-//
-//    if (!circle) return;
-//
-//    // Get the circle's position
-//    var rect = circle.getBoundingClientRect();
-//
-//    // Position the popup near the circle
-//    popup.style.left = `${rect.left + window.scrollX + 10}px`;
-//    popup.style.top = `${rect.top + window.scrollY - 40}px`;
-//
-//    // Show the popup
-//    popup.style.display = "block";
-//}
-//
-//// Hide the popup when clicking anywhere else
-//document.addEventListener("click", function(event) {
-//    if (!event.target.closest("circle")) {
-//        document.getElementById("popup").style.display = "none";
-//    }
-//});
-//}
-
 function mapPopUp(ven) {
     console.log("Clicked:", ven); // Debugging message
     var popup = document.getElementById("popup")

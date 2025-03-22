@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response
+from flask import Flask, render_template, make_response, send_from_directory
 import cronjob
 from datetime import datetime
 import pandas as pd
@@ -64,10 +64,14 @@ def index():
         dictionary[item[0]].insert(1, VENUE_INFO[counter][1])   # Add venue's neighborhood to list
         counter += 1
 
+    print("This is just the index")
     print(dictionary)
 
     response = make_response(render_template("index.html", dictionary=dictionary))
-    response.headers["Cache-Control"] = "no-store"
+    # response.headers["Cache-Control"] = "no-store"
+    response.headers["Connection"] = "close"
+    response.headers["Cache-Control"] = "no-store, no-cash, must-revalidate, max-age=0"
+    response.headers["Expires"] = '0'
     return response
 
 
@@ -131,8 +135,6 @@ def update_csv():
     # SHOWS.append(["WAMU Theater", wamu[0], wamu[1]])
     # SHOWS.append(["Climate Pledge Arena", climate_pledge[0], climate_pledge[1]])
 
-
-
     # "fn" stands for "function"
     fn_client = storage.Client()
     fn_bucket = fn_client.bucket(BUCKET_NAME)
@@ -150,6 +152,11 @@ def update_csv():
 
     return "CSV update was successful.  I think.  I mean, it didn't crash, so that's good.  " \
            "Baby steps...baby steps"
+
+
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(app.static_folder, "robots.txt")
 
 
 if __name__ == "__main__":
