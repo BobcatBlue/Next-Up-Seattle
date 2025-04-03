@@ -68,7 +68,6 @@ def index():
     print(dictionary)
 
     response = make_response(render_template("index.html", dictionary=dictionary))
-    # response.headers["Cache-Control"] = "no-store"
     response.headers["Connection"] = "close"
     response.headers["Cache-Control"] = "no-store, no-cash, must-revalidate, max-age=0"
     response.headers["Expires"] = '0'

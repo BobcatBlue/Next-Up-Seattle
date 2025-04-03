@@ -620,31 +620,6 @@ def scrape_conor_byrne():
 """
 
 
-# Unused function for writing event info to a local CSV file
-def call_shows():
-    df = pd.read_csv("Listed_Venues.csv")
-    print("Ring ring!!!  I'm inside call_shows(), calling the API")
-    for index, row in df.iterrows():
-        venue, band, date = get_shows(row["Venue Name"], row["vID"])
-        if date == "No info":
-            SHOW_DATA.append([venue, "No Info", "No Info"])
-        else:
-            date = datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y")
-            SHOW_DATA.append([venue, band, date])
-        sleep(0.09)
-
-    with open("Show_Data.csv", "w", newline="") as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerows(SHOW_DATA)
-
-
-# This function is for testing "if __name__ "
-def scrape_central_saloon():
-    band, date = scrape_central()
-    SHOW_DATA.append(["Central Saloon", band, date])
-
-
-
 if __name__ == "__main__":
     print(scrape_babayaga())
     print(scrape_conor_byrne())
