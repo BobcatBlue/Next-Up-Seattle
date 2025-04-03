@@ -1,8 +1,10 @@
-band:
-    css: 'li.LFRKo9:nth-of-type(1) div.ZA3KKX:nth-of-type(1)'
+bands:
+    css: span.noWi58
     xpath: null
+    multiple: true
     type: Text
-date:
-    css: 'li.LFRKo9:nth-of-type(1) div.nDmqzY'
+dates:
+    css: 'li.FwdPeD:nth-of-type(n+2) span.GiNWmM'
     xpath: null
+    multiple: true
     type: Text

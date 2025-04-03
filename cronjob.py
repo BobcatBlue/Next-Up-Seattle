@@ -315,16 +315,21 @@ def scrape_seamonster():
         response = requests.get(url, HEADERS)
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("sea_monsters.yaml")
-        band = extractor.extract(source)["band"]
-        day = extractor.extract(source)["date"][5:]
+        band = extractor.extract(source)["bands"][0]
+        day = extractor.extract(source)["dates"][0][5:]
+
+        print(band)
+        print(day)
         if day[0:3] == "Jan" and datetime.now().month == 12:
             year = datetime.now().year + 1
         else:
             year = datetime.now().year
         date = f"{day}, {year}"
     except Exception:
-        band = "No Info - Check venue's FB or Insta for upcoming shows"
+        band = "No Info - Please check venue's website for more info :)"
         date = "--"
+
+
 
     print(band, date)
     return band, date
@@ -585,8 +590,6 @@ def scrape_conor_byrne():
     return band, date
 
 
-
-
 # def scrape_climate_pledge():
 #     try:
 #         url = "https://www.climatepledgearena.com/events/category/concerts/"
@@ -640,5 +643,4 @@ def scrape_central_saloon():
 
 
 if __name__ == "__main__":
-    print(scrape_babayaga())
-    print(scrape_conor_byrne())
+    print(scrape_seamonster())
