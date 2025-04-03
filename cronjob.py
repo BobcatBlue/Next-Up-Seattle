@@ -458,15 +458,17 @@ def scrape_babayaga():
         print(f"Failed to fetch events: {response.status_code}")
         return "No Info", "--"
 
-    today = datetime.strftime(datetime.now(), "%b %d, %Y")
+    today = datetime.now()
     counter = 0
     for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
         date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
+        date = datetime.strptime(date, "%b %d, %Y")
         if today > date:
             counter += 1
         else:
             break
 
+    date = datetime.strftime(date, "%b %d, %Y")
     event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
     band = event["name"]
     return band, date
@@ -576,15 +578,16 @@ def scrape_conor_byrne():
         print(f"Failed to fetch events: {response.status_code}")
         return "No Info", "--"
 
-    today = datetime.strftime(datetime.now(), "%b %d, %Y")
+    today = datetime.now()
     counter = 0
     for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
         date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
+        date = datetime.strptime(date, "%b %d, %Y")
         if today > date:
             counter += 1
         else:
             break
-
+    date = datetime.strftime(date, "%b %d, %Y")
     event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
     band = event["name"]
     return band, date
@@ -643,4 +646,5 @@ def scrape_central_saloon():
 
 
 if __name__ == "__main__":
-    print(scrape_seamonster())
+    print(scrape_babayaga())
+    print(scrape_conor_byrne())
