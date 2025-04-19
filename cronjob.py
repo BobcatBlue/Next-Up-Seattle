@@ -2,9 +2,6 @@ import requests
 from datetime import datetime
 import yaml
 import selectorlib
-import pandas as pd
-from time import sleep
-import csv
 from collections import deque
 import re
 
@@ -163,14 +160,20 @@ def scrape_nectar():
 
 
 def scrape_highdive():
-    response = requests.get("https://highdiveseattle.com/e/calendar/", headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_highdive.yaml")
-    band = extractor.extract(source)["band"][0]
-    date = extractor.extract(source)["date"][0][4:]
-    date = datetime.strptime(date, "%b %d %Y").strftime("%b %d, %Y")
+    try:
+        response = requests.get("https://highdiveseattle.com/e/calendar/", headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("extract_highdive.yaml")
+        band = extractor.extract(source)["band"][0]
+        date = extractor.extract(source)["date"][0][4:]
+        date = datetime.strptime(date, "%b %d %Y").strftime("%b %d, %Y")
 
-    return band, date
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return  band, date
 
 
 def scrape_crocodile():
