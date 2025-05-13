@@ -56,114 +56,127 @@ def get_shows(venue_name, venueId):
 
 # Scrape the Central Saloon's calendar for the next show
 def scrape_central():
-    response = requests.get("https://www.centralsaloon.com/events", headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("central.yaml")
-    band = extractor.extract(source)["band"][0]
-    month = str(extractor.extract(source)["month"])
-    day = extractor.extract(source)["day"]
+    try:
+        response = requests.get("https://www.centralsaloon.com/events", headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("central.yaml")
+        band = extractor.extract(source)["band"][0]
+        month = str(extractor.extract(source)["month"])
+        day = extractor.extract(source)["day"]
 
-    current_month = datetime.now().month
-    if current_month == 12 and month == "Jan":
-        year = "2025"
-    else:
-        year = datetime.now().year
+        current_month = datetime.now().month
+        if current_month == 12 and month == "Jan":
+            year = "2025"
+        else:
+            year = datetime.now().year
 
-    date = f"{month} {day}, {year}"
-    return band, date
+        date = f"{month} {day}, {year}"
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 # Scrape El Corazon's website for their next show
 def scrape_el_corazon():
-    response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_corazon.yaml")
-    date = extractor.extract(source)["dates"][0]
-    band = extractor.extract(source)["bands"][0]
+    try:
+        response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("extract_corazon.yaml")
+        date = extractor.extract(source)["dates"][0]
+        band = extractor.extract(source)["bands"][0]
 
-    year_now = datetime.now().year
-    month = datetime.now().month
+        year_now = datetime.now().year
+        month = datetime.now().month
 
-    if month == 12 and month == 1:
-        year = year_now + 1
-    else:
-        year = year_now
-    date = f"{date} {year}"
-    date = datetime.strptime(date, "%a %b %d %Y").strftime("%b %d, %Y")
+        if month == 12 and month == 1:
+            year = year_now + 1
+        else:
+            year = year_now
+        date = f"{date} {year}"
+        date = datetime.strptime(date, "%a %b %d %Y").strftime("%b %d, %Y")
 
-    return band, date
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 # Scrape El Corazon's website for the next show at the Funhouse
 def scrape_funhouse():
-    response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_funhouse.yaml")
-    date = extractor.extract(source)["dates"][0]
-    band = extractor.extract(source)["bands"][0]
+    try:
+        response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("extract_funhouse.yaml")
+        date = extractor.extract(source)["dates"][0]
+        band = extractor.extract(source)["bands"][0]
 
-    year_now = datetime.now().year
-    month = datetime.now().month
+        year_now = datetime.now().year
+        month = datetime.now().month
 
-    if month == 12 and month == 1:
-        year = year_now + 1
-    else:
-        year = year_now
-    date = f"{date} {year}"
-    date = datetime.strptime(date, "%a %b %d %Y").strftime("%b %d, %Y")
+        if month == 12 and month == 1:
+            year = year_now + 1
+        else:
+            year = year_now
+        date = f"{date} {year}"
+        date = datetime.strptime(date, "%a %b %d %Y").strftime("%b %d, %Y")
 
-    return band, date
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 # This one scrapes the Showbox website for multiple venues: Showbox, Showbox Sodo
 def scrape_showbox_presents():
-    response = requests.get("https://www.showboxpresents.com/events/all", headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_showbox.yaml")
-    events = extractor.extract(source)["event_name"]
-    dates = extractor.extract(source)["date"]
-    venues = extractor.extract(source)["venue"]
+    try:
+        response = requests.get("https://www.showboxpresents.com/events/all", headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("extract_showbox.yaml")
+        events = extractor.extract(source)["event_name"]
+        dates = extractor.extract(source)["date"]
+        venues = extractor.extract(source)["venue"]
 
-    counter = 0
-    showbox_list = []
-    showbox_sodo_list = []
-    while counter <= (len(events) - 1):
-        event = [venues[counter], events[counter], dates[counter]]
-        match event[0]:
-            case "@ Showbox SoDo":
-                showbox_sodo_list.append(event)
-            case "@ The Showbox":
-                showbox_list.append(event)
-            case _:
-                pass
-        counter += 1
+        counter = 0
+        showbox_list = []
+        showbox_sodo_list = []
+        while counter <= (len(events) - 1):
+            event = [venues[counter], events[counter], dates[counter]]
+            match event[0]:
+                case "@ Showbox SoDo":
+                    showbox_sodo_list.append(event)
+                case "@ The Showbox":
+                    showbox_list.append(event)
+                case _:
+                    pass
+            counter += 1
 
-    showbox_show = showbox_list[0]
-    showbox_show[2] = showbox_show[2][5:]
-    showbox_show[0] = "The Showbox (@ the Market)"
-    showbox_sodo_show = showbox_sodo_list[0]
-    showbox_sodo_show[2] = showbox_sodo_show[2][5:]
-    showbox_sodo_show[0] = "The Showbox SoDo"
+        showbox_show = showbox_list[0]
+        showbox_show[2] = showbox_show[2][5:]
+        showbox_show[0] = "The Showbox (@ the Market)"
+        showbox_sodo_show = showbox_sodo_list[0]
+        showbox_sodo_show[2] = showbox_sodo_show[2][5:]
+        showbox_sodo_show[0] = "The Showbox SoDo"
 
-    return showbox_show, showbox_sodo_show
+        return showbox_show, showbox_sodo_show
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 def scrape_nectar():
-    response = requests.get("https://highdiveseattle.com/e/calendar/", headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_nectar.yaml")
-    band = extractor.extract(source)["band"][0]
-    date = extractor.extract(source)["date"][0][4:]
-    date = datetime.strptime(date, "%b %d %Y").strftime("%b %d, %Y")
-
-    return band, date
-
-
-def scrape_highdive():
     try:
         response = requests.get("https://highdiveseattle.com/e/calendar/", headers=HEADERS)
         source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("extract_highdive.yaml")
+        extractor = selectorlib.Extractor.from_yaml_file("extract_nectar.yaml")
         band = extractor.extract(source)["band"][0]
         date = extractor.extract(source)["date"][0][4:]
         date = datetime.strptime(date, "%b %d %Y").strftime("%b %d, %Y")
@@ -173,143 +186,187 @@ def scrape_highdive():
     except Exception:
         band = "No info - Check venue website"
         date = "--"
-        return  band, date
+        return band, date
+
+
+def scrape_hiddenhall():
+    try:
+        response = requests.get("https://nectarlounge.com/", headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("extract_highdive.yaml")
+        band = extractor.extract(source)["band"][0]
+        date = extractor.extract(source)["date"][0][4:]
+        date = datetime.strptime(date, "%b %d %Y").strftime("%b %d, %Y")
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 def scrape_crocodile():
-    url = "https://www.ticketweb.com/venue/the-crocodile-seattle-wa/10352"
-    response = requests.get(url, headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_crocodile.yaml")
-    annoying_string = extractor.extract(source)["band"]
-    x = 67
-    weekday = "zzz"
-    while weekday not in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"):
-        last_chars = deque(maxlen=x)
-        for char in annoying_string:
-            last_chars.append(char)
-        double_date = "".join(last_chars)
-        weekday = double_date[0:3]
-        x += 1
+    try:
+        url = "https://www.ticketweb.com/venue/the-crocodile-seattle-wa/10352"
+        response = requests.get(url, headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("extract_crocodile.yaml")
+        annoying_string = extractor.extract(source)["band"]
+        x = 67
+        weekday = "zzz"
+        while weekday not in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"):
+            last_chars = deque(maxlen=x)
+            for char in annoying_string:
+                last_chars.append(char)
+            double_date = "".join(last_chars)
+            weekday = double_date[0:3]
+            x += 1
 
-    date = double_date[4:10].strip()
-    month = datetime.now().month
-    year = datetime.now().year
-    if month == 12 and date[0:3] == "Jan":
-        year += 1
-    date = f"{date}, {str(year)}"
-    dbl = len(annoying_string) - x
-    double_band = annoying_string[0:dbl]
-    b_length = int((dbl - 1)/2)
-    band = double_band[0:b_length]
+        date = double_date[4:10].strip()
+        month = datetime.now().month
+        year = datetime.now().year
+        if month == 12 and date[0:3] == "Jan":
+            year += 1
+        date = f"{date}, {str(year)}"
+        dbl = len(annoying_string) - x
+        double_band = annoying_string[0:dbl]
+        b_length = int((dbl - 1)/2)
+        band = double_band[0:b_length]
 
-    return band, date
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 def scrape_madame_lous():
-    url = "https://www.ticketweb.com/venue/madame-lou-s-seattle-wa/497135"
-    response = requests.get(url, headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("madame_lous.yaml")
-    annoying_string = extractor.extract(source)["band"]
-    x = 67
-    weekday = "zzz"
-    while weekday not in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"):
-        last_chars = deque(maxlen=x)
-        for char in annoying_string:
-            last_chars.append(char)
-        double_date = "".join(last_chars)
-        weekday = double_date[0:3]
-        x += 1
+    try:
+        url = "https://www.ticketweb.com/venue/madame-lou-s-seattle-wa/497135"
+        response = requests.get(url, headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("madame_lous.yaml")
+        annoying_string = extractor.extract(source)["band"]
+        x = 67
+        weekday = "zzz"
+        while weekday not in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"):
+            last_chars = deque(maxlen=x)
+            for char in annoying_string:
+                last_chars.append(char)
+            double_date = "".join(last_chars)
+            weekday = double_date[0:3]
+            x += 1
 
-    date = double_date[4:10].strip()
-    month = datetime.now().month
-    year = datetime.now().year
-    if month == 12 and date[0:3] == "Jan":
-        year += 1
-    date = f"{date}, {str(year)}"
-    dbl = len(annoying_string) - x
-    double_band = annoying_string[0:dbl]
-    b_length = int((dbl - 1)/2)
-    band = double_band[0:b_length]
+        date = double_date[4:10].strip()
+        month = datetime.now().month
+        year = datetime.now().year
+        if month == 12 and date[0:3] == "Jan":
+            year += 1
+        date = f"{date}, {str(year)}"
+        dbl = len(annoying_string) - x
+        double_band = annoying_string[0:dbl]
+        b_length = int((dbl - 1)/2)
+        band = double_band[0:b_length]
 
-    return band, date
+        return band, date
+
+    except Exception:
+        return "No info - check venue website for more", "--"
 
 
 def scrape_nuemos():
-    url = "https://www.neumos.com/events"
-    response = requests.get(url, headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_nuemos.yaml")
-    bands = extractor.extract(source)["bands"]
-    print(bands)
-    band = bands[0]
-    date_list = extractor.extract(source)["date"]
-    print(date_list)
-    month = datetime.now().month
-    if month == 12 and date_list[0][0:2] == "Jan":
-        year = datetime.now().year + 1
-    else:
-        year = datetime.now().year
-    date = f"{date_list[0]}, {year}"
+    try:
+        url = "https://www.neumos.com/events"
+        response = requests.get(url, headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("extract_nuemos.yaml")
+        bands = extractor.extract(source)["bands"]
+        print(bands)
+        band = bands[0]
+        date_list = extractor.extract(source)["date"]
+        print(date_list)
+        month = datetime.now().month
+        if month == 12 and date_list[0][0:2] == "Jan":
+            year = datetime.now().year + 1
+        else:
+            year = datetime.now().year
+        date = f"{date_list[0]}, {year}"
 
-    return band, date
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 def scrape_tractor_tavern():
-    url = "https://tractortavern.com/"
-    response = requests.get(url, headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_tractor.yaml")
-    band = extractor.extract(source)["band"]
-    month_day = extractor.extract(source)["date"][0][0:6]
-    month = datetime.now().month
-    if month == 12 and month_day[0:3] == "Jan":
-        year = datetime.now().year + 1
-    else:
-        year = datetime.now().year
-    date = f"{month_day}, {year}"
+    try:
+        url = "https://tractortavern.com/"
+        response = requests.get(url, headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("extract_tractor.yaml")
+        band = extractor.extract(source)["band"]
+        month_day = extractor.extract(source)["date"][0][0:6]
+        month = datetime.now().month
+        if month == 12 and month_day[0:3] == "Jan":
+            year = datetime.now().year + 1
+        else:
+            year = datetime.now().year
+        date = f"{month_day}, {year}"
 
-    return band, date
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 def scrape_egans():
-    def remove_text_between(text, start, end):
-        return re.sub(f'{re.escape(start)}.*?{re.escape(end)}', '', text)
+    try:
+        def remove_text_between(text, start, end):
+            return re.sub(f'{re.escape(start)}.*?{re.escape(end)}', '', text)
 
-    url = "https://www.ballardjamhouse.com/schedule.html"
-    response = requests.get(url, headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("egans.yaml")
-    all_event_data = extractor.extract(source)["event"]
+        url = "https://www.ballardjamhouse.com/schedule.html"
+        response = requests.get(url, headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("egans.yaml")
+        all_event_data = extractor.extract(source)["event"]
 
-    removed_brackets = [remove_text_between(item, "[", "]") for item in all_event_data]
-    removed_parenthesis = [remove_text_between(item, "(", ")") for item in removed_brackets]
+        removed_brackets = [remove_text_between(item, "[", "]") for item in all_event_data]
+        removed_parenthesis = [remove_text_between(item, "(", ")") for item in removed_brackets]
 
-    events = [item[10:].strip(" ") for item in removed_parenthesis]
-    events = [item.strip("\r\n\r\n") for item in events]
-    events = [item.strip("\r\n") for item in events]
+        events = [item[10:].strip(" ") for item in removed_parenthesis]
+        events = [item.strip("\r\n\r\n") for item in events]
+        events = [item.strip("\r\n") for item in events]
 
-    month_days = [item[4:10].strip(" ") for item in removed_parenthesis]
+        month_days = [item[4:10].strip(" ") for item in removed_parenthesis]
 
-    if month_days[0][0:2] == "Dec" and datetime.now().month == 1:
-        year = datetime.now().year + 1
-    else:
-        year = datetime.now().year
+        if month_days[0][0:2] == "Dec" and datetime.now().month == 1:
+            year = datetime.now().year + 1
+        else:
+            year = datetime.now().year
 
-    dates = [datetime.strptime(f"{item}, {year}", "%b %d, %Y") for item in month_days]
-    todays_date = datetime.now()
-    for index, date in enumerate(dates):
-        if todays_date < date:
-            nxt_event_index = index
-            break
+        dates = [datetime.strptime(f"{item}, {year}", "%b %d, %Y") for item in month_days]
+        todays_date = datetime.now()
+        for index, date in enumerate(dates):
+            if todays_date < date:
+                nxt_event_index = index
+                break
 
-    date = datetime.strftime(dates[nxt_event_index], "%b %d, %Y")
-    event = events[nxt_event_index]
+        date = datetime.strftime(dates[nxt_event_index], "%b %d, %Y")
+        event = events[nxt_event_index]
 
-    print("Egans")
+        print("Egans")
 
-    return event, date
+        return event, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 def scrape_seamonster():
@@ -328,6 +385,7 @@ def scrape_seamonster():
         else:
             year = datetime.now().year
         date = f"{day}, {year}"
+
     except Exception:
         band = "No Info - Please check venue's website for more info :)"
         date = "--"
@@ -339,20 +397,26 @@ def scrape_seamonster():
 
 
 def scrape_wamu():
-    url = "https://www.wamutheater.com/event-calendar?category=All+Events"
-    response = requests.get(url, headers=HEADERS)
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("wamu.yaml")
-    band = extractor.extract(source)["band"]
-    day = extractor.extract(source)["date"]
-    if day[0:3] == "Jan" and datetime.now().month == 12:
-        year = datetime.now().year + 1
-    else:
-        year = datetime.now().year
-    date = f"{day}, {year}"
+    try:
+        url = "https://www.wamutheater.com/event-calendar?category=All+Events"
+        response = requests.get(url, headers=HEADERS)
+        source = response.text
+        extractor = selectorlib.Extractor.from_yaml_file("wamu.yaml")
+        band = extractor.extract(source)["band"]
+        day = extractor.extract(source)["date"]
+        if day[0:3] == "Jan" and datetime.now().month == 12:
+            year = datetime.now().year + 1
+        else:
+            year = datetime.now().year
+        date = f"{day}, {year}"
 
-    print("WAMU")
-    return band, date
+        print("WAMU")
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 def scrape_rendezvous():
@@ -360,121 +424,127 @@ def scrape_rendezvous():
 
 
 def scrape_babayaga():
-    url = "https://www.venuepilot.co/graphql"
-    data = {
-        "operationName": None,
-        "variables": {
-            "accountIds": [2906],
-            "startDate": "2025-03-04",
-            "endDate": None,
-            "search": "",
-            "searchScope": "",
-            "page": 1
-        },
-        "query": """
-            query ($accountIds: [Int!]!, $startDate: String!, $endDate: String, $search: String, $searchScope: String, $limit: Int, $page: Int) {
-                paginatedEvents(arguments: {accountIds: $accountIds, startDate: $startDate, endDate: $endDate, search: $search, searchScope: $searchScope, limit: $limit, page: $page}) {
-                    collection {
-                        id
-                        name
-                        date
-                        doorTime
-                        startTime
-                        endTime
-                        minimumAge
-                        promoter
-                        support
-                        description
-                        websiteUrl
-                        twitterUrl
-                        instagramUrl
-                        ...AnnounceImages
-                        status
-                        announceArtists {
-                            applemusic
-                            bandcamp
-                            facebook
-                            instagram
-                            lastfm
-                            name
-                            songkick
-                            spotify
-                            twitter
-                            website
-                            wikipedia
-                            youtube
-                            __typename
-                        }
-                        artists {
-                            bio
-                            createdAt
+    try:
+        url = "https://www.venuepilot.co/graphql"
+        data = {
+            "operationName": None,
+            "variables": {
+                "accountIds": [2906],
+                "startDate": "2025-03-04",
+                "endDate": None,
+                "search": "",
+                "searchScope": "",
+                "page": 1
+            },
+            "query": """
+                query ($accountIds: [Int!]!, $startDate: String!, $endDate: String, $search: String, $searchScope: String, $limit: Int, $page: Int) {
+                    paginatedEvents(arguments: {accountIds: $accountIds, startDate: $startDate, endDate: $endDate, search: $search, searchScope: $searchScope, limit: $limit, page: $page}) {
+                        collection {
                             id
                             name
-                            updatedAt
+                            date
+                            doorTime
+                            startTime
+                            endTime
+                            minimumAge
+                            promoter
+                            support
+                            description
+                            websiteUrl
+                            twitterUrl
+                            instagramUrl
+                            ...AnnounceImages
+                            status
+                            announceArtists {
+                                applemusic
+                                bandcamp
+                                facebook
+                                instagram
+                                lastfm
+                                name
+                                songkick
+                                spotify
+                                twitter
+                                website
+                                wikipedia
+                                youtube
+                                __typename
+                            }
+                            artists {
+                                bio
+                                createdAt
+                                id
+                                name
+                                updatedAt
+                                __typename
+                            }
+                            venue {
+                                name
+                                __typename
+                            }
+                            footerContent
+                            ticketsUrl
                             __typename
                         }
-                        venue {
-                            name
+                        metadata {
+                            currentPage
+                            limitValue
+                            totalCount
+                            totalPages
                             __typename
                         }
-                        footerContent
-                        ticketsUrl
                         __typename
                     }
-                    metadata {
-                        currentPage
-                        limitValue
-                        totalCount
-                        totalPages
+                }
+    
+                fragment AnnounceImages on PublicEvent {
+                    announceImages {
+                        name
+                        highlighted
+                        versions {
+                            thumb {
+                                src
+                                __typename
+                            }
+                            cover {
+                                src
+                                __typename
+                            }
+                            __typename
+                        }
                         __typename
                     }
                     __typename
                 }
-            }
+                """
+        }
+        response = requests.post(url, json=data, headers=HEADERS)
 
-            fragment AnnounceImages on PublicEvent {
-                announceImages {
-                    name
-                    highlighted
-                    versions {
-                        thumb {
-                            src
-                            __typename
-                        }
-                        cover {
-                            src
-                            __typename
-                        }
-                        __typename
-                    }
-                    __typename
-                }
-                __typename
-            }
-            """
-    }
-    response = requests.post(url, json=data, headers=HEADERS)
-
-    if response.status_code == 200:
-        raw_calendar_data = response.json()
-    else:
-        print(f"Failed to fetch events: {response.status_code}")
-        return "No Info", "--"
-
-    today = datetime.now()
-    counter = 0
-    for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
-        date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
-        date = datetime.strptime(date, "%b %d, %Y")
-        if today > date:
-            counter += 1
+        if response.status_code == 200:
+            raw_calendar_data = response.json()
         else:
-            break
+            print(f"Failed to fetch events: {response.status_code}")
+            return "No Info", "--"
 
-    date = datetime.strftime(date, "%b %d, %Y")
-    event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
-    band = event["name"]
-    return band, date
+        today = datetime.now()
+        counter = 0
+        for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
+            date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
+            date = datetime.strptime(date, "%b %d, %Y")
+            if today > date:
+                counter += 1
+            else:
+                break
+
+        date = datetime.strftime(date, "%b %d, %Y")
+        event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
+        band = event["name"]
+        return band, date
+
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 # This function doesn't work yet
@@ -624,5 +694,4 @@ def scrape_conor_byrne():
 
 
 if __name__ == "__main__":
-    print(scrape_babayaga())
-    print(scrape_conor_byrne())
+    print(scrape_central())
