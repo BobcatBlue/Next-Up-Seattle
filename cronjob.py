@@ -362,7 +362,6 @@ def scrape_egans():
             year = datetime.now().year
 
         dates = [datetime.strptime(f"{item}, {year}", "%b %d, %Y") for item in month_days]
-        print(dates)
         # todays_date = datetime.now()
         todays_date = datetime.now().strftime("%b %d, %Y")
         todays_date = datetime.strptime(todays_date, "%b %d, %Y")
@@ -373,9 +372,6 @@ def scrape_egans():
 
         date = datetime.strftime(dates[nxt_event_index], "%b %d, %Y")
         event = events[nxt_event_index]
-
-        print(date)
-        print(event)
 
         return event, date
 
