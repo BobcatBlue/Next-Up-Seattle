@@ -438,7 +438,7 @@ def scrape_rendezvous():
 
 
 def scrape_babayaga():
-    try:
+    # try:
         url = "https://www.venuepilot.co/graphql"
         data = {
             "operationName": None,
@@ -541,11 +541,13 @@ def scrape_babayaga():
             print(f"Failed to fetch events: {response.status_code}")
             return "No Info", "--"
 
-        today = datetime.now()
+        today = datetime.now().strftime("%b %d, %Y")
+        today = datetime.strptime(today, "%b %d, %Y")
         counter = 0
         for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
             date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
             date = datetime.strptime(date, "%b %d, %Y")
+
             if today > date:
                 counter += 1
             else:
@@ -556,13 +558,39 @@ def scrape_babayaga():
         band = event["name"]
         return band, date
 
-    except Exception:
-        band = "No info - Check venue website"
-        date = "--"
-        return band, date
+    # except Exception:
+    #     band = "No info - Check venue website"
+    #     date = "--"
+    #     return band, date
 
 
-# This function doesn't work yet
+# This module does not work yet
+def scrape_bluemoon():
+    url = "https://www.thebluemoonseattle.com/_serverless/analytics-reporter/facebook/event"
+    data = {
+        "eventName":"PageView",
+        "data": {
+            "pagePath": "/calendar",
+            "pageTitle": "CALENDAR | Blue Moon Tavern",
+            "pageId":"xsthd",
+            "pageNumber": 1,
+            "viewer": "TB",
+            "pageType": "static",
+            "pageApp": "editor",
+            "pageTypeIdentifier": "xsthd",
+            "visitorId": "d1be9937-4ff2-41f9-9738-27827a18affd",
+            "_internalEventId": "a1934d53-d1b9-48c8-804f-3b25c6a807c8",
+            "isPremium": "True",
+            "userId": "c4379796-a9c5-45db-90b1-168fae441466",
+            "metaSiteId": "b7053a6f-d3bd-4cf7-9525-04aa7adfc475"
+        }
+    }
+    response = requests.post(url, json=data, headers=HEADERS)
+    response.encoding = "utf-8"
+
+    print(response.text)
+
+
 def scrape_conor_byrne():
     url = "https://www.venuepilot.co/graphql"
     data = {
@@ -573,7 +601,7 @@ def scrape_conor_byrne():
             "endDate": None,
             "search": "",
             "searchScope": "",
-            "page" :1
+            "page": 1
         },
         "query":"""
             query ($accountIds: [Int!]!, $startDate: String!, $endDate: String, $search: String, $searchScope: String, $limit: Int, $page: Int) {
@@ -709,4 +737,4 @@ def scrape_conor_byrne():
 
 
 if __name__ == "__main__":
-    print(scrape_central())
+    print(scrape_babayaga())
