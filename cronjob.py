@@ -438,7 +438,7 @@ def scrape_rendezvous():
 
 
 def scrape_babayaga():
-    # try:
+    try:
         url = "https://www.venuepilot.co/graphql"
         data = {
             "operationName": None,
@@ -558,10 +558,10 @@ def scrape_babayaga():
         band = event["name"]
         return band, date
 
-    # except Exception:
-    #     band = "No info - Check venue website"
-    #     date = "--"
-    #     return band, date
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 # This module does not work yet
