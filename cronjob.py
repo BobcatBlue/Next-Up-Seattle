@@ -56,29 +56,29 @@ def get_shows(venue_name, venueId):
 
 # Scrape the Central Saloon's calendar for the next show
 def scrape_central():
-    # try:
-    response = requests.get("https://www.centralsaloon.com/events", headers=HEADERS)
-    response.encoding = 'utf-8'
-    source = response.text
-    print(source)
-    extractor = selectorlib.Extractor.from_yaml_file("central.yaml")
-    band = extractor.extract(source)["band"][0]
-    month = str(extractor.extract(source)["month"])
-    day = extractor.extract(source)["day"]
+    try:
+        response = requests.get("https://www.centralsaloon.com/events", headers=HEADERS)
+        response.encoding = 'utf-8'
+        source = response.text
+        print(source)
+        extractor = selectorlib.Extractor.from_yaml_file("central.yaml")
+        band = extractor.extract(source)["band"][0]
+        month = str(extractor.extract(source)["month"])
+        day = extractor.extract(source)["day"]
 
-    current_month = datetime.now().month
-    if current_month == 12 and month == "Jan":
-        year = "2025"
-    else:
-        year = datetime.now().year
+        current_month = datetime.now().month
+        if current_month == 12 and month == "Jan":
+            year = "2025"
+        else:
+            year = datetime.now().year
 
-    date = f"{month} {day}, {year}"
-    return band, date
+        date = f"{month} {day}, {year}"
+        return band, date
 
-    # except Exception:
-    #     band = "No info - Check venue website"
-    #     date = "--"
-    #     return band, date
+    except Exception:
+        band = "No info - Check venue website"
+        date = "--"
+        return band, date
 
 
 # Scrape El Corazon's website for their next show
