@@ -362,16 +362,20 @@ def scrape_egans():
             year = datetime.now().year
 
         dates = [datetime.strptime(f"{item}, {year}", "%b %d, %Y") for item in month_days]
-        todays_date = datetime.now()
+        print(dates)
+        # todays_date = datetime.now()
+        todays_date = datetime.now().strftime("%b %d, %Y")
+        todays_date = datetime.strptime(todays_date, "%b %d, %Y")
         for index, date in enumerate(dates):
-            if todays_date < date:
+            if todays_date == date:
                 nxt_event_index = index
                 break
 
         date = datetime.strftime(dates[nxt_event_index], "%b %d, %Y")
         event = events[nxt_event_index]
 
-        print("Egans")
+        print(date)
+        print(event)
 
         return event, date
 
@@ -739,4 +743,4 @@ def scrape_conor_byrne():
 
 
 if __name__ == "__main__":
-    print(scrape_conor_byrne())
+    print(scrape_egans())
