@@ -56,33 +56,36 @@ def get_shows(venue_name, venueId):
 
 # Scrape the Central Saloon's calendar for the next show
 def scrape_central():
-    try:
-        response = requests.get("https://www.centralsaloon.com/events", headers=HEADERS)
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("central.yaml")
-        band = extractor.extract(source)["band"][0]
-        month = str(extractor.extract(source)["month"])
-        day = extractor.extract(source)["day"]
+    # try:
+    response = requests.get("https://www.centralsaloon.com/events", headers=HEADERS)
+    response.encoding = 'utf-8'
+    source = response.text
+    print(source)
+    extractor = selectorlib.Extractor.from_yaml_file("central.yaml")
+    band = extractor.extract(source)["band"][0]
+    month = str(extractor.extract(source)["month"])
+    day = extractor.extract(source)["day"]
 
-        current_month = datetime.now().month
-        if current_month == 12 and month == "Jan":
-            year = "2025"
-        else:
-            year = datetime.now().year
+    current_month = datetime.now().month
+    if current_month == 12 and month == "Jan":
+        year = "2025"
+    else:
+        year = datetime.now().year
 
-        date = f"{month} {day}, {year}"
-        return band, date
+    date = f"{month} {day}, {year}"
+    return band, date
 
-    except Exception:
-        band = "No info - Check venue website"
-        date = "--"
-        return band, date
+    # except Exception:
+    #     band = "No info - Check venue website"
+    #     date = "--"
+    #     return band, date
 
 
 # Scrape El Corazon's website for their next show
 def scrape_el_corazon():
     try:
         response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_corazon.yaml")
         date = extractor.extract(source)["dates"][0]
@@ -110,6 +113,7 @@ def scrape_el_corazon():
 def scrape_funhouse():
     try:
         response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_funhouse.yaml")
         date = extractor.extract(source)["dates"][0]
@@ -137,6 +141,7 @@ def scrape_funhouse():
 def scrape_showbox_presents():
     try:
         response = requests.get("https://www.showboxpresents.com/events/all", headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_showbox.yaml")
         events = extractor.extract(source)["event_name"]
@@ -175,6 +180,7 @@ def scrape_showbox_presents():
 def scrape_nectar():
     try:
         response = requests.get("https://highdiveseattle.com/e/calendar/", headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_nectar.yaml")
         band = extractor.extract(source)["band"][0]
@@ -192,6 +198,7 @@ def scrape_nectar():
 def scrape_hiddenhall():
     try:
         response = requests.get("https://nectarlounge.com/", headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_highdive.yaml")
         band = extractor.extract(source)["band"][0]
@@ -209,6 +216,7 @@ def scrape_crocodile():
     try:
         url = "https://www.ticketweb.com/venue/the-crocodile-seattle-wa/10352"
         response = requests.get(url, headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_crocodile.yaml")
         annoying_string = extractor.extract(source)["band"]
@@ -245,6 +253,7 @@ def scrape_madame_lous():
     try:
         url = "https://www.ticketweb.com/venue/madame-lou-s-seattle-wa/497135"
         response = requests.get(url, headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("madame_lous.yaml")
         annoying_string = extractor.extract(source)["band"]
@@ -279,6 +288,7 @@ def scrape_nuemos():
     try:
         url = "https://www.neumos.com/events"
         response = requests.get(url, headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_nuemos.yaml")
         bands = extractor.extract(source)["bands"]
@@ -305,6 +315,7 @@ def scrape_tractor_tavern():
     try:
         url = "https://tractortavern.com/"
         response = requests.get(url, headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_tractor.yaml")
         band = extractor.extract(source)["band"]
@@ -331,6 +342,7 @@ def scrape_egans():
 
         url = "https://www.ballardjamhouse.com/schedule.html"
         response = requests.get(url, headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("egans.yaml")
         all_event_data = extractor.extract(source)["event"]
@@ -373,6 +385,7 @@ def scrape_seamonster():
     try:
         url = "https://www.seamonsterlounge.com/"
         response = requests.get(url, HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("sea_monsters.yaml")
         band = extractor.extract(source)["bands"][0]
@@ -400,6 +413,7 @@ def scrape_wamu():
     try:
         url = "https://www.wamutheater.com/event-calendar?category=All+Events"
         response = requests.get(url, headers=HEADERS)
+        response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("wamu.yaml")
         band = extractor.extract(source)["band"]
@@ -519,6 +533,7 @@ def scrape_babayaga():
                 """
         }
         response = requests.post(url, json=data, headers=HEADERS)
+        response.encoding = 'utf-8'
 
         if response.status_code == 200:
             raw_calendar_data = response.json()
