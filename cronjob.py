@@ -694,7 +694,8 @@ def scrape_conor_byrne():
         print(f"Failed to fetch events: {response.status_code}")
         return "No Info", "--"
 
-    today = datetime.now()
+    today = datetime.now().strftime("%b %d, %Y")
+    today = datetime.strptime(today, "%b %d, %Y")
     counter = 0
     for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
         date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
@@ -706,6 +707,7 @@ def scrape_conor_byrne():
     date = datetime.strftime(date, "%b %d, %Y")
     event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
     band = event["name"]
+    print(band, date)
     return band, date
 
 
@@ -737,4 +739,4 @@ def scrape_conor_byrne():
 
 
 if __name__ == "__main__":
-    print(scrape_babayaga())
+    print(scrape_conor_byrne())
