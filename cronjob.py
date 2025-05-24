@@ -60,7 +60,6 @@ def scrape_central():
         response = requests.get("https://www.centralsaloon.com/events", headers=HEADERS)
         response.encoding = 'utf-8'
         source = response.text
-        print(source)
         extractor = selectorlib.Extractor.from_yaml_file("central.yaml")
         band = extractor.extract(source)["band"][0]
         month = str(extractor.extract(source)["month"])
@@ -399,14 +398,12 @@ def scrape_seamonster():
             year = datetime.now().year
         date = f"{day}, {year}"
 
+        print(band, date)
+        return band, date
+
     except Exception:
         band = "No Info - Please check venue's website for more info :)"
         date = "--"
-
-
-
-    print(band, date)
-    return band, date
 
 
 def scrape_wamu():
@@ -588,127 +585,132 @@ def scrape_bluemoon():
     response = requests.post(url, json=data, headers=HEADERS)
     response.encoding = "utf-8"
 
-    print(response.text)
 
 
 def scrape_conor_byrne():
-    url = "https://www.venuepilot.co/graphql"
-    data = {
-        "operationName":None,
-        "variables": {
-            "accountIds": [194],
-            "startDate": "2025-03-04",
-            "endDate": None,
-            "search": "",
-            "searchScope": "",
-            "page": 1
-        },
-        "query":"""
-            query ($accountIds: [Int!]!, $startDate: String!, $endDate: String, $search: String, $searchScope: String, $limit: Int, $page: Int) {
-                paginatedEvents(arguments: {accountIds: $accountIds, startDate: $startDate, endDate: $endDate, search: $search, searchScope: $searchScope, limit: $limit, page: $page}) {
-                    collection {
-                        id
-                        name
-                        date
-                        doorTime
-                        startTime
-                        endTime
-                        minimumAge
-                        promoter
-                        support
-                        description
-                        websiteUrl
-                         twitterUrl
-                        instagramUrl
-                        ...AnnounceImages
-                        status
-                        announceArtists {
-                            applemusic
-                            bandcamp
-                            facebook
-                            instagram
-                            lastfm
+    try:
+        url = "https://www.venuepilot.co/graphql"
+        data = {
+            "operationName":None,
+            "variables": {
+                "accountIds": [194],
+                "startDate": "2025-03-04",
+                "endDate": None,
+                "search": "",
+                "searchScope": "",
+                "page": 1
+            },
+            "query":"""
+                query ($accountIds: [Int!]!, $startDate: String!, $endDate: String, $search: String, $searchScope: String, $limit: Int, $page: Int) {
+                    paginatedEvents(arguments: {accountIds: $accountIds, startDate: $startDate, endDate: $endDate, search: $search, searchScope: $searchScope, limit: $limit, page: $page}) {
+                        collection {
+                            id
                             name
-                            songkick
-                            spotify
-                            twitter
-                            website
-                            wikipedia
-                            youtube
+                            date
+                            doorTime
+                            startTime
+                            endTime
+                            minimumAge
+                            promoter
+                            support
+                            description
+                            websiteUrl
+                             twitterUrl
+                            instagramUrl
+                            ...AnnounceImages
+                            status
+                            announceArtists {
+                                applemusic
+                                bandcamp
+                                facebook
+                                instagram
+                                lastfm
+                                name
+                                songkick
+                                spotify
+                                twitter
+                                website
+                                wikipedia
+                                youtube
+                                __typename
+                            }
+                            artists {
+                            bio
+                           createdAt
+                            id
+                            name
+                            updatedAt
+                             __typename
+                            }
+                            venue {        
+                                name        
+                                __typename      
+                            }     
+                            footerContent      
+                            ticketsUrl
                             __typename
                         }
-                        artists {
-                        bio
-                       createdAt
-                        id
+                        metadata {
+                            currentPage
+                            limitValue
+                            totalCount 
+                            totalPages 
+                            __typename
+                        }
+                        __typename
+                    }
+                }
+                    
+                fragment AnnounceImages on PublicEvent {
+                    announceImages {
                         name
-                        updatedAt
-                         __typename
-                        }
-                        venue {        
-                            name        
-                            __typename      
-                        }     
-                        footerContent      
-                        ticketsUrl
-                        __typename
-                    }
-                    metadata {
-                        currentPage
-                        limitValue
-                        totalCount 
-                        totalPages 
+                        highlighted
+                        versions {
+                            thumb {
+                                src
+                                __typename
+                            }   
+                            cover {
+                                src   
+                                __typename
+                            }
                         __typename
                     }
                     __typename
                 }
+            __typename
             }
-                
-            fragment AnnounceImages on PublicEvent {
-                announceImages {
-                    name
-                    highlighted
-                    versions {
-                        thumb {
-                            src
-                            __typename
-                        }   
-                        cover {
-                            src   
-                            __typename
-                        }
-                    __typename
-                }
-                __typename
-            }
-        __typename
+        """
         }
-    """
-    }
 
-    response = requests.post(url, json=data, headers=HEADERS)
+        response = requests.post(url, json=data, headers=HEADERS)
 
-    if response.status_code == 200:
-        raw_calendar_data = response.json()
-    else:
-        print(f"Failed to fetch events: {response.status_code}")
-        return "No Info", "--"
-
-    today = datetime.now().strftime("%b %d, %Y")
-    today = datetime.strptime(today, "%b %d, %Y")
-    counter = 0
-    for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
-        date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
-        date = datetime.strptime(date, "%b %d, %Y")
-        if today > date:
-            counter += 1
+        if response.status_code == 200:
+            raw_calendar_data = response.json()
         else:
-            break
-    date = datetime.strftime(date, "%b %d, %Y")
-    event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
-    band = event["name"]
-    print(band, date)
-    return band, date
+            print(f"Failed to fetch events: {response.status_code}")
+            return "No Info", "--"
+
+        today = datetime.now().strftime("%b %d, %Y")
+        today = datetime.strptime(today, "%b %d, %Y")
+        counter = 0
+        for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
+            date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
+            date = datetime.strptime(date, "%b %d, %Y")
+            if today > date:
+                counter += 1
+            else:
+                break
+        date = datetime.strftime(date, "%b %d, %Y")
+        event = raw_calendar_data["data"]["paginatedEvents"]["collection"][counter]
+        band = event["name"]
+        print(band, date)
+        return band, date
+
+    except Exception:
+        band = "No info, check venue website"
+        date = "--"
+        return band, date
 
 
 # def scrape_climate_pledge():
@@ -739,4 +741,4 @@ def scrape_conor_byrne():
 
 
 if __name__ == "__main__":
-    print(scrape_egans())
+    print(get_shows("WAMU Theater", "KovZpZAFFE7A",))
