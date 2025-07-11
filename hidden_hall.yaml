@@ -1,0 +1,10 @@
+band:
+    css: 'div[data-group-id="2463"] a.sg-events__event-title-link'
+    xpath: null
+    multiple: true
+    type: Text
+date:
+    css: 'div[data-group-id="2463"] time.sg-events__event-date'
+    xpath: null
+    multiple: true
+    type: Text

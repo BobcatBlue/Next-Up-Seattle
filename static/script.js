@@ -1,73 +1,108 @@
-function myFunction() {
-  x.classList.toggle("change");
-}
+"use strict";
 
-function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-}
+const btnOpenSideNav = document.querySelector(".btnOpenNav");
+const btnCloseSideNav = document.querySelector(".btnCloseNav");
+const sideNav = document.querySelector(".sideNav");
 
-function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-}
+const btnShowMusic = document.querySelector(".show-music");
+const btnShowArt = document.querySelector(".show-art");
+const btnShowPerformance = document.querySelector(".show-performance");
+const btnShowVenues = document.querySelector(".show-venues")
 
-function toggleView(view) {
-    const mapButton = document.getElementById('mapButton');
-    const listButton = document.getElementById('listButton');
-    const mapView = document.getElementById('mapView');
-    const listView = document.getElementById('listView');
+const music_view = document.querySelector(".liveMusic")
+const art_view = document.querySelector(".art");
+const performance_view = document.querySelector(".performance");
+const venue_view = document.querySelector(".venues");
 
-    if (view == "map") {
-        mapButton.classList.add('active');
-        listButton.classList.remove('active');
-        mapView.style.display = 'block';
-        listView.style.display = 'none';
-    }
-    else {
-        listButton.classList.add('active');
-        mapButton.classList.remove('active');
-        listView.style.display = 'block';
-        mapView.style.display = 'none';
-    }
-}
+const btnsExpand = document.querySelectorAll(".expander");
+console.log(btnsExpand);
 
-function mapPopUp(ven) {
-    console.log("Clicked:", ven); // Debugging message
-    var popup = document.getElementById("popup")
-    var content = document.getElementById("popup-content")
 
-    if(!dictionary[ven]) {
-        console.warn("No data found for", ven);
-        return;
-    }
 
-    content.innerHTML = `
-        <div style="padding: 10px; padding-top: 40px; padding-right: 25px;">
-            <strong>${ven}</strong><br>
-            ${dictionary[ven][2]}<br>
-            ${dictionary[ven][3]}<br>
-        </div>`
+btnOpenSideNav.addEventListener("click", function() {
+    sideNav.style.width = "250px";
+});
 
-    // Find the clicked circle
-    var circle = document.querySelector(`circle[onclick*="${ven}"]`);
-    if (!circle) {
-        console.error("Circle not found:", ven);
-        return;
-    }
+btnCloseSideNav.addEventListener("click", function() {
+    sideNav.style.width = "0px";
+});
 
-    var rect = circle.getBoundingClientRect();
+btnShowMusic.addEventListener("click", function() {
+    console.log("Music button clicked");
+    music_view.classList.remove("hidden");
+    art_view.classList.add("hidden");
+    performance_view.classList.add("hidden");
+    venue_view.classList.add("hidden");
 
-    popup.style.left = `${rect.left + window.scrollX + 10}px`;
-    popup.style.top = `${rect.top + window.scrollY - 40}px`;
-    popup.style.display = "block";
-}
+});
 
-// Close popup when clicking outside
-document.addEventListener("click", function(event) {
-    if (!event.target.closest("circle") && event.target.id !== "popup") {
-        document.getElementById("popup").style.display = "none";
-    }
-}, true);
+btnShowArt.addEventListener("click", function() {
+    console.log("Art button clicked");
+    art_view.classList.remove("hidden");
+    performance_view.classList.add("hidden");
+    music_view.classList.add("hidden");
+    venue_view.classList.add("hidden");
 
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
+});
+
+btnShowPerformance.addEventListener("click", function() {
+    console.log("Performance button clicked");
+    performance_view.classList.remove("hidden");
+    art_view.classList.add("hidden");
+    music_view.classList.add("hidden");
+    venue_view.classList.add("hidden");
+});
+
+btnShowVenues.addEventListener("click", function() {
+    console.log("Performance button clicked");
+    performance_view.classList.add("hidden");
+    art_view.classList.add("hidden");
+    music_view.classList.add("hidden");
+    venue_view.classList.remove("hidden");
+});
+
+
+for(let i = 0; i < btnsExpand.length; i++) {
+    console.log(btnsExpand[i].classList.length);
+    console.log("");
+
+    btnsExpand[i].addEventListener("click", function() {
+        let btnClicked = btnsExpand[i].classList.contains("clicked");  // boolean value
+        console.log(btnClicked);
+
+        console.log(btnsExpand[i].classList);
+
+
+
+        if (btnClicked === false) {
+            let class_string = ".";
+
+            for(let x = 0; x < btnsExpand[i].classList.length; x++) {
+                if(x < btnsExpand[i].classList.length - 1) {
+                    class_string = class_string + btnsExpand[i].classList[x] + ".";
+                } else {
+                    class_string = class_string + "expandable";
+                }
+                console.log(class_string);
+            }
+
+            console.log(class_string);
+            document.querySelector(class_string).classList.remove("hidden");
+            btnsExpand[i].classList.add("clicked");
+        }
+        else if (btnClicked === true) {
+            let class_string2 = ".";
+            for(let x = 0; x < btnsExpand[i].classList.length - 1; x++) {
+                if(x < btnsExpand[i].classList.length - 2) {
+                    class_string2 = class_string2 + btnsExpand[i].classList[x] + ".";
+                } else {
+                    class_string2 = class_string2 + "expandable";
+                }
+            }
+
+            console.log(btnClicked);
+            btnsExpand[i].classList.remove("clicked");
+            document.querySelector(class_string2).classList.add("hidden");
+        }
+    })
 }

@@ -1,12 +1,35 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width-device-width, initial-scale=1">
+        <link rel="stylesheet" href="/static/styles.css">
+        <title>Next Up, Seattle!</title>
+    </head>
+    <body>
+        <div class="btnOpenNav">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+        <div class="sideNav">
+            <button class="btnCloseNav">X</button>
+            <br>
+            <a href="/" class="navOption">Home</a>
+            <br>
+            <a href="/About" class="navOption">About Us</a>
+            <br>
+            <a href="/Contact_Us" class="navOption">Contact Us</a>
+        </div>
+        <br><br><br><br><br><br><br><br>
+        <h1 style="text-align: center;">Email us at <b>NextUpSeattle@protonmail.com</b></h1>
+        <br>
+        <h1 style="text-align: center;">:-)</h1>
+        <br>
 
-{% block title %}Contact Us{% endblock %}
+    <script src="/static/script.js"></script>
+    </body>
+</html>
 
-{% block content %}
-<br><br><br><br><br><br><br><br>
-<h1 style="text-align: center;">Email us at <b>NextUpSeattle@protonmail.com</b></h1>
-<br>
-<h1 style="text-align: center;">:-)</h1>
-<br>
-{% endblock %}
+
+
 

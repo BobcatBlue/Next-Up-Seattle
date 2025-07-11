@@ -1,13 +1,15 @@
-band:
-    css: 'div.event-list-item:nth-of-type(1) a#2-9.event-list-item-headliner'
+bands:
+    css: 'a#2-9.event-list-item-headliner'
     xpath: null
     multiple: true
     type: Text
-month:
-    css: 'div.event-list-item:nth-of-type(1) div.event-list-item-date-wrapper-desktop div.event-list-item-month'
+months:
+    css: 'div.event-list-item-date-wrapper-desktop div.event-list-item-month'
     xpath: null
+    multiple: true
     type: Text
-day:
-    css: 'div.event-list-item:nth-of-type(1) div.event-list-item-date-wrapper-desktop div.event-list-item-day-of-the-month'
+days:
+    css: 'div.event-list-item-date-wrapper-desktop div.event-list-item-day-of-the-month'
     xpath: null
+    multiple: true
     type: Text

@@ -1,87 +1,33 @@
-body {
+.sideNav {
+    height: 100%;
+    position: fixed;
+    width: 0;
+    z-index: 1;
+    top: 0;
+    left: 0;
     background-color: #F5F5F5;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 5px;
+    border: 1px solid black;
 }
 
-h5 {
-    margin-top: -18px;
+.btnOpenNav {
+    position: center;
+    top: 0px;
+    margin: auto;
+    margin-bottom: 25px;
+    /* border: 5px solid black; */
+    overflow: hidden;
 }
 
-p {
-    margin-top: -15px;
-    margin-bottom: 8px;
-}
-
-a {
-    text-decoration: none;
-}
-
-.card {
-  border: 1px solid black;
-  border-radius: 7px;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  max-width: 700px;
-  padding: 2px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-top: 7px;
-  margin-bottom: 7px;
-}
-
-.inner {
-  position: absolute;
-}
-
-.placetime {
-  display: flex;
-  justify-content: space-between;
-  padding: 0px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-top: -10px;
-  margin-bottom: -30px;
-}
-
-.event {
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-top: -5px;
-  margin-bottom: -10px;
-  text-align: left;
-}
-
-.card {
-    border: 2px solid black;
-    border-radius: 7px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    max-width: 700px;
-    padding: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-top: 7px;
-    margin-bottom: 7px;
-}
-
-.placetime {
-    display: flex;
-    justify-content: space-between;
-    padding: 0px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-top: -15px;
-    margin-bottom: -20px;
-}
-
-.event {
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-top: -10px;
-    margin-bottom: -10px;
-    text-align: left;
-}
-
-.container {
-    display: inline-block;
-    cursor: pointer;
+.btnCloseNav {
+    position: left;
+    top: 0px;
+    right: 25px;
+    font-size: 25px;
+    margin-left: 10px;
+    margin-bottom: 20px;
 }
 
 .bar1, .bar2, .bar3 {
@@ -92,69 +38,91 @@ a {
     transition: 0.4s;
 }
 
-.sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #F5F5F5;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-    border: 1px solid black;
-}
-
-.sidenav a {
+.navOption {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     font-size: 25px;
     color: #333;
     display: block;
-    transition: 0.3s;
-    font-family: 'Lobster Two';
+    transition: 0.9s;
 }
 
-.sidenav a:hover {
-    color: #f1f1f1;
-}
-
-.sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-
-h1 {
+.pageTitle {
+    margin: auto;
+    max-width: 700px;
     text-align: center;
-    margin-top: 25px;
+    /* border: 1px solid blue; */
 }
 
-.center {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-table {
-    table-layout: fixed;
-    border: 1px solid;
-    border-collapse: collapse;
-}
-
-th {
-    border: 1px solid;
+.categories {
+    margin: auto;
+    margin-top: 45px;
+    width: 100%;
+    max-width: 700px;
     height: 50px;
+    justify-content: center;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    /* border: 1px solid green; */
 }
 
-td {
-    font-size: 15px;
-    max-width: 200px;
-    border: 1px solid;
-    padding: 3px;
+.btnToggle {
+    margin: auto;
+    height: 100%;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.btnToggle:hover {
+    background-color: lightblue;
+}
+
+.liveMusic {
+    margin: auto;
+    margin-top: 25px;
+    width: 100%;
+    max-width: 700px;
+    text-align: left;
+    /* border: 1px solid red; */
+}
+
+.art {
+    margin: auto;
+    margin-top: 25px;
+    width: 100%;
+    max-width: 700px;
+    justify-content: center;
     text-align: center;
+    /* border: 1px solid rgb(102, 151, 28); */
+}
+
+.performance {
+    margin: auto;
+    margin-top: 25px;
+    width: 100%;
+    max-width: 700px;
+    /* border: 1px solid rgba(228, 133, 10, 0.959); */
+    text-align: center;
+
+}
+
+.venues {
+    margin: auto;
+    margin-top: 25px;
+    width: 100%;
+    max-width: 700px;
+    /* border: 2px solid rgba(101, 117, 206, 0.959); */
+    text-align: center;
+}
+
+ul {
+    margin: auto;
+    width: 100%;
+    max-width: 700px;
+    display: table;
+    table-layout: fixed; /* optional, for equal spacing */
+    border-collapse: collapse;
 }
 
 li {
@@ -163,89 +131,42 @@ li {
     vertical-align: middle;
     padding-left: 8px;
     padding-right: 1px;
+    padding-top: 7px;
     font-size: 15px;
     font-family: 'Arial'
 }
 
-ul {
-    width: 100%;
-    max-width: 700px;
-    display: table;
-    table-layout: fixed; /* optional, for equal spacing */
-    border-collapse: collapse;
+.event {
+    text-align: left;
+    padding-right: 5px;
+    padding-left: 4px;
 }
 
-div {
-    max-width: 700px;
+.btnExpand {
+    margin-left: 1px;
+    margin-right: 1px;
+
+}
+
+.listHeaders {
     margin: auto;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
+.columnHeader {
+    font-size: 22px;
 }
 
-.popup {
-    position: relative;  /* This allows the close button to be positioned inside the popup */
-    top: 20%; /* Adjust the vertical position of the popup */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    background-color: white;
-    padding: 20px;
-    border: 2px solid black;
+.venueInfo {
+    text-align: left;
+}
+
+.neighborhood {
+    margin-top: 5px;
+}
+
+/*==================================
+==================================*/
+
+.hidden {
     display: none;
-    z-index: 1000;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.close-btn {
-    position: absolute;  /* Position the button relative to the popup */
-    top: 10px;  /* Distance from the top of the popup */
-    right: 10px;  /* Distance from the right of the popup */
-    font-size: 30px;
-    cursor: pointer;
-    color: #333;
-}
-
-.close-btn:hover {
-    color: red;
-}
-
-.image-container {
-    text-align: center;
-}
-
-.toggle-container {
-    display: flex;
-    border: 1px solid black;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 200px;
-    height: 50px;
-    justify-content: center;
-    vertical-align: middle;
-    align-items: center;
-}
-
-.toggle-button {
-    flex: 1;
-    text-align: center;
-    line-height: 50px;
-    cursor: pointer;
-    font-size: 25px;
-    font-family: 'Lobster Two', cursive;
-    transition: background-color 0.3s, color 0.3s;
-    vertical-align: middle;
-}
-
-.toggle-button.active {
-    background-color: #87CEFA; /* Light blue */
-    color: black;
-}
-
-.toggle-button:not(.active) {
-    background-color: white;
-    color: black;
 }

@@ -1,9 +1,10 @@
-band:
-    css: 'div.flexmedia:nth-of-type(1) span.artisteventsname'
+bands:
+    css: span.artisteventsname
     xpath: null
+    multiple: true
     type: Text
-date:
-    css: 'div.flexmedia:nth-of-type(1) span.artisteventstime'
+dates:
+    css: span.artisteventstime
     xpath: null
     multiple: true
     type: Text

@@ -1,76 +1,56 @@
 from flask import Flask, render_template, make_response, send_from_directory
-import cronjob
-from datetime import datetime
-import pandas as pd
-from time import sleep
+import cronjob as cr
 import csv
 from google.cloud import storage
 import io
-
+from time import sleep
 
 app = Flask(__name__)
 
-SHOWS = []
-SITES_AND_HOODS = pd.read_csv("URLs.csv")
-VENUE_INFO = SITES_AND_HOODS.values.tolist()
-
-# Reference your bucket and blob (file)
-BUCKET_NAME = "show_bucket"
-FILE_NAME = "Show_Data.csv"
+"""
+===================================
+       DOWNLOAD AND RENDER
+===================================
+"""
 
 
 def download_shows():
-    global BUCKET_NAME
-    global FILE_NAME
-    shows = []
-    # Initialize the cloud storage client:
-    client = storage.Client()
-    bucket = client.bucket(BUCKET_NAME)
-    blob = bucket.blob(FILE_NAME)
-    # Read the CSV file from GCS and store it in SHOWS:
-    csv_content = blob.download_as_text()
+    file_name = "Show_Data.csv"
+    bucket_name = "show_bucket"
+    downloaded_shows = []
+    show_dictionary = {}
 
-    with io.StringIO(csv_content) as file:
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(file_name)
+    returned_csv_content = blob.download_as_text()
+    # print(returned_csv_content)
+
+    with io.StringIO(returned_csv_content) as file:
         reader = csv.reader(file)
         for row in reader:
-            shows.append(row)
+            downloaded_shows.append(row)
 
-    return shows
+    for item in downloaded_shows:
+        bands_string = item[3]
+        dates_string = item[4]
+        bands_list = eval(bands_string)
+        dates_list = eval(dates_string)
+        item[3] = bands_list
+        item[4] = dates_list
+        show_dictionary[item[0]] = item[1:]
 
-
-def call_shows():
-    df = pd.read_csv("Listed_Venues.csv")
-    print("Ring ring!!!  I'm inside call_shows(), calling the API")
-    for index, row in df.iterrows():
-        venue, band, date = cronjob.get_shows(row["Venue Name"], row["vID"])
-        if date == "No info":
-            SHOWS.append([venue, "No Info", "No Info"])
-        else:
-            date = datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y")
-            SHOWS.append([venue, band, date])
-        sleep(0.09)
+    return show_dictionary
 
 
 @app.route("/")
-def index():
-    global VENUE_INFO
-    shows = download_shows()
-
-    dictionary = {}
-    counter = 0
-    for item in shows:
-        dictionary[item[0]] = item[1:]   # Assign the venue name as a dictionary key
-        dictionary[item[0]].insert(0, VENUE_INFO[counter][0])   # Add venue's website to the list
-        dictionary[item[0]].insert(1, VENUE_INFO[counter][1])   # Add venue's neighborhood to list
-        counter += 1
-
-    print("This is just the index")
-    print(dictionary)
+def new_index():
+    dictionary = download_shows()
 
     response = make_response(render_template("index.html", dictionary=dictionary))
     response.headers["Connection"] = "close"
     response.headers["Cache-Control"] = "no-store, no-cash, must-revalidate, max-age=0"
-    response.headers["Expires"] = '0'
+    response.headers["Expires"] = "0"
     return response
 
 
@@ -80,86 +60,79 @@ def contact_us():
     return response
 
 
-@app.route("/About_Us")
+@app.route("/About")
 def about_us():
     response = make_response(render_template("About.html"))
     return response
 
 
+"""
+=================================
+       SCRAPE AND UPLOAD
+================================
+"""
+
+
 @app.route("/cron")
 def update_csv():
-    print("I am here in UPDATE CSV")
-    global SHOWS
-    global BUCKET_NAME
-    global FILE_NAME
-    SHOWS = []
+    print("Updating CSV...")
+    upload_shows = []
+    file_name = "Show_Data.csv"
+    bucket_name = "show_bucket"
 
-    # Scrape...SCRAAAAAAAAPE!
-    central = cronjob.scrape_central()
-    baba_yaga = cronjob.scrape_babayaga()
-    corazon = cronjob.scrape_el_corazon()
-    funhouse = cronjob.scrape_funhouse()
-    nectar = cronjob.scrape_nectar()
-    hidden_hall = cronjob.scrape_hiddenhall()
-    conor_byrne = cronjob.scrape_conor_byrne()
-    tractor = cronjob.scrape_tractor_tavern()
-    egans = cronjob.scrape_egans()
-    seamonster = cronjob.scrape_seamonster()
-    crocodile = cronjob.scrape_crocodile()
-    madame_lous = cronjob.scrape_madame_lous()
-    nuemos = cronjob.scrape_nuemos()
-    showboxes = cronjob.scrape_showbox_presents()
-    # wamu = cronjob.scrape_wamu()
-    # climate_pledge = cronjob.scrape_climate_pledge()
+    central_saloon = cr.scrape_central()
+    baba_yaga = cr.scrape_babayaga()
+    el_corazon = cr.scrape_el_corazon()
+    funhouse = cr.scrape_funhouse()
+    nuemos = cr.scrape_nuemos()
+    showboxes = cr.scrape_showbox_presents()
+    nectar = cr.scrape_nectar()
+    hidden_hall = cr.scrape_hidden_hall()
+    crocodile = cr.scrape_crocodile()
+    madame_lous = cr.scrape_madame_lous()
+    tractor_tavern = cr.scrape_tractor_tavern()
+    conor_byrne = cr.scrape_conor_byrne()
+    seamonster = cr.scrape_seamonster()
 
+    upload_shows.append(central_saloon)
+    upload_shows.append(baba_yaga)
+    upload_shows.append(el_corazon)
+    upload_shows.append(funhouse)
+    upload_shows.append(nuemos)
+    upload_shows.append(showboxes[0])
+    upload_shows.append(showboxes[1])
+    upload_shows.append(nectar)
+    upload_shows.append(hidden_hall)
+    upload_shows.append(crocodile)
+    upload_shows.append(madame_lous)
+    upload_shows.append(tractor_tavern)
+    upload_shows.append(conor_byrne)
+    upload_shows.append(seamonster)
 
-    SHOWS.append(["Central Saloon", central[0], central[1]])
-    SHOWS.append(["Baba Yaga", baba_yaga[0], baba_yaga[1]])
-    SHOWS.append(["El Corazon", corazon[0], corazon[1]])
-    SHOWS.append(["Funhouse", funhouse[0], funhouse[1]])
-    SHOWS.append(["Nectar Lounge", nectar[0], nectar[1]])
-    SHOWS.append(["Hidden Hall", hidden_hall[0], hidden_hall[1]])
-    SHOWS.append(["Conor Byrne", conor_byrne[0], conor_byrne[1]])
-    SHOWS.append(["Tractor Tavern", tractor[0], tractor[1]])
-    SHOWS.append(["Egan's Ballard Jam House", egans[0], egans[1]])
-    SHOWS.append(["Sea Monster Lounge", seamonster[0], seamonster[1]])
-    SHOWS.append(["The Crocodile", crocodile[0], crocodile[1]])
-    SHOWS.append(["Madame Lou's", madame_lous[0], madame_lous[1]])
-    SHOWS.append(["Nuemos", nuemos[0], nuemos[1]])
-    SHOWS.append(showboxes[0])
-    SHOWS.append(showboxes[1])
-    call_shows()
-
-    # Ideally wanted to use these scraping modules, but the websites are problematic
-    # SHOWS.append(["WAMU Theater", wamu[0], wamu[1]])
-    # SHOWS.append(["Climate Pledge Arena", climate_pledge[0], climate_pledge[1]])
-
-    # "fn" stands for "function"
     fn_client = storage.Client()
-    fn_bucket = fn_client.bucket(BUCKET_NAME)
-    fn_blob = fn_bucket.blob(FILE_NAME)
+    fn_bucket = fn_client.bucket(bucket_name)
+    fn_blob = fn_bucket.blob(file_name)
 
-    # Write SHOWS to the csv file hosted on Google Cloud
+    # Write upload_shows to a variable which acts like a CSV file
     with io.StringIO() as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerows(SHOWS)
+        writer.writerows(upload_shows)
         csv_content = csvfile.getvalue()
 
+    # Upload the csv-like variable to an actual CSV file on the server
     fn_blob.upload_from_string(csv_content, content_type="text/csv")
-
     sleep(1.5)
 
-    return "CSV update was successful.  I think.  I mean, it didn't crash, so that's good.  " \
-           "Baby steps...baby steps"
+    # Print out the information in a nice format
+    show_dictionary = {}
+    for item in upload_shows:
+        show_dictionary[item[0]] = item[1:]
 
-
-@app.route("/robots.txt")
-def robots():
-    return send_from_directory(app.static_folder, "robots.txt")
+    return "The CSV has been successfully update"
 
 
 if __name__ == "__main__":
-    # app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
-    app.run(debug=True, port=5001, use_reloader=False)
+    # app.run(debug=True, port=5001, use_reloader=False)
+    app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
 
 

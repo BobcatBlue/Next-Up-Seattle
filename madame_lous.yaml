@@ -1,8 +1,10 @@
-band:
-    css: 'li.media:nth-of-type(1) div.media-body'
+bands:
+    css: 'p.event-name'
     xpath: null
+    multiple: true
     type: Text
-date:
-    css: 'li.media:nth-of-type(1) p.event-date:nth-of-type(3)'
+dates:
+    css: 'p.event-date:nth-of-type(3)'
     xpath: null
+    multiple: true
     type: Text

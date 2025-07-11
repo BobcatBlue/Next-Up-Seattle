@@ -1,10 +1,10 @@
 event_name:
-    css: 'div.event_list > div.entry.showboxpresents:nth-of-type(n+2) h3.carousel_item_title_small a'
+    css: 'div.event_list > div.entry:nth-of-type(n+2) h3.carousel_item_title_small a'
     xpath: null
     multiple: true
     type: Text
 date:
-    css: 'div.event_list > div.entry.showboxpresents:nth-of-type(n+2) span.date'
+    css: 'div.event_list > div.entry:nth-of-type(n+2) span.date'
     xpath: null
     multiple: true
     type: Text
