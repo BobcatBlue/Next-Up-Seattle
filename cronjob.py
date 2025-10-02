@@ -280,10 +280,13 @@ def scrape_showbox_presents():
 
     except Exception:
         showbox_shows = ["The Showbox at the Market",
+                         url,
+                         "Pike Place",
                          ["No info - Check venue website", "--", "--", "--", "--"],
                          ["--", "--", "--", "--", "--"]]
         showbox_sodo_shows = ["The Showbox SODO",
                               url,
+                              "SODO",
                               ["No info - Check venue website", "--", "--", "--", "--"],
                               ["--", "--", "--", "--", "--"],]
 
