@@ -59,15 +59,14 @@ def scrape_central():
             dates.append(date)
             i += 1
 
+
     except Exception:
         events = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
-    print(venue)
-    print(website)
-    print(neighborhood)
-    print(events)
-    print(dates)
+    print("hello")
+
+
     return venue, website, neighborhood, events, dates
 
 
