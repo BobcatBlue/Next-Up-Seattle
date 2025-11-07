@@ -352,14 +352,14 @@ def scrape_nectar():
     url = "http://www.nectarlounge.com"
     neighborhood = "Fremont"
     try:
-        response = requests.get("https://highdiveseattle.com/e/calendar/", headers=HEADERS)
+        # response = requests.get("https://highdiveseattle.com/e/calendar/", headers=HEADERS)
+        response = requests.get("https://nectarlounge.com/events/calendar/", headers=HEADERS)
         response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_nectar.yaml")
         bands = extractor.extract(source)["band"][0:5]
         dates = extractor.extract(source)["date"][0:5]
         dates = [datetime.strptime(item[4:], "%b %d %Y").strftime("%b %d, %Y") for item in dates]
-
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
@@ -373,12 +373,13 @@ def scrape_hidden_hall():
     url = "https://www.hiddenhall.com/"
     neighborhood = "Fremont"
     try:
-        response = requests.get("https://nectarlounge.com/", headers=HEADERS)
+        response = requests.get("https://nectarlounge.com/events/calendar/", headers=HEADERS)
         response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("hidden_hall.yaml")
         bands = extractor.extract(source)["band"][0:5]
         dates = extractor.extract(source)["date"][0:5]
+        print(bands)
         dates = [datetime.strptime(item[4:], "%b %d %Y").strftime("%b %d, %Y") for item in dates]
 
         # print(bands)
@@ -626,4 +627,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_funhouse())
+    print(scrape_nectar())
