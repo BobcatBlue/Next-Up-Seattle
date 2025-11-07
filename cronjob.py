@@ -200,18 +200,37 @@ def scrape_funhouse():
     venue = "Funhouse"
     website = "https://elcorazonseattle.com/"
     neighborhood = "Capitol Hill"
+    url = "https://elcorazonseattle.com/"
+    headers = requests.utils.default_headers()
+    headers.update(
+        {
+            'User-Agent': 'My User Agent 1.0'
+        }
+    )
+
     try:
-        response = requests.get("https://elcorazonseattle.com/", headers=HEADERS)
-        response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("extract_funhouse.yaml")
-        dates = extractor.extract(source)["dates"][0:5]
-        dates = [item[4:] for item in dates]
-        bands = extractor.extract(source)["bands"][0:5]
+        response = requests.get(url, headers=headers)
+        response.encoding = "utf-8"
+        html = response.text
+        soup = BeautifulSoup(html, "html.parser")
+
+        funhouse_calendar = soup.find("div", class_="funhouse")
+        headliner_tags = funhouse_calendar.find_all("a", class_="link-block-3 no-underline w-inline-"
+                                                                  "block w-condition-invisible")[0:5]
+        headliners = [headliner.find("div", class_="headliners").text for headliner
+                      in headliner_tags]
+        supporting_acts = [support.text for support
+                           in funhouse_calendar.find_all("div", class_="supports")][0:5]
+        bands = []
+        for index, headliner in enumerate(headliners):
+            band = f"{headliner}, {supporting_acts[index]}"
+            bands.append(band)
+        day_dates = [date.find_all("div", class_="text-block-72") for date
+                     in funhouse_calendar.find_all("div", class_="day-date")][0:5]
+        dates = [date[1].text for date in day_dates]
         current_month = datetime.now().month
         current_year = datetime.now().year
         next_year = current_year + 1
-
         for index, date in enumerate(dates):
             if date[0:3] == "Jan" and current_month == 12:
                 date = f"{date}, {next_year}"
@@ -219,8 +238,8 @@ def scrape_funhouse():
             else:
                 date = f"{date}, {current_year}"
                 dates[index] = date
-
-        # print(bands)
+        # for band in bands:
+        #     print(band)
         # print(dates)
 
     except Exception:
@@ -607,4 +626,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_el_corazon())
+    print(scrape_funhouse())
