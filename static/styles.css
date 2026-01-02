@@ -15,10 +15,12 @@
 .btnOpenNav {
     position: center;
     top: 0px;
-    margin: auto;
+    margin-left: 5px;
     margin-bottom: 25px;
     /* border: 5px solid black; */
     overflow: hidden;
+    cursor: pointer;
+    max-width: 38px;
 }
 
 .btnCloseNav {
@@ -52,6 +54,11 @@
     max-width: 700px;
     text-align: center;
     /* border: 1px solid blue; */
+}
+
+.title_image {
+    max-width: 500px;
+    margin: auto;
 }
 
 .categories {

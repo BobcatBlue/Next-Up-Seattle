@@ -292,9 +292,9 @@ def scrape_showbox_presents():
         response.encoding = 'utf-8'
         source = response.text
         extractor = selectorlib.Extractor.from_yaml_file("extract_showbox.yaml")
-        events = extractor.extract(source)["event_name"]
-        dates = extractor.extract(source)["date"]
-        venues = extractor.extract(source)["venue"]
+        events = extractor.extract(source)["event_name"][0:100]
+        dates = extractor.extract(source)["date"][0:100]
+        venues = extractor.extract(source)["venue"][0:100]
 
         counter = 0
         showbox_list = []
@@ -342,7 +342,7 @@ def scrape_showbox_presents():
                               url,
                               "SODO",
                               ["No info - Check venue website", "--", "--", "--", "--"],
-                              ["--", "--", "--", "--", "--"],]
+                              ["--", "--", "--", "--", "--"]]
 
     return showbox_shows, showbox_sodo_shows
 
@@ -614,6 +614,19 @@ def scrape_seamonster():
     return venue, website, neighborhood, bands, dates
 
 
+def scrape_neptune():
+    url = "https://www.stgpresents.org/stg-venues/neptune-theatre/events/"
+    headers = requests.utils.default_headers()
+    headers.update(
+        {
+            'User-Agent': 'My User Agent 1.0'
+        }
+    )
+    response = requests.get(url, headers=headers)
+    html = response.text
+    print(html)
+
+
 def scrape_egans():
     pass
 
@@ -627,4 +640,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_nectar())
+    scrape_neptune()

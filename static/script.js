@@ -27,39 +27,38 @@ btnCloseSideNav.addEventListener("click", function() {
     sideNav.style.width = "0px";
 });
 
-btnShowMusic.addEventListener("click", function() {
-    console.log("Music button clicked");
-    music_view.classList.remove("hidden");
-    art_view.classList.add("hidden");
-    performance_view.classList.add("hidden");
-    venue_view.classList.add("hidden");
-
-});
-
-btnShowArt.addEventListener("click", function() {
-    console.log("Art button clicked");
-    art_view.classList.remove("hidden");
-    performance_view.classList.add("hidden");
-    music_view.classList.add("hidden");
-    venue_view.classList.add("hidden");
-
-});
-
-btnShowPerformance.addEventListener("click", function() {
-    console.log("Performance button clicked");
-    performance_view.classList.remove("hidden");
-    art_view.classList.add("hidden");
-    music_view.classList.add("hidden");
-    venue_view.classList.add("hidden");
-});
-
-btnShowVenues.addEventListener("click", function() {
-    console.log("Performance button clicked");
-    performance_view.classList.add("hidden");
-    art_view.classList.add("hidden");
-    music_view.classList.add("hidden");
-    venue_view.classList.remove("hidden");
-});
+//btnShowMusic.addEventListener("click", function() {
+//    console.log("Music button clicked");
+//    music_view.classList.remove("hidden");
+//    art_view.classList.add("hidden");
+//    performance_view.classList.add("hidden");
+//    venue_view.classList.add("hidden");
+//});
+//
+//btnShowArt.addEventListener("click", function() {
+//    console.log("Art button clicked");
+//    art_view.classList.remove("hidden");
+//    performance_view.classList.add("hidden");
+//    music_view.classList.add("hidden");
+//    venue_view.classList.add("hidden");
+//
+//});
+//
+//btnShowPerformance.addEventListener("click", function() {
+//    console.log("Performance button clicked");
+//    performance_view.classList.remove("hidden");
+//    art_view.classList.add("hidden");
+//    music_view.classList.add("hidden");
+//    venue_view.classList.add("hidden");
+//});
+//
+//btnShowVenues.addEventListener("click", function() {
+//    console.log("Performance button clicked");
+//    performance_view.classList.add("hidden");
+//    art_view.classList.add("hidden");
+//    music_view.classList.add("hidden");
+//    venue_view.classList.remove("hidden");
+//});
 
 
 for(let i = 0; i < btnsExpand.length; i++) {
