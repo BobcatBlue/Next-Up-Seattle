@@ -394,66 +394,98 @@ def scrape_hidden_hall():
 
 def scrape_crocodile():
     venue = "The Crocodile"
-    url = "https://www.thecrocodile.com/"
+    website = "https://www.thecrocodile.com/"
     neighborhood = "Belltown"
+    venueId = "KovZpZA1vFtA"
+    url = f"{URL_1}{venueId}{URL_2}{API_KEY}"
     try:
-        url = "https://www.ticketweb.com/venue/the-crocodile-seattle-wa/10352"
         response = requests.get(url, headers=HEADERS)
         response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("extract_crocodile.yaml")
-        bands = extractor.extract(source)["bands"][0:5]
-        dates = extractor.extract(source)["dates"][0:5]
-        dates = [item[4:10].strip(" ") for item in dates]
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-        next_year = current_year + 1
+        data = response.json()
+        events = data["_embedded"]["events"]
 
-        for index, date in enumerate(dates):
-            if date[0:3] == "Jan" and current_month == 12:
-                date = f"{date}, {next_year}"
-                dates[index] = date
-            else:
-                date = f"{date}, {current_year}"
-                dates[index] = date
+        index = 0
+        bands = []
+        dates = []
 
-        # print(bands)
-        # print(dates)
+        while index <= 4:
+            band = events[index]["name"]
+            date = events[index]["dates"]["start"]["localDate"]
+            bands.append(band)
+            dates.append(date)
+            index += 1
+
+        dates = [datetime.strptime(item, "%Y-%m-%d").strftime("%b %d, %Y") for item in dates]
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
-    return venue, url, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates
+
+"""
+    def scrape_crocodile():
+    venue = "The Crocodile"
+    website = "https://www.thecrocodile.com/"
+    neighborhood = "Belltown"
+    # try:
+    url = "https://www.ticketweb.com/venue/the-crocodile-seattle-wa/10352"
+    response = requests.get(url, headers=HEADERS)
+    response.encoding = 'utf-8'
+    source = response.text
+    extractor = selectorlib.Extractor.from_yaml_file("extract_crocodile.yaml")
+    bands = extractor.extract(source)["bands"][0:5]
+    dates = extractor.extract(source)["dates"][0:5]
+    dates = [item[4:10].strip(" ") for item in dates]
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+    next_year = current_year + 1
+
+    for index, date in enumerate(dates):
+        if date[0:3] == "Jan" and current_month == 12:
+            date = f"{date}, {next_year}"
+            dates[index] = date
+        else:
+            date = f"{date}, {current_year}"
+            dates[index] = date
+
+        print(bands)
+        print(dates)
+
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+
+
+    return venue, website, neighborhood, bands, dates
+"""
+
 
 
 def scrape_madame_lous():
     venue = "Madame Lous"
     website = "https://www.thecrocodile.com/madame-lous"
     neighborhood = "Belltown"
+    venueId = "KovZ917AYIq"
+    url = f"{URL_1}{venueId}{URL_2}{API_KEY}"
     try:
-        url = "https://www.ticketweb.com/venue/madame-lou-s-seattle-wa/497135"
         response = requests.get(url, headers=HEADERS)
         response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("madame_lous.yaml")
-        bands = extractor.extract(source)["bands"][0:5]
-        dates = extractor.extract(source)["dates"][0:5]
-        dates = [item[4:10].strip(" ") for item in dates]
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-        next_year = current_year + 1
+        data = response.json()
+        events = data["_embedded"]["events"]
 
-        for index, date in enumerate(dates):
-            if date[0:3] == "Jan" and current_month == 12:
-                date = f"{date}, {next_year}"
-                dates[index] = date
-            else:
-                date = f"{date}, {current_year}"
-                dates[index] = date
+        index = 0
+        bands = []
+        dates = []
 
-        # print(bands)
-        # print(dates)
+        while index <= 4:
+            band = events[index]["name"]
+            date = events[index]["dates"]["start"]["localDate"]
+            bands.append(band)
+            dates.append(date)
+            index += 1
+
+        dates = [datetime.strptime(item, "%Y-%m-%d").strftime("%b %d, %Y") for item in dates]
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
@@ -640,4 +672,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    scrape_neptune()
+    print(scrape_madame_lous())
