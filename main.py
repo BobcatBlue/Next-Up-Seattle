@@ -1,9 +1,10 @@
-from flask import Flask, render_template, make_response, send_from_directory
+from flask import Flask, render_template, make_response, send_from_directory, request, abort
 import cronjob as cr
 import csv
 from google.cloud import storage
 import io
 from time import sleep
+import ast
 
 
 app = Flask(__name__)
@@ -37,8 +38,8 @@ def download_shows():
     for item in downloaded_shows:
         bands_string = item[3]
         dates_string = item[4]
-        bands_list = eval(bands_string)
-        dates_list = eval(dates_string)
+        bands_list = ast.literal_eval(bands_string)
+        dates_list = ast.literal_eval(dates_string)
         item[3] = bands_list
         item[4] = dates_list
         show_dictionary[item[0]] = item[1:]
@@ -52,7 +53,7 @@ def new_index():
 
     response = make_response(render_template("index.html", dictionary=dictionary))
     response.headers["Connection"] = "close"
-    response.headers["Cache-Control"] = "no-store, no-cash, must-revalidate, max-age=0"
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Expires"] = "0"
     return response
 
@@ -76,41 +77,79 @@ def about_us():
 """
 
 
-@app.route("/cron")
-def update_csv():
+@app.route("/cron/daily")
+def cron_daily():
+    if request.headers.get("X-Appengine-Cron") != "true":
+        abort(403)
+
+    run_update_job()
+    return "Update Successful"
+
+
+@app.route("/admin/run-upate")
+def admin_run_update():
+    if app.debug is not True:
+        abort(403)
+
+    run_update_job()
+    return "Manually triggered ratta-tat-tat"
+
+
+def run_update_job():
     print("Updating CSV...")
+
     upload_shows = []
     file_name = "Show_Data.csv"
     bucket_name = "show_bucket"
 
-    central_saloon = cr.scrape_central()
-    baba_yaga = cr.scrape_babayaga()
-    el_corazon = cr.scrape_el_corazon()
-    funhouse = cr.scrape_funhouse()
-    nuemos = cr.scrape_nuemos()
-    showboxes = cr.scrape_showbox_presents()
-    nectar = cr.scrape_nectar()
-    hidden_hall = cr.scrape_hidden_hall()
-    crocodile = cr.scrape_crocodile()
-    madame_lous = cr.scrape_madame_lous()
-    tractor_tavern = cr.scrape_tractor_tavern()
-    conor_byrne = cr.scrape_conor_byrne()
-    seamonster = cr.scrape_seamonster()
+    upload_shows.extend([
+        cr.scrape_central(),
+        cr.scrape_babayaga(),
+        cr.scrape_el_corazon(),
+        cr.scrape_funhouse(),
+        cr.scrape_nuemos(),
+        cr.scrape_showbox_presents()[0],
+        cr.scrape_showbox_presents()[1],
+        cr.scrape_nectar(),
+        cr.scrape_hidden_hall(),
+        cr.scrape_crocodile(),
+        cr.scrape_madame_lous(),
+        cr.scrape_tractor_tavern(),
+        cr.scrape_conor_byrne(),
+        cr.scrape_seamonster()
+    ])
 
-    upload_shows.append(central_saloon)
-    upload_shows.append(baba_yaga)
-    upload_shows.append(el_corazon)
-    upload_shows.append(funhouse)
-    upload_shows.append(nuemos)
-    upload_shows.append(showboxes[0])
-    upload_shows.append(showboxes[1])
-    upload_shows.append(nectar)
-    upload_shows.append(hidden_hall)
-    upload_shows.append(crocodile)
-    upload_shows.append(madame_lous)
-    upload_shows.append(tractor_tavern)
-    upload_shows.append(conor_byrne)
-    upload_shows.append(seamonster)
+    # Old upload code.  Save incase this change complete fucks me
+    """
+        central_saloon = cr.scrape_central()
+        baba_yaga = cr.scrape_babayaga()
+        el_corazon = cr.scrape_el_corazon()
+        funhouse = cr.scrape_funhouse()
+        nuemos = cr.scrape_nuemos()
+        showboxes = cr.scrape_showbox_presents()
+        nectar = cr.scrape_nectar()
+        hidden_hall = cr.scrape_hidden_hall()
+        crocodile = cr.scrape_crocodile()
+        madame_lous = cr.scrape_madame_lous()
+        tractor_tavern = cr.scrape_tractor_tavern()
+        conor_byrne = cr.scrape_conor_byrne()
+        seamonster = cr.scrape_seamonster()
+    
+        upload_shows.append(central_saloon)
+        upload_shows.append(baba_yaga)
+        upload_shows.append(el_corazon)
+        upload_shows.append(funhouse)
+        upload_shows.append(nuemos)
+        upload_shows.append(showboxes[0])
+        upload_shows.append(showboxes[1])
+        upload_shows.append(nectar)
+        upload_shows.append(hidden_hall)
+        upload_shows.append(crocodile)
+        upload_shows.append(madame_lous)
+        upload_shows.append(tractor_tavern)
+        upload_shows.append(conor_byrne)
+        upload_shows.append(seamonster)
+    """
 
     fn_client = storage.Client()
     fn_bucket = fn_client.bucket(bucket_name)
@@ -131,7 +170,7 @@ def update_csv():
     for item in upload_shows:
         show_dictionary[item[0]] = item[1:]
 
-    return "The CSV has been successfully update"
+    return "The CSV has been successfully updated"
 
 
 if __name__ == "__main__":
