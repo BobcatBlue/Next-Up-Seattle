@@ -170,8 +170,12 @@ def scrape_el_corazon():
                            in el_corazon_calendar.find_all("div", class_="supports")][0:5]
         bands = []
         for index, headliner in enumerate(headliners):
-            band = f"{headliner}, {supporting_acts[index]}"
+            if headliner == "":
+                band = f"{supporting_acts[index]}"
+            else:
+                band = f"{headliner}, {supporting_acts[index]}"
             bands.append(band)
+
         day_dates = [date.find_all("div", class_="text-block-72") for date
                      in el_corazon_calendar.find_all("div", class_="day-date")][0:5]
         dates = [date[1].text for date in day_dates]
@@ -185,9 +189,6 @@ def scrape_el_corazon():
             else:
                 date = f"{date}, {current_year}"
                 dates[index] = date
-        for band in bands:
-            print(band)
-        print(dates)
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
@@ -221,10 +222,16 @@ def scrape_funhouse():
                       in headliner_tags]
         supporting_acts = [support.text for support
                            in funhouse_calendar.find_all("div", class_="supports")][0:5]
+
         bands = []
         for index, headliner in enumerate(headliners):
-            band = f"{headliner}, {supporting_acts[index]}"
+            if headliner == "":
+
+                band = f"{supporting_acts[index]}"
+            else:
+                band = f"{headliner}, {supporting_acts[index]}"
             bands.append(band)
+
         day_dates = [date.find_all("div", class_="text-block-72") for date
                      in funhouse_calendar.find_all("div", class_="day-date")][0:5]
         dates = [date[1].text for date in day_dates]
@@ -379,7 +386,6 @@ def scrape_hidden_hall():
         extractor = selectorlib.Extractor.from_yaml_file("hidden_hall.yaml")
         bands = extractor.extract(source)["band"][0:5]
         dates = extractor.extract(source)["date"][0:5]
-        print(bands)
         dates = [datetime.strptime(item[4:], "%b %d %Y").strftime("%b %d, %Y") for item in dates]
 
         # print(bands)
@@ -422,44 +428,6 @@ def scrape_crocodile():
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
-
-"""
-    def scrape_crocodile():
-    venue = "The Crocodile"
-    website = "https://www.thecrocodile.com/"
-    neighborhood = "Belltown"
-    # try:
-    url = "https://www.ticketweb.com/venue/the-crocodile-seattle-wa/10352"
-    response = requests.get(url, headers=HEADERS)
-    response.encoding = 'utf-8'
-    source = response.text
-    extractor = selectorlib.Extractor.from_yaml_file("extract_crocodile.yaml")
-    bands = extractor.extract(source)["bands"][0:5]
-    dates = extractor.extract(source)["dates"][0:5]
-    dates = [item[4:10].strip(" ") for item in dates]
-    current_month = datetime.now().month
-    current_year = datetime.now().year
-    next_year = current_year + 1
-
-    for index, date in enumerate(dates):
-        if date[0:3] == "Jan" and current_month == 12:
-            date = f"{date}, {next_year}"
-            dates[index] = date
-        else:
-            date = f"{date}, {current_year}"
-            dates[index] = date
-
-        print(bands)
-        print(dates)
-
-    except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
-        dates = ["--", "--", "--", "--", "--"]
-
-
-    return venue, website, neighborhood, bands, dates
-"""
-
 
 
 def scrape_madame_lous():
@@ -519,14 +487,10 @@ def scrape_tractor_tavern():
                 date = f"{date}, {current_year}"
                 dates[index] = date
 
-        print(bands)
-        print(dates)
-
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
-        print("Error")
 
     return venue, website, neighborhood, bands, dates
 
@@ -537,7 +501,6 @@ def scrape_conor_byrne():
     neighborhood = "Ballard"
     start_date = datetime.now()
     start_date = start_date.strftime("%Y-%m-%d")
-    print(start_date)
     try:
         url = "https://www.venuepilot.co/graphql"
         data = {
@@ -615,33 +578,25 @@ def scrape_seamonster():
     venue = "Sea Monster Lounge"
     website = "https://www.seamonsterlounge.com/"
     neighborhood = "Wallingford"
-    try:
-        url = "https://www.seamonsterlounge.com/"
-        response = requests.get(url, HEADERS)
-        response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("sea_monsters.yaml")
-        bands = extractor.extract(source)["bands"][0:5]
-        dates = extractor.extract(source)["dates"][0:5]
-        dates = [item[5:] for item in dates]
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-        next_year = current_year + 1
+    # try:
+    url = "https://www.seamonsterlounge.com/"
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, "html.parser")
+    script = soup.find("script", id="wix-warmup-data")
+    data = json.loads(script.string)
 
-        for index, date in enumerate(dates):
-            if date[0:3] == "Jan" and current_month == 12:
-                date = f"{date}, {next_year}"
-                dates[index] = date
-            else:
-                date = f"{date}, {current_year}"
-                dates[index] = date
+    # Retrieve the first 5 events with all their data
+    first_five = data["appsWarmupData"]["140603ad-af8d-84a5-2c80-a0f60cb47351"]["widgetcomp-kx2nxyph"]["events"]["events"][0:5]
 
-        # print(bands)
-        # print(dates)
+    # Parse out desired information from first 5 events
+    bands = [event["title"] for event in first_five]
+    dates_unformatted = [event["scheduling"]["startDateFormatted"] for event in first_five]
+    dates = [datetime.strptime(date, "%B %d, %Y").strftime("%b %e, %Y") for date in dates_unformatted]
 
-    except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
-        dates = ["--", "--", "--", "--", "--"]
+
+    # except Exception:
+    #     bands = ["No info - Check venue website", "--", "--", "--", "--"]
+    #     dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
 
@@ -672,4 +627,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_madame_lous())
+    print(scrape_seamonster())
