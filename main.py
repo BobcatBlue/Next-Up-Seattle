@@ -86,7 +86,7 @@ def cron_daily():
     return "Update Successful"
 
 
-@app.route("/admin/run-upate")
+@app.route("/admin/run-update")
 def admin_run_update():
     if app.debug is not True:
         abort(403)
