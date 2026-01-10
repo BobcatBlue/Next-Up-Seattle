@@ -112,11 +112,12 @@ def run_update_job():
         cr.scrape_showbox_presents()[1],
         cr.scrape_nectar(),
         cr.scrape_hidden_hall(),
+        cr.scrape_substation(),
         cr.scrape_crocodile(),
         cr.scrape_madame_lous(),
         cr.scrape_tractor_tavern(),
         cr.scrape_conor_byrne(),
-        cr.scrape_seamonster()
+        cr.scrape_seamonster(),
         cr.scrape_royal_room()
     ])
 

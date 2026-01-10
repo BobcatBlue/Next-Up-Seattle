@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 from datetime import datetime
 import yaml
@@ -633,27 +635,54 @@ def scrape_royal_room():
     neighborhood = "Columbia City"
     url = "https://theroyalroomseattle.com/events/"
 
-    # Get and parse html data
-    soup = getSoup(url)
-    event_tags = soup.find_all("h3", class_="wpem-heading-text")
-    month_tags = soup.find_all("div", class_="wpem-month")
-    day_tags = soup.find_all("div", class_="wpem-date")
-    events = [item.text for item in event_tags[0:5]]
-    months = [item.text for item in month_tags[0:5]]
-    days = [item.text for item in day_tags[0:5]]
+    try:
+        # Get and parse html data
+        soup = getSoup(url)
+        event_tags = soup.find_all("h3", class_="wpem-heading-text")
+        month_tags = soup.find_all("div", class_="wpem-month")
+        day_tags = soup.find_all("div", class_="wpem-date")
+        bands = [item.text for item in event_tags[0:5]]
+        months = [item.text for item in month_tags[0:5]]
+        days = [item.text for item in day_tags[0:5]]
 
-    # Construct date strings
-    dates = []
-    x = 0   # counter
-    while x < 5:
-        if months[x] == "Jan" and datetime.now().month == 12:
-            year = datetime.now().year + 1
-        else:
-            year = datetime.now().year
-        dates.append(f"{months[x]} {days[x]}, {year}")
-        x += 1
+        # Construct date strings
+        dates = []
+        x = 0   # counter
+        while x < 5:
+            if months[x] == "Jan" and datetime.now().month == 12:
+                year = datetime.now().year + 1
+            else:
+                year = datetime.now().year
+            dates.append(f"{months[x]} {days[x]}, {year}")
+            x += 1
 
-    return venue, website, neighborhood, events, dates
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+
+    return venue, website, neighborhood, bands, dates
+
+
+def scrape_substation():
+    venue = "Substation Seattle"
+    neighborhood = "Fremont"
+    website = "https://www.substationseattle.com/"
+    url = "https://www.eventbrite.com/api/v3/destination/events/?event_ids=1963601898136,1779292434569,1888383769689,1968890677016,1956331342709,1966296254027,1978432906080,1978765951227,1967839267221,1967840431704,1980135285944,1867709612729&expand=event_sales_status,image,primary_venue,saves,series,ticket_availability,primary_organizer&page_size=50&include_parent_events=true"
+
+    try:
+        response = requests.get(url, headers=HEADERS)
+        data = response.json()
+
+        all_events_info = data["events"][0:5]
+        bands = [item["name"] for item in all_events_info]
+        dates_unformatted = [item["start_date"] for item in all_events_info]
+        dates = [datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y")
+                 for date in dates_unformatted]
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+
+    return venue, website, neighborhood, bands, dates
 
 
 def scrape_egans():
@@ -669,4 +698,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_royal_room())
+    print(scrape_substation())
