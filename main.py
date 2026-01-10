@@ -117,6 +117,7 @@ def run_update_job():
         cr.scrape_tractor_tavern(),
         cr.scrape_conor_byrne(),
         cr.scrape_seamonster()
+        cr.scrape_royal_room()
     ])
 
     # Old upload code.  Save incase this change complete fucks me

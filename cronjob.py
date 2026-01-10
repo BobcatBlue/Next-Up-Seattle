@@ -20,6 +20,19 @@ API_KEY = DATA["env_variables"]["API_KEY"]
 URL_1 = DATA["env_variables"]["URL_1"]
 URL_2 = DATA["env_variables"]["URL_2"]
 
+def getSoup(url):
+    headers = requests.utils.default_headers()
+    headers.update(
+        {
+            'User-Agent': 'My User Agent 1.0'
+        }
+    )
+    response = requests.get(url, headers=headers)
+    response.encoding = 'utf-8'
+    html = response.text
+    soup = BeautifulSoup(html, 'html.parser')
+    return soup
+
 
 def scrape_central():
     venue = "Central Saloon"
@@ -614,6 +627,35 @@ def scrape_neptune():
     print(html)
 
 
+def scrape_royal_room():
+    venue = "The Royal Room"
+    website = "https://theroyalroomseattle.com/"
+    neighborhood = "Columbia City"
+    url = "https://theroyalroomseattle.com/events/"
+
+    # Get and parse html data
+    soup = getSoup(url)
+    event_tags = soup.find_all("h3", class_="wpem-heading-text")
+    month_tags = soup.find_all("div", class_="wpem-month")
+    day_tags = soup.find_all("div", class_="wpem-date")
+    events = [item.text for item in event_tags[0:5]]
+    months = [item.text for item in month_tags[0:5]]
+    days = [item.text for item in day_tags[0:5]]
+
+    # Construct date strings
+    dates = []
+    x = 0   # counter
+    while x < 5:
+        if months[x] == "Jan" and datetime.now().month == 12:
+            year = datetime.now().year + 1
+        else:
+            year = datetime.now().year
+        dates.append(f"{months[x]} {days[x]}, {year}")
+        x += 1
+
+    return venue, website, neighborhood, events, dates
+
+
 def scrape_egans():
     pass
 
@@ -627,4 +669,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_seamonster())
+    print(scrape_royal_room())
