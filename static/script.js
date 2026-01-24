@@ -27,6 +27,7 @@ btnCloseSideNav.addEventListener("click", function() {
     sideNav.style.width = "0px";
 });
 
+
 //btnShowMusic.addEventListener("click", function() {
 //    console.log("Music button clicked");
 //    music_view.classList.remove("hidden");
@@ -71,8 +72,6 @@ for(let i = 0; i < btnsExpand.length; i++) {
 
         console.log(btnsExpand[i].classList);
 
-
-
         if (btnClicked === false) {
             let class_string = ".";
 
@@ -105,3 +104,5 @@ for(let i = 0; i < btnsExpand.length; i++) {
         }
     })
 }
+
+

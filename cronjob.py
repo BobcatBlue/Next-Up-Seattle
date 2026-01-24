@@ -7,6 +7,7 @@ import selectorlib
 import urllib.request
 import json
 from bs4 import BeautifulSoup
+from html import unescape
 
 
 HEADERS = {
@@ -22,7 +23,8 @@ API_KEY = DATA["env_variables"]["API_KEY"]
 URL_1 = DATA["env_variables"]["URL_1"]
 URL_2 = DATA["env_variables"]["URL_2"]
 
-def getSoup(url):
+
+def get_soup(url):
     headers = requests.utils.default_headers()
     headers.update(
         {
@@ -73,7 +75,6 @@ def scrape_central():
             date = f"{months[i]} {days[i]}, {year}"
             dates.append(date)
             i += 1
-
 
     except Exception:
         events = ["No info - Check venue website", "--", "--", "--", "--"]
@@ -371,46 +372,74 @@ def scrape_showbox_presents():
 
 def scrape_nectar():
     venue = "Nectar Lounge"
-    url = "http://www.nectarlounge.com"
+    website = "https://nectarlounge.com/events/calendar/"
     neighborhood = "Fremont"
+    url = "https://nectarlounge.com/events/calendar/"
     try:
-        # response = requests.get("https://highdiveseattle.com/e/calendar/", headers=HEADERS)
-        response = requests.get("https://nectarlounge.com/events/calendar/", headers=HEADERS)
-        response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("extract_nectar.yaml")
-        bands = extractor.extract(source)["band"][0:5]
-        dates = extractor.extract(source)["date"][0:5]
-        dates = [datetime.strptime(item[4:], "%b %d %Y").strftime("%b %d, %Y") for item in dates]
+        soup = get_soup(url)
+        scripts = soup.find_all("script", type="application/ld+json")
+        for script in scripts:
+            try:
+                data = json.loads(script.string)
+
+                if isinstance(data, list) and data and data[0].get("@type") == "Event":
+                    event_data = data
+                    break
+            except Exception:
+                continue
+
+        # Extract only Nectar events
+        nectar_events = []
+        for item in event_data:
+            if item["location"]["name"] == "Nectar Lounge":
+                nectar_events.append(item)
+
+        bands_quote = [event["name"].replace("\\", "") for event in nectar_events[0:5]]
+        bands = [unescape(band) for band in bands_quote]
+        dates = [datetime.strptime(event["startDate"][0:10], "%Y-%m-%d").strftime("%b %d, %Y")
+                 for event in nectar_events[0:5]]
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
-    return venue, url, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates
 
 
 def scrape_hidden_hall():
     venue = "Hidden Hall"
-    url = "https://www.hiddenhall.com/"
+    website = "https://hiddenhall.com/"
     neighborhood = "Fremont"
+    url = "https://nectarlounge.com/events/calendar/"
     try:
-        response = requests.get("https://nectarlounge.com/events/calendar/", headers=HEADERS)
-        response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("hidden_hall.yaml")
-        bands = extractor.extract(source)["band"][0:5]
-        dates = extractor.extract(source)["date"][0:5]
-        dates = [datetime.strptime(item[4:], "%b %d %Y").strftime("%b %d, %Y") for item in dates]
+        soup = get_soup(url)
+        scripts = soup.find_all("script", type="application/ld+json")
+        for script in scripts:
+            try:
+                data = json.loads(script.string)
 
-        # print(bands)
-        # print(dates)
+                if isinstance(data, list) and data and data[0].get("@type") == "Event":
+                    event_data = data
+                    break
+            except Exception:
+                continue
+
+        # Extract only Nectar events
+        nectar_events = []
+        for item in event_data:
+            if item["location"]["name"] == "Hidden Hall":
+                nectar_events.append(item)
+
+        bands_quote = [event["name"].replace("\\", "") for event in nectar_events[0:5]]
+        bands = [unescape(band) for band in bands_quote]
+        dates = [datetime.strptime(event["startDate"][0:10], "%Y-%m-%d").strftime("%b %d, %Y")
+                 for event in nectar_events[0:5]]
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
-    return venue, url, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates
 
 
 def scrape_crocodile():
@@ -593,25 +622,25 @@ def scrape_seamonster():
     venue = "Sea Monster Lounge"
     website = "https://www.seamonsterlounge.com/"
     neighborhood = "Wallingford"
-    # try:
-    url = "https://www.seamonsterlounge.com/"
-    html = requests.get(url).text
-    soup = BeautifulSoup(html, "html.parser")
-    script = soup.find("script", id="wix-warmup-data")
-    data = json.loads(script.string)
+    try:
+        url = "https://www.seamonsterlounge.com/"
+        html = requests.get(url).text
+        soup = BeautifulSoup(html, "html.parser")
+        script = soup.find("script", id="wix-warmup-data")
+        data = json.loads(script.string)
 
-    # Retrieve the first 5 events with all their data
-    first_five = data["appsWarmupData"]["140603ad-af8d-84a5-2c80-a0f60cb47351"]["widgetcomp-kx2nxyph"]["events"]["events"][0:5]
+        # Retrieve the first 5 events with all their data
+        first_five = data["appsWarmupData"]["140603ad-af8d-84a5-2c80-a0f60cb47351"]["widgetcomp-kx2nxyph"]["events"]["events"][0:5]
 
-    # Parse out desired information from first 5 events
-    bands = [event["title"] for event in first_five]
-    dates_unformatted = [event["scheduling"]["startDateFormatted"] for event in first_five]
-    dates = [datetime.strptime(date, "%B %d, %Y").strftime("%b %e, %Y") for date in dates_unformatted]
+        # Parse out desired information from first 5 events
+        bands = [event["title"] for event in first_five]
+        dates_unformatted = [event["scheduling"]["startDateFormatted"] for event in first_five]
+        dates = [datetime.strptime(date, "%B %d, %Y").strftime("%b %e, %Y") for date in dates_unformatted]
 
 
-    # except Exception:
-    #     bands = ["No info - Check venue website", "--", "--", "--", "--"]
-    #     dates = ["--", "--", "--", "--", "--"]
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
 
@@ -637,7 +666,7 @@ def scrape_royal_room():
 
     try:
         # Get and parse html data
-        soup = getSoup(url)
+        soup = get_soup(url)
         event_tags = soup.find_all("h3", class_="wpem-heading-text")
         month_tags = soup.find_all("div", class_="wpem-month")
         day_tags = soup.find_all("div", class_="wpem-date")
@@ -667,22 +696,35 @@ def scrape_substation():
     venue = "Substation Seattle"
     neighborhood = "Fremont"
     website = "https://www.substationseattle.com/"
-    url = "https://www.eventbrite.com/api/v3/destination/events/?event_ids=1963601898136,1779292434569,1888383769689,1968890677016,1956331342709,1966296254027,1978432906080,1978765951227,1967839267221,1967840431704,1980135285944,1867709612729&expand=event_sales_status,image,primary_venue,saves,series,ticket_availability,primary_organizer&page_size=50&include_parent_events=true"
-
+    url = "https://www.eventbrite.com/o/substation-18831550522"
     try:
-        response = requests.get(url, headers=HEADERS)
-        data = response.json()
+        soup = get_soup(url)
+        scripts = soup.find_all("script", type="application/ld+json")
 
-        all_events_info = data["events"][0:5]
-        bands = [item["name"] for item in all_events_info]
-        dates_unformatted = [item["start_date"] for item in all_events_info]
-        dates = [datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y")
-                 for date in dates_unformatted]
+        event_script = None
+        for item in scripts:
+            if "itemListElement" in item.text:
+                event_script = item
+                break
+
+        data = json.loads(event_script.string)
+        raw_event_data = data["itemListElement"]
+        bands = [item["item"]["name"] for item in raw_event_data[0:5]]
+        raw_dates = [item["item"]["startDate"][0:10] for item in raw_event_data[0:5]]
+        dates = [datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y") for date in raw_dates]
+
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
+
+
+
+def scrape_sunset_tavern():
+    venue = "Sunset Tavern"
+    website = "https://sunsettavern.com/shows/"
+    pass
 
 
 def scrape_egans():
@@ -698,4 +740,5 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_substation())
+    print(scrape_nectar())
+    print(scrape_hidden_hall())
