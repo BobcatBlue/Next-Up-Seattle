@@ -24,6 +24,7 @@ URL_1 = DATA["env_variables"]["URL_1"]
 URL_2 = DATA["env_variables"]["URL_2"]
 
 
+# Useful Functions:
 def get_soup(url):
     headers = requests.utils.default_headers()
     headers.update(
@@ -38,6 +39,29 @@ def get_soup(url):
     return soup
 
 
+def strip_full_days(some_string: str):
+    days_list = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ]
+    final_string = some_string
+    for day in days_list:
+        if day in some_string:
+            string_1 = some_string.replace(day, "")
+            final_string = string_1.replace(",", "").strip()
+            break
+        else:
+            continue
+    final_string = final_string.replace(".", "")
+    return final_string
+
+
+# SCRAPING MODULES
 def scrape_central():
     venue = "Central Saloon"
     website = "http://www.centralsaloon.com"
@@ -49,36 +73,36 @@ def scrape_central():
             'User-Agent': 'My User Agent 1.0'
         }
     )
-    try:
-        response = requests.get(url, headers=headers)
-        response.encoding = 'utf-8'
-        html = response.text
-        soup = BeautifulSoup(html, 'html.parser')
-        event_tags = soup.find_all('h3', class_='mec-event-title')
-        date_tags = soup.find_all('span', class_="mec-start-date-label")
+    # try:
+    response = requests.get(url, headers=headers)
+    response.encoding = 'utf-8'
+    html = response.text
+    soup = BeautifulSoup(html, 'html.parser')
+    event_tags = soup.find_all('h3', class_='mec-event-title')
+    date_tags = soup.find_all('span', class_="mec-start-date-label")
 
-        events = [item.text.replace(" • ", ", ") for item in event_tags[0:5]]
-        dates_text = [item.text for item in date_tags[0:5]]
-        days = [item[0:2] for item in dates_text]
-        months = [item[3:] for item in dates_text]
+    events = [item.text.replace(" • ", ", ") for item in event_tags[0:5]]
+    dates_text = [item.text for item in date_tags[0:5]]
+    days = [item[0:2] for item in dates_text]
+    months = [item[3:] for item in dates_text]
 
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-        next_year = current_year + 1
-        dates = []
-        i = 0
-        while i < 5:
-            if current_month == 12 and months[i] == "Jan":
-                year = next_year
-            else:
-                year = current_year
-            date = f"{months[i]} {days[i]}, {year}"
-            dates.append(date)
-            i += 1
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+    next_year = current_year + 1
+    dates = []
+    i = 0
+    while i < 5:
+        if current_month == 12 and months[i] == "Jan":
+            year = next_year
+        else:
+            year = current_year
+        date = f"{months[i]} {days[i]}, {year}"
+        dates.append(date)
+        i += 1
 
-    except Exception:
-        events = ["No info - Check venue website", "--", "--", "--", "--"]
-        dates = ["--", "--", "--", "--", "--"]
+    # except Exception:
+    #     events = ["No info - Check venue website", "--", "--", "--", "--"]
+    #     dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, events, dates
 
@@ -646,16 +670,28 @@ def scrape_seamonster():
 
 
 def scrape_neptune():
+    venue = "The Neptune Theater"
+    website = "https://www.stgpresents.org/stg-venues/neptune-theatre/events/"
+    neighborhood = "University District"
     url = "https://www.stgpresents.org/stg-venues/neptune-theatre/events/"
-    headers = requests.utils.default_headers()
-    headers.update(
-        {
-            'User-Agent': 'My User Agent 1.0'
-        }
-    )
-    response = requests.get(url, headers=headers)
-    html = response.text
-    print(html)
+
+    try:
+        soup = get_soup(url)
+        event_tags = soup.find_all("a", class_="mec-color-hover")
+        date_tags = soup.find_all("div", class_="mec-event-description")
+        bands = [event.text for event in event_tags[0:5]]
+        dates_unformatted = [list(info.stripped_strings) for info in date_tags]
+        dates = []
+        for date_list in dates_unformatted[0:5]:
+            date = date_list[1]
+            dates.append(strip_full_days(date))
+
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+
+    return venue, website, neighborhood, bands, dates
+
 
 
 def scrape_royal_room():
@@ -740,5 +776,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_nectar())
-    print(scrape_hidden_hall())
+    print(scrape_central())
