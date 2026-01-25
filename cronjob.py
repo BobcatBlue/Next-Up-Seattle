@@ -693,7 +693,6 @@ def scrape_neptune():
     return venue, website, neighborhood, bands, dates
 
 
-
 def scrape_royal_room():
     venue = "The Royal Room"
     website = "https://theroyalroomseattle.com/"
@@ -756,11 +755,34 @@ def scrape_substation():
     return venue, website, neighborhood, bands, dates
 
 
-
 def scrape_sunset_tavern():
     venue = "Sunset Tavern"
     website = "https://sunsettavern.com/shows/"
-    pass
+    neighborhood = "Ballard"
+    url = "https://partners-endpoint.dice.fm/api/v2/events?page%5Bsize%5D=&types=linkout%2Cevent" \
+          "&filter%5Bpromoters%5D%5B%5D=Bars+We+Like%2C+Inc+dba+Sunset+Tavern"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like "
+                      "Gecko) Chrome/144.0.0.0 Safari/537.36",
+        "Accept": "*/*",
+        "Origin": "https://sunsettavern.com",
+        "Referer": "https://sunsettavern.com",
+        "X-Api-Key": "uZgJttkg0G75xfWU7xCDI7nOQO9xhwAH4mC9xjr3"
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        data = response.json()["data"]
+        bands = [event["name"] for event in data[0:5]]
+        dates_unformatted = [event["date"].split("T")[0] for event in data[0:5]]
+        dates = [datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y")
+                 for date in dates_unformatted]
+
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+
+    return venue, website, neighborhood, bands, dates
 
 
 def scrape_egans():
@@ -776,4 +798,4 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_central())
+    print(scrape_sunset_tavern())
