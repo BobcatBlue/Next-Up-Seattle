@@ -26,6 +26,18 @@
             <img src="static/Next Up Seattle with Text - Block Cropped 1.jpg" alt="Next Up, Seattle!"
             style="max-width: 100%">
         </div>
+
+        <div class="catchphrase">
+            <hr>
+            <p><i>The fastest way to find out who's playing next on any given
+            stage in Seattle!</i></p>
+            <hr>
+        </div>
+<!--        <div style="margin: auto; margin-top: 40px; text-align: center;">-->
+<!--            <h2>Live Music Schedule:</h2>-->
+<!--            <hr style="margin: auto; max-width: 650px;">-->
+<!--        </div>-->
+
 <!--        <h1 class="pageTitle">Next Up, Seattle!</h1>-->
 
 <!--        <div class="categories">-->
@@ -35,55 +47,95 @@
 <!--            <button class="btnToggle show-venues">Venues</button>-->
 <!--        </div>-->
 
-        <div class="liveMusic">
-            <ul class="listHeaders">
-                <li class="columnHeader">Venue</li>
-                <li class="columnHeader">Band/Event</li>
-                <li class="columnHeader">Date</li>
-            </ul>
-            <hr>
+<!--        <div class="liveMusic">-->
+<!--            <ul class="listHeaders">-->
+<!--                <li class="columnHeader">Venue</li>-->
+<!--                <li class="columnHeader">Band/Event</li>-->
+<!--                <li class="columnHeader">Date</li>-->
+<!--            </ul>-->
+<!--            <hr>-->
 
-            {% set counter = 1 %}
-            {% for key, info in dictionary.items() %}
-            <div>
-                <div class="button-container" style="text-align:left;">
-                    <button class="{{key}} expander">+</button>
-                </div>
-                <ul>
-                    <li class="venueInfo">
-                        <a href="{{info[0]}}" target="_blank" rel="noopener noreferrer">{{key}}</a>
-                        <br>
-                        <p class="neighborhood"><i>{{info[1]}}</i></p>
-                    </li>
-                    <li class="event">{{ info[2][0] }}</li>
-                    <li class="date">{{ info[3][0] }}</li>
-                </ul>
-                <div class="{{key}} expandable hidden">
-                    <ul>
-                        <li></li>
-                        <li class="event">{{ info[2][1] }}</li>
-                        <li>{{ info[3][1] }}</li>
-                    </ul>
-                    <ul>
-                        <li></li>
-                        <li class="event">{{ info[2][2] }}</li>
-                        <li>{{ info[3][2] }}</li>
-                    </ul>
-                    <ul>
-                        <li></li>
-                        <li class="event">{{ info[2][3] }}</li>
-                        <li>{{ info[3][3] }}</li>
-                    </ul>
-                    <ul>
-                        <li></li>
-                        <li class="event">{{ info[2][4] }}</li>
-                        <li>{{ info[3][4] }}</li>
-                    </ul>
-                </div>
-                <hr>
+<!--            {% for key, info in dictionary.items() %}-->
+<!--            <div>-->
+<!--                <div class="button-container" style="text-align:left;">-->
+<!--                    <button class="{{key}} expander">+</button>-->
+<!--                </div>-->
+<!--                <ul>-->
+<!--                    <li class="venueInfo">-->
+<!--                        <a href="{{info[0]}}" target="_blank" rel="noopener noreferrer">{{key}}</a>-->
+<!--                        <br>-->
+<!--                        <p class="neighborhood"><i>{{info[1]}}</i></p>-->
+<!--                    </li>-->
+<!--                    <li class="event">{{ info[2][0] }}</li>-->
+<!--                    <li class="date">{{ info[3][0] }}</li>-->
+<!--                </ul>-->
+<!--                <div class="{{key}} expandable hidden">-->
+<!--                    <ul>-->
+<!--                        <li></li>-->
+<!--                        <li class="event">{{ info[2][1] }}</li>-->
+<!--                        <li>{{ info[3][1] }}</li>-->
+<!--                    </ul>-->
+<!--                    <ul>-->
+<!--                        <li></li>-->
+<!--                        <li class="event">{{ info[2][2] }}</li>-->
+<!--                        <li>{{ info[3][2] }}</li>-->
+<!--                    </ul>-->
+<!--                    <ul>-->
+<!--                        <li></li>-->
+<!--                        <li class="event">{{ info[2][3] }}</li>-->
+<!--                        <li>{{ info[3][3] }}</li>-->
+<!--                    </ul>-->
+<!--                    <ul>-->
+<!--                        <li></li>-->
+<!--                        <li class="event">{{ info[2][4] }}</li>-->
+<!--                        <li>{{ info[3][4] }}</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--            </div>-->
+<!--            {% endfor %}-->
+
+        {% for key, info in dictionary.items() %}
+        <div class="venue_events_container">
+            <div class="expand_button">
+                <button class="{{key}} expander" style="font-size: 20px; height: 25x; width: 30px;">+</button>
             </div>
-            {% endfor %}
+            <div class="venue_name">
+                <a href="{{info[0]}}" target="_blank" style="color: darkblue;"><b>{{key}}</b></a>
+            </div>
+            <div class="ph1"></div>
+
+            <div class="ph2"></div>
+            <div class="venue_neighborhood"><i>{{ info[1] }}</i></div>
+            <div class="ph3"></div>
+
+            <div class="first_event">
+                <ul>
+                    <li class="event"><b>{{ info[2][0] }}</b></li>
+                    <li class="date"><b>{{ info[3][0] }}</b></li>
+                </ul>
+            </div>
+            <div class="rest_of_events {{key}} expandable hidden">
+                <ul>
+                    <li class="event">{{ info[2][1] }}</li>
+                    <li class="date">{{ info[3][1] }}</li>
+                </ul>
+                <ul>
+                    <li class="event">{{ info[2][2] }}</li>
+                    <li class="date">{{ info[3][2] }}</li>
+                </ul>
+                <ul>
+                    <li class="event">{{ info[2][3] }}</li>
+                    <li class="date">{{ info[3][3] }}</li>
+                </ul>
+                <ul>
+                    <li class="event">{{ info[2][4] }}</li>
+                    <li class="date">{{ info[3][4] }}</li>
+                </ul>
+            </div>
         </div>
+        <hr style="margin: auto; max-width: 650px;">
+        {% endfor %}
 
         <div class="art hidden">
             This section coming soon!

@@ -15,7 +15,7 @@ const performance_view = document.querySelector(".performance");
 const venue_view = document.querySelector(".venues");
 
 const btnsExpand = document.querySelectorAll(".expander");
-console.log(btnsExpand);
+const collapsableElements = document.querySelectorAll(".rest_of_events");
 
 
 
@@ -28,51 +28,31 @@ btnCloseSideNav.addEventListener("click", function() {
 });
 
 
-//btnShowMusic.addEventListener("click", function() {
-//    console.log("Music button clicked");
-//    music_view.classList.remove("hidden");
-//    art_view.classList.add("hidden");
-//    performance_view.classList.add("hidden");
-//    venue_view.classList.add("hidden");
-//});
-//
-//btnShowArt.addEventListener("click", function() {
-//    console.log("Art button clicked");
-//    art_view.classList.remove("hidden");
-//    performance_view.classList.add("hidden");
-//    music_view.classList.add("hidden");
-//    venue_view.classList.add("hidden");
-//
-//});
-//
-//btnShowPerformance.addEventListener("click", function() {
-//    console.log("Performance button clicked");
-//    performance_view.classList.remove("hidden");
-//    art_view.classList.add("hidden");
-//    music_view.classList.add("hidden");
-//    venue_view.classList.add("hidden");
-//});
-//
-//btnShowVenues.addEventListener("click", function() {
-//    console.log("Performance button clicked");
-//    performance_view.classList.add("hidden");
-//    art_view.classList.add("hidden");
-//    music_view.classList.add("hidden");
-//    venue_view.classList.remove("hidden");
-//});
-
-
 for(let i = 0; i < btnsExpand.length; i++) {
-    console.log(btnsExpand[i].classList.length);
-    console.log("");
-
     btnsExpand[i].addEventListener("click", function() {
-        let btnClicked = btnsExpand[i].classList.contains("clicked");  // boolean value
-        console.log(btnClicked);
+        let btnClicked = btnsExpand[i].classList.contains("clicked");
 
         console.log(btnsExpand[i].classList);
 
         if (btnClicked === false) {
+            for (let x = 0; x < collapsableElements.length; x++) {
+                const currentElement = collapsableElements[x];
+
+                if (currentElement.classList.contains("hidden") === false) {
+                    currentElement.classList.add("hidden");
+
+
+                    let button_class_string = ".";
+                    for (let y = 1; y < currentElement.classList.length - 2; y++) {
+                        button_class_string = button_class_string + currentElement.classList[y] + ".";
+                    }
+                    button_class_string = button_class_string + "expander";
+
+                    document.querySelector(button_class_string).classList.remove("clicked");
+                    document.querySelector(button_class_string).textContent = "+";
+                }
+            }
+
             let class_string = ".";
 
             for(let x = 0; x < btnsExpand[i].classList.length; x++) {
@@ -81,12 +61,12 @@ for(let i = 0; i < btnsExpand.length; i++) {
                 } else {
                     class_string = class_string + "expandable";
                 }
-                console.log(class_string);
             }
 
-            console.log(class_string);
             document.querySelector(class_string).classList.remove("hidden");
             btnsExpand[i].classList.add("clicked");
+            btnsExpand[i].textContent = "-";
+
         }
         else if (btnClicked === true) {
             let class_string2 = ".";
@@ -98,8 +78,8 @@ for(let i = 0; i < btnsExpand.length; i++) {
                 }
             }
 
-            console.log(btnClicked);
             btnsExpand[i].classList.remove("clicked");
+            btnsExpand[i].textContent = "+";
             document.querySelector(class_string2).classList.add("hidden");
         }
     })

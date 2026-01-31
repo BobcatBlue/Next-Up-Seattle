@@ -30,6 +30,7 @@
     font-size: 25px;
     margin-left: 10px;
     margin-bottom: 20px;
+    cursor: pointer;
 }
 
 .bar1, .bar2, .bar3 {
@@ -59,6 +60,16 @@
 .title_image {
     max-width: 500px;
     margin: auto;
+    margin-bottom: 40px;
+}
+
+.catchphrase {
+    margin: auto;
+    max-width: 500px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
 }
 
 .categories {
@@ -92,6 +103,77 @@
     max-width: 700px;
     text-align: left;
     /* border: 1px solid red; */
+}
+
+.venue_events_container {
+    border: 2px solid black;
+    border-radius: 12px;
+    margin: auto;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    max-width: 650px;
+    display: grid;
+    grid-template-areas:
+        "expand_button venue_name venue_name venue_name venue_name ph1"
+        "ph2 venue_neighborhood venue_neighborhood venue_neighborhood venue_neighborhood ph3"
+        "first_event first_event first_event first_event first_event first_event"
+        "rest_of_events rest_of_events rest_of_events rest_of_events rest_of_events rest_of_events";
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    /*background-color: rgb(227, 251, 255);*/
+    /* gap: 3px; */
+    padding: 0px;
+}
+
+.venue_events_container div {
+    /*background-color: rgb(227, 251, 255);*/
+    padding: 10px;
+}
+
+.venue_events_container div.expand_button {
+    grid-area: expand_button;
+    margin: auto;
+    padding-bottom: 0px;
+}
+
+.venue_events_container div.venue_name {
+    grid-area: venue_name;
+    text-align: center;
+    font-family: Garamond, serif;
+    font-size: 27px;
+    text-decoration: none;
+    padding-bottom: 0px;
+}
+
+.venue_events_container div.ph1 { grid-area: ph1; padding: 0px;}
+.venue_events_container div.ph2 { grid-area: ph2; padding: 0px;}
+
+.venue_events_container div.venue_neighborhood {
+    grid-area: venue_neighborhood;
+    text-align: center;
+    font-size: 17px;
+    padding-top: 0px;
+}
+
+.venue_events_container div.ph3 { grid-area: ph3; padding: 0px;}
+
+.venue_events_container div.first_event {
+    grid-area: first_event;
+    text-align: left;
+    margin-left: 35px;
+    padding-bottom: 15px;
+    padding-top: 0px;
+}
+
+.venue_events_container div.rest_of_events {
+    grid-area: rest_of_events;
+    text-align: left;
+    margin-left: 35px;
+    padding-top: 0px;
+}
+
+li.date {
+    text-align: right;
+    padding-right: 50px;
 }
 
 .art {
@@ -176,4 +258,25 @@ li {
 
 .hidden {
     display: none;
+}
+
+/*================================
+================================*/
+@media screen and (max-width: 600px) {
+    .venue_events_container div.venue_name {
+        font-size: 18px;
+    }
+
+
+    .venue_events_container div.first_event {
+        margin-left: 2px;
+    }
+
+    .venue_events_container div.rest_of_events {
+        margin-left: 2px;
+    }
+
+    li.date {
+        padding-right: 10px;
+    }
 }
