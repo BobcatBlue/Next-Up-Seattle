@@ -401,27 +401,18 @@ def scrape_nectar():
     url = "https://nectarlounge.com/events/calendar/"
     try:
         soup = get_soup(url)
-        scripts = soup.find_all("script", type="application/ld+json")
-        for script in scripts:
-            try:
-                data = json.loads(script.string)
-
-                if isinstance(data, list) and data and data[0].get("@type") == "Event":
-                    event_data = data
-                    break
-            except Exception:
-                continue
-
-        # Extract only Nectar events
-        nectar_events = []
-        for item in event_data:
-            if item["location"]["name"] == "Nectar Lounge":
-                nectar_events.append(item)
-
-        bands_quote = [event["name"].replace("\\", "") for event in nectar_events[0:5]]
-        bands = [unescape(band) for band in bands_quote]
-        dates = [datetime.strptime(event["startDate"][0:10], "%Y-%m-%d").strftime("%b %d, %Y")
-                 for event in nectar_events[0:5]]
+        event_elements = soup.find_all("div", attrs={"data-venue-id": "2376"})
+        months = [item.find("span", attrs={"class": "sg-events__event-month"}).text
+                  for item in event_elements[0:5]]
+        days = [item.find("span", attrs={"class": "sg-events__event-day"}).text
+                for item in event_elements[0:5]]
+        years = [item.find("span", attrs={"class": "sg-events__event-year"}).text
+                 for item in event_elements[0:5]]
+        bands = [item.find("a", attrs={"class": "sg-events__event-title-link"}).text.strip()
+                 for item in event_elements[0:5]]
+        dates = []
+        for month, day, year in zip(months, days, years):
+            dates.append(f"{month} {day}, {year}")
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
@@ -437,27 +428,18 @@ def scrape_hidden_hall():
     url = "https://nectarlounge.com/events/calendar/"
     try:
         soup = get_soup(url)
-        scripts = soup.find_all("script", type="application/ld+json")
-        for script in scripts:
-            try:
-                data = json.loads(script.string)
-
-                if isinstance(data, list) and data and data[0].get("@type") == "Event":
-                    event_data = data
-                    break
-            except Exception:
-                continue
-
-        # Extract only Nectar events
-        nectar_events = []
-        for item in event_data:
-            if item["location"]["name"] == "Hidden Hall":
-                nectar_events.append(item)
-
-        bands_quote = [event["name"].replace("\\", "") for event in nectar_events[0:5]]
-        bands = [unescape(band) for band in bands_quote]
-        dates = [datetime.strptime(event["startDate"][0:10], "%Y-%m-%d").strftime("%b %d, %Y")
-                 for event in nectar_events[0:5]]
+        event_elements = soup.find_all("div", attrs={"data-venue-id": "8386"})
+        months = [item.find("span", attrs={"class": "sg-events__event-month"}).text
+                  for item in event_elements[0:5]]
+        days = [item.find("span", attrs={"class": "sg-events__event-day"}).text
+                for item in event_elements[0:5]]
+        years = [item.find("span", attrs={"class": "sg-events__event-year"}).text
+                 for item in event_elements[0:5]]
+        bands = [item.find("a", attrs={"class": "sg-events__event-title-link"}).text.strip()
+                 for item in event_elements[0:5]]
+        dates = []
+        for month, day, year in zip(months, days, years):
+            dates.append(f"{month} {day}, {year}")
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
@@ -785,6 +767,31 @@ def scrape_sunset_tavern():
     return venue, website, neighborhood, bands, dates
 
 
+def scrape_bluemoon():
+    venue = "The Blue Moon Tavern"
+    website = "https://www.thebluemoonseattle.com/"
+    neighborhood = "Wallingford"
+    url = "https://clients6.google.com/calendar/v3/calendars/k3bcrptn7frodqrcbe093i3s4o%40group." \
+          "calendar.google.com/events?calendarId=k3bcrptn7frodqrcbe093i3s4o%40group.calendar." \
+          "google.com&singleEvents=true&eventTypes=default&eventTypes=focusTime&eventTypes=" \
+          "outOfOffice&timeZone=America%2FLos_Angeles&maxAttendees=1&maxResults=250&sanitizeHtml=" \
+          "true&timeMin=2026-02-03T00%3A00%3A00%2B18%3A00&timeMax=" \
+          "2026-03-05T00%3A00%3A00-18%3A00&key=AIzaSyDOtGM5jr8bNp1utVpG2_gSRH03RNGBkI8&%24unique=" \
+          "gc237"
+
+    response = requests.get(url, headers=HEADERS)
+
+    if response.status_code == 200:
+        raw_calendar_data = response.json()
+        print(raw_calendar_data)
+    else:
+        print(f"Failed to fetch events: {response.status_code}")
+        return "No Info", "--"
+
+    print("hello")
+
+
+
 def scrape_egans():
     pass
 
@@ -798,4 +805,8 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_sunset_tavern())
+    print(scrape_nectar())
+    print(scrape_hidden_hall())
+
+
+

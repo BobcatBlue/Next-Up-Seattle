@@ -10,7 +10,6 @@ import ast
 app = Flask(__name__)
 
 
-
 """
 ===================================
        DOWNLOAD AND RENDER
@@ -122,38 +121,6 @@ def run_update_job():
         cr.scrape_royal_room()
     ])
 
-    # Old upload code.  Save incase this change complete fucks me
-    """
-        central_saloon = cr.scrape_central()
-        baba_yaga = cr.scrape_babayaga()
-        el_corazon = cr.scrape_el_corazon()
-        funhouse = cr.scrape_funhouse()
-        nuemos = cr.scrape_nuemos()
-        showboxes = cr.scrape_showbox_presents()
-        nectar = cr.scrape_nectar()
-        hidden_hall = cr.scrape_hidden_hall()
-        crocodile = cr.scrape_crocodile()
-        madame_lous = cr.scrape_madame_lous()
-        tractor_tavern = cr.scrape_tractor_tavern()
-        conor_byrne = cr.scrape_conor_byrne()
-        seamonster = cr.scrape_seamonster()
-    
-        upload_shows.append(central_saloon)
-        upload_shows.append(baba_yaga)
-        upload_shows.append(el_corazon)
-        upload_shows.append(funhouse)
-        upload_shows.append(nuemos)
-        upload_shows.append(showboxes[0])
-        upload_shows.append(showboxes[1])
-        upload_shows.append(nectar)
-        upload_shows.append(hidden_hall)
-        upload_shows.append(crocodile)
-        upload_shows.append(madame_lous)
-        upload_shows.append(tractor_tavern)
-        upload_shows.append(conor_byrne)
-        upload_shows.append(seamonster)
-    """
-
     fn_client = storage.Client()
     fn_bucket = fn_client.bucket(bucket_name)
     fn_blob = fn_bucket.blob(file_name)
@@ -177,7 +144,7 @@ def run_update_job():
 
 
 if __name__ == "__main__":
-    # app.run(debug=True, port=5001, use_reloader=False)
-    app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
+    app.run(debug=True, port=5001, use_reloader=False)
+    # app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
 
 
