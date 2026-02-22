@@ -118,6 +118,7 @@ def run_update_job():
         cr.scrape_sunset_tavern(),
         cr.scrape_conor_byrne(),
         cr.scrape_seamonster(),
+        cr.scrape_bluemoon(),
         cr.scrape_royal_room()
     ])
 

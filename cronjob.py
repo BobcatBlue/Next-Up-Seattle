@@ -1,7 +1,7 @@
 import datetime
 
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 import yaml
 import selectorlib
 import urllib.request
@@ -771,25 +771,40 @@ def scrape_bluemoon():
     venue = "The Blue Moon Tavern"
     website = "https://www.thebluemoonseattle.com/"
     neighborhood = "Wallingford"
+    today = datetime.today().strftime("%Y-%m-%d")
     url = "https://clients6.google.com/calendar/v3/calendars/k3bcrptn7frodqrcbe093i3s4o%40group." \
           "calendar.google.com/events?calendarId=k3bcrptn7frodqrcbe093i3s4o%40group.calendar." \
           "google.com&singleEvents=true&eventTypes=default&eventTypes=focusTime&eventTypes=" \
           "outOfOffice&timeZone=America%2FLos_Angeles&maxAttendees=1&maxResults=250&sanitizeHtml=" \
-          "true&timeMin=2026-02-03T00%3A00%3A00%2B18%3A00&timeMax=" \
-          "2026-03-05T00%3A00%3A00-18%3A00&key=AIzaSyDOtGM5jr8bNp1utVpG2_gSRH03RNGBkI8&%24unique=" \
-          "gc237"
+          f"true&timeMin={today}T00%3A00%3A00%2B18%3A00&timeMax=" \
+          "2026-03-05T00%3A00%3A00-18%3A00&key=AIzaSyDOtGM5jr8bNp1utVpG2_gSRH03RNGBkI8&%24unique" \
+          "=gc237"
 
-    response = requests.get(url, headers=HEADERS)
+    try:
+        response = requests.get(url, headers=HEADERS)
 
-    if response.status_code == 200:
-        raw_calendar_data = response.json()
-        print(raw_calendar_data)
-    else:
-        print(f"Failed to fetch events: {response.status_code}")
-        return "No Info", "--"
+        if response.status_code == 200:
+            raw_calendar_data = response.json()["items"]
+            print(raw_calendar_data)
+        else:
+            print(f"Failed to fetch events: {response.status_code}")
+            return "No Info", "--"
 
-    print("hello")
+        event_names = [item["summary"] for item in raw_calendar_data]
+        start_date_strings = [item["start"]["dateTime"] for item in raw_calendar_data]
+        start_datetime_objects = [datetime.strptime(item, "%Y-%m-%dT%H:%M:%S%z")
+                                  for item in start_date_strings]
+        zipped_list = zip(start_datetime_objects, event_names)
+        sorted_list = sorted(zipped_list, key=lambda pair: pair[0])
+        past_dates_removed = [item for item in sorted_list if item[0] > datetime.now(timezone.utc)]
+        dates = [item[0].strftime("%b %d, %Y") for item in past_dates_removed[0:5]]
+        bands = [item[1] for item in past_dates_removed[0:5]]
 
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+
+    return venue, website, neighborhood, bands, dates
 
 
 def scrape_egans():
@@ -805,8 +820,7 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_nectar())
-    print(scrape_hidden_hall())
+    print(scrape_bluemoon())
 
 
 
