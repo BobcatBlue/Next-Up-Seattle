@@ -61,6 +61,14 @@ def strip_full_days(some_string: str):
     return final_string
 
 
+def request_json(url: str):
+    headers = HEADERS
+    response = requests.get(url, headers=headers)
+    response.encoding = "utf-8"
+    data = response.json()
+    return data
+
+
 # SCRAPING MODULES
 def scrape_central():
     venue = "Central Saloon"
@@ -812,7 +820,52 @@ def scrape_egans():
 
 
 def scrape_rendezvous():
-    pass
+    venue = "Rendezvous"
+    website = "https://rendezvous.squarespace.com/events"
+    neighborhood = "Belltown"
+
+    current_month = datetime.now().month
+    year_1 = datetime.now().year
+
+    if current_month == 12:
+        next_month = 1
+        year_2 = year_1 + 1
+    else:
+        next_month = current_month + 1
+        year_2 = year_1
+
+    timestamp_current = f"{current_month:02d}-{year_1}"
+    timestamp_next = f"{next_month:02d}-{year_2}"
+
+    url_current = "https://rendezvous.squarespace.com/api/open/GetItemsByMonth?" \
+                  f"month={timestamp_current}&" \
+                  "collectionId=66df753bc3d7cc2eedfd6cfb&" \
+                  "crumb=BeCoGhbDIcyIYWUwYTcwZDM5YTE2NTcxYThiMWJmNjZhY2VkYzI2"
+    url_next = "https://rendezvous.squarespace.com/api/open/GetItemsByMonth?" \
+               f"month={timestamp_next}&" \
+               "collectionId=66df753bc3d7cc2eedfd6cfb&" \
+               "crumb=BeCoGhbDIcyIYWUwYTcwZDM5YTE2NTcxYThiMWJmNjZhY2VkYzI2"
+    try:
+        data_current = request_json(url_current)
+        data_next = request_json(url_next)
+        data_current.reverse()
+        data_next.reverse()
+        data = data_current + data_next
+
+        timestamps = [datetime.fromtimestamp(item["startDate"] / 1000) for item in data]
+        dates_all = [date.strftime("%b %d, %Y") for date in timestamps]
+        bands_all = [item["title"] for item in data]
+        zipped_list = list(zip(dates_all, bands_all))
+        future_event_pairs = [item for item in zipped_list
+                              if datetime.strptime(item[0], "%b %d, %Y") > datetime.now()]
+        dates = [pair[0] for pair in future_event_pairs[0:5]]
+        bands = [pair[1] for pair in future_event_pairs[0:5]]
+
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+
+    return venue, website, neighborhood, bands, dates
 
 
 def scrape_wamu():
@@ -820,7 +873,7 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_bluemoon())
+    print(scrape_rendezvous())
 
 
 
