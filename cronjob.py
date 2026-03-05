@@ -81,36 +81,36 @@ def scrape_central():
             'User-Agent': 'My User Agent 1.0'
         }
     )
-    # try:
-    response = requests.get(url, headers=headers)
-    response.encoding = 'utf-8'
-    html = response.text
-    soup = BeautifulSoup(html, 'html.parser')
-    event_tags = soup.find_all('h3', class_='mec-event-title')
-    date_tags = soup.find_all('span', class_="mec-start-date-label")
+    try:
+        response = requests.get(url, headers=headers)
+        response.encoding = 'utf-8'
+        html = response.text
+        soup = BeautifulSoup(html, 'html.parser')
+        event_tags = soup.find_all('h3', class_='mec-event-title')
+        date_tags = soup.find_all('span', class_="mec-start-date-label")
 
-    events = [item.text.replace(" • ", ", ") for item in event_tags[0:5]]
-    dates_text = [item.text for item in date_tags[0:5]]
-    days = [item[0:2] for item in dates_text]
-    months = [item[3:] for item in dates_text]
+        events = [item.text.replace(" • ", ", ") for item in event_tags[0:5]]
+        dates_text = [item.text for item in date_tags[0:5]]
+        days = [item[0:2] for item in dates_text]
+        months = [item[3:] for item in dates_text]
 
-    current_month = datetime.now().month
-    current_year = datetime.now().year
-    next_year = current_year + 1
-    dates = []
-    i = 0
-    while i < 5:
-        if current_month == 12 and months[i] == "Jan":
-            year = next_year
-        else:
-            year = current_year
-        date = f"{months[i]} {days[i]}, {year}"
-        dates.append(date)
-        i += 1
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+        next_year = current_year + 1
+        dates = []
+        i = 0
+        while i < 5:
+            if current_month == 12 and months[i] == "Jan":
+                year = next_year
+            else:
+                year = current_year
+            date = f"{months[i]} {days[i]}, {year}"
+            dates.append(date)
+            i += 1
 
-    # except Exception:
-    #     events = ["No info - Check venue website", "--", "--", "--", "--"]
-    #     dates = ["--", "--", "--", "--", "--"]
+    except Exception:
+        events = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, events, dates
 
@@ -815,10 +815,6 @@ def scrape_bluemoon():
     return venue, website, neighborhood, bands, dates
 
 
-def scrape_egans():
-    pass
-
-
 def scrape_rendezvous():
     venue = "Rendezvous"
     website = "https://rendezvous.squarespace.com/events"
@@ -868,12 +864,37 @@ def scrape_rendezvous():
     return venue, website, neighborhood, bands, dates
 
 
+def scrape_triple_door():
+    venue = "The Triple Door - Mainstage"
+    website = "https://thetripledoor.net/mainstage-calendar"
+    neighborhood = "Downtown"
+    url = "https://thetripledoor.net/mainstage-calendar"
+
+    soup = get_soup(url)
+    act_tags = soup.find_all("span", class_="event-name alt-font")
+    time_tags = soup.find_all("span", class_="time")
+    date_tags = soup.find_all("span", class_="date")
+    when_tags = soup.find_all("span", class_="event-when with-time")
+    description_tags = soup.find_all("div", class_="event-description")
+    print(len(description_tags))
+    acts = [act.text for act in act_tags]
+    times = [time.text for time in time_tags]
+    dates = [date.text for date in date_tags]
+
+    print("hello")
+
+
+
+def scrape_egans():
+    pass
+
+
 def scrape_wamu():
     pass
 
 
 if __name__ == "__main__":
-    print(scrape_rendezvous())
+    print(scrape_triple_door())
 
 
 
