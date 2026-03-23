@@ -868,7 +868,7 @@ def scrape_skylark():
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
-    return venue, neighborhood, bands, dates
+    return venue, url, neighborhood, bands, dates
 
 
 def scrape_rendezvous():
@@ -913,6 +913,15 @@ def scrape_rendezvous():
         dates = [pair[0] for pair in future_event_pairs[0:5]]
         bands = [pair[1] for pair in future_event_pairs[0:5]]
 
+
+        # Tester Code
+        # print(len(dates))
+        # print(len(bands))
+        # x = 0
+        # while x < len(dates):
+        #     print(f"{dates[x]} {bands[x]}")
+        #     x += 1
+
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
@@ -950,7 +959,7 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_skylark())
+    print(scrape_rendezvous())
 
 
 

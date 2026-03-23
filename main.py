@@ -115,7 +115,7 @@ def run_update_job():
         cr.scrape_substation(),
         cr.scrape_neptune(),
         cr.scrape_crocodile(),
-        # cr.scrape_rendezvous(),
+        cr.scrape_rendezvous(),
         cr.scrape_tractor_tavern(),
         cr.scrape_sunset_tavern(),
         cr.scrape_conor_byrne(),
