@@ -107,6 +107,7 @@ def run_update_job():
         cr.scrape_el_corazon(),
         cr.scrape_funhouse(),
         cr.scrape_nuemos(),
+        cr.scrape_barboza(),
         cr.scrape_showbox_presents()[0],
         cr.scrape_showbox_presents()[1],
         cr.scrape_nectar(),
@@ -120,7 +121,8 @@ def run_update_job():
         cr.scrape_conor_byrne(),
         cr.scrape_seamonster(),
         cr.scrape_bluemoon(),
-        cr.scrape_royal_room()
+        cr.scrape_royal_room(),
+        cr.scrape_skylark()
     ])
 
     fn_client = storage.Client()

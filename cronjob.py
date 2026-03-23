@@ -1,13 +1,11 @@
 import datetime
-
+from dateutil.relativedelta import relativedelta
 import requests
 from datetime import datetime, timezone
 import yaml
 import selectorlib
-import urllib.request
 import json
 from bs4 import BeautifulSoup
-from html import unescape
 
 
 HEADERS = {
@@ -337,6 +335,48 @@ def scrape_nuemos():
 
     # print(bands)
     # print(dates)
+    return venue, website, neighborhood, bands, dates
+
+
+def scrape_barboza():
+    venue = "Barboza"
+    website = "https://www.thebarboza.com/events"
+    neighborhood = "Capitol Hill"
+    url = "https://www.thebarboza.com//events/calendar/2026/3?v=2"
+    try:
+        soup = get_soup(website)
+        events = soup.find_all("div", class_="entry")
+        bands = []
+        month_day = []
+
+        for event in events[0:5]:
+            headliner_tag = event.find("a", title="More Info")
+            support_tag = event.find("h4", class_="tagline")
+            month = event.find("span", class_="m-date__month").text.strip()
+            day = event.find("span", class_="m-date__day").text.strip()
+            month_day.append(f"{month} {day}")
+
+            headliner = headliner_tag.text.strip() if headliner_tag else None
+            support = support_tag.text.strip() if support_tag else None
+
+            if support is None:
+                bands.append(headliner)
+            else:
+                bands.append(f"{headliner} w/ {support}")
+
+        dates = []
+        month = datetime.now().month
+        for date in month_day:
+            year = datetime.now().year
+            if month == 12 and date[0:3] == "Jan":
+                year += 1
+            else:
+                pass
+            dates.append(f"{date}, {year}")
+    except Exception:
+        events = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+
     return venue, website, neighborhood, bands, dates
 
 
@@ -780,24 +820,20 @@ def scrape_bluemoon():
     website = "https://www.thebluemoonseattle.com/"
     neighborhood = "Wallingford"
     today = datetime.today().strftime("%Y-%m-%d")
+    next_month = (datetime.today() + relativedelta(months=1)).strftime("%Y-%m-%d")
+    print(next_month)
     url = "https://clients6.google.com/calendar/v3/calendars/k3bcrptn7frodqrcbe093i3s4o%40group." \
           "calendar.google.com/events?calendarId=k3bcrptn7frodqrcbe093i3s4o%40group.calendar." \
           "google.com&singleEvents=true&eventTypes=default&eventTypes=focusTime&eventTypes=" \
           "outOfOffice&timeZone=America%2FLos_Angeles&maxAttendees=1&maxResults=250&sanitizeHtml=" \
-          f"true&timeMin={today}T00%3A00%3A00%2B18%3A00&timeMax=" \
-          "2026-03-05T00%3A00%3A00-18%3A00&key=AIzaSyDOtGM5jr8bNp1utVpG2_gSRH03RNGBkI8&%24unique" \
+          f"true&timeMin={today}T00%3A00%3A00-08%3A00&timeMax={next_month}T00%3A00%3A00-18%3A00&" \
+          "&key=AIzaSyDOtGM5jr8bNp1utVpG2_gSRH03RNGBkI8&%24unique" \
           "=gc237"
 
     try:
         response = requests.get(url, headers=HEADERS)
-
-        if response.status_code == 200:
-            raw_calendar_data = response.json()["items"]
-            print(raw_calendar_data)
-        else:
-            print(f"Failed to fetch events: {response.status_code}")
-            return "No Info", "--"
-
+        raw_calendar_data = response.json()["items"]
+        print(raw_calendar_data)
         event_names = [item["summary"] for item in raw_calendar_data]
         start_date_strings = [item["start"]["dateTime"] for item in raw_calendar_data]
         start_datetime_objects = [datetime.strptime(item, "%Y-%m-%dT%H:%M:%S%z")
@@ -808,11 +844,31 @@ def scrape_bluemoon():
         dates = [item[0].strftime("%b %d, %Y") for item in past_dates_removed[0:5]]
         bands = [item[1] for item in past_dates_removed[0:5]]
 
+        # TEST PRINT:
+        for band, date in zip(bands, dates):
+            print(f"{date} -- {band}")
+
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
+
+
+def scrape_skylark():
+    venue = "The Skylark Cafe"
+    neighborhood = "West Seattle"
+    url = "https://www.skylarkcafe.com/calendar"
+    try:
+        soup = get_soup(url)
+        dates_unformatted = [date.text for date in soup.find_all("div", class_="date")]
+        bands = [band.text.strip() for band in soup.find_all("div", class_="text-block-12")]
+        dates = [datetime.strptime(date, "%B %d, %Y %I:%M %p").strftime("%b %d, %Y")
+                 for date in dates_unformatted]
+    except Exception:
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+    return venue, neighborhood, bands, dates
 
 
 def scrape_rendezvous():
@@ -894,7 +950,7 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_triple_door())
+    print(scrape_skylark())
 
 
 
