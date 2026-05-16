@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from flask import Flask, render_template, make_response, send_from_directory, request, abort
 import cronjob as cr
 import csv
@@ -5,6 +7,7 @@ from google.cloud import storage
 import io
 from time import sleep
 import ast
+import pprint
 
 
 app = Flask(__name__)
@@ -34,23 +37,71 @@ def download_shows():
         for row in reader:
             downloaded_shows.append(row)
 
+    # pprint.pp(downloaded_shows)
+
     for item in downloaded_shows:
+        """
+                                        FOR THE REWORK
+        -------------------------------------------------------------------------------
+        This is where date/time info will be converted back into a datetime object
+        from the ISO-string that is going to be stored in the CSV file.
+        
+        The objects will be converted into the ISO-strings in their individual modules
+        in cron.py, before being sent over here to main.py to be uploaded to the cloud.
+        
+        First, the data will be extracted from CSV into the downloaded_shows list, just 
+        like it is right now, but now with this new additional string data.  Then we'll
+        conver that into a list, just like bands_list and dates_list are created (see 
+        below).  Then iterate through that list and convert each item back into a 
+        datetime object.
+        
+        Easy Peasy
+        -------------------------------------------------------------------------------
+        """
+
         bands_string = item[3]
         dates_string = item[4]
         bands_list = ast.literal_eval(bands_string)
         dates_list = ast.literal_eval(dates_string)
         item[3] = bands_list
         item[4] = dates_list
+
+        """The following if/else statement is only necessary while all the scraping
+        modules have NOT been updated to include datetime objects"""
+
+        if 5 < len(item):
+            iso_string = item[5]
+            iso_list = ast.literal_eval(iso_string)
+            dt_list = [datetime.fromisoformat(iso) for iso in iso_list]
+            item[5] = dt_list
+            for list_item in item[5]:
+                print(list_item.strftime("%a %d %#I:%M %p"))
+        else:
+            pass
         show_dictionary[item[0]] = item[1:]
 
+    # pprint.pp(downloaded_shows)
     return show_dictionary
 
 
 @app.route("/")
-def new_index():
+def index():
     dictionary = download_shows()
+    # pprint.pp(dictionary)
 
     response = make_response(render_template("index.html", dictionary=dictionary))
+    response.headers["Connection"] = "close"
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Expires"] = "0"
+    return response
+
+
+@app.route("/home")
+def home():
+    dictionary = download_shows()
+    response = make_response(render_template("home.html",
+                                             dictionary=dictionary,
+                                             datetime=datetime))
     response.headers["Connection"] = "close"
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Expires"] = "0"
@@ -95,7 +146,7 @@ def admin_run_update():
 
 
 def run_update_job():
-    print("Updating CSV...")
+    # print("Updating CSV...")
 
     upload_shows = []
     file_name = "Show_Data.csv"
@@ -106,7 +157,7 @@ def run_update_job():
         cr.scrape_babayaga(),
         cr.scrape_el_corazon(),
         cr.scrape_funhouse(),
-        cr.scrape_nuemos(),
+        cr.scrape_neumos(),
         cr.scrape_barboza(),
         cr.scrape_showbox_presents()[0],
         cr.scrape_showbox_presents()[1],

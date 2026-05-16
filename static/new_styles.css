@@ -1,0 +1,390 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+@font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url('static/fonts/PlusJakartaSans-VariableFont_wght.ttf') format('ttf');
+    font-display: swap;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #000000;
+    color: rgb(219, 219, 219);
+    font: "Arial";
+}
+
+body {
+    position: relative;
+    background: #111811;
+    max-width: 1600px;
+    margin: auto;
+}
+
+.sidenav {
+    font-family: "Plus Jakarta Sans";
+}
+
+.nav-link {
+    font-family: "Plus Jakarta Sans"
+}
+
+
+li {
+    list-style: none;
+}
+
+a {
+    color: #ecfdf5;
+    text-decoration: none;
+}
+
+.container {
+    margin: auto;
+}
+
+.navbar {
+    width: 95%;
+    margin: auto;
+    min-height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-branding {
+    font-size: 1.7rem;
+    display: flex;
+    align-items: center;
+    /* border: 1px solid fuchsia; */
+    padding-right: 0px;
+    color:#95d3ba;
+    max-width: max-content;
+}
+
+.nav-menu {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    justify-content: center;
+    gap:40px;
+    padding-right: 50px;
+    /* border: 1px solid red; */
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    display: inline-block;
+}
+
+.hamburger_icon {
+    /* border: 1px solid red; */
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: block;
+    margin-right: 15px;
+    /* background-color:#64d3a8; */
+}
+
+.bar {
+    height: 4px;
+    width: 30px;
+    background-color:#64d3a8;
+    margin: auto;
+    margin-top: 6.5px;
+}
+
+.logo_image {
+    max-height: 100px;
+}
+
+.brandButton {
+    display: flex;
+    align-items: center;
+}
+
+.venue_cal_header {
+    margin-top: 100px;
+    padding-top: 20px;
+    padding-bottom: 30px;
+}
+
+.home_title {
+    background-image: url("images/Seattle_Skyline_2019-1117.jpg");
+    background-position: bottom left;
+    background-size: cover;
+    padding: 15px;
+    padding-top: 55px;
+    display: flex;
+    align-items: center;
+}
+
+
+h1.small-caps{
+    font-family: "Plus Jakarta Sans";
+    /* font-variant: small-caps; */
+    font-size: 4rem;
+    /* color:#a5d3c1; */
+    color:#64d3a8;
+    text-shadow: 0 5px 5px rgba(0,0,0,0.8);
+}
+
+h2.small-caps{
+    font-family: "Plus Jakarta Sans";
+    /* font-variant: small-caps; */
+    font-size: 2rem;
+    color:#a5d3c1;
+}
+
+p.title-subtext {
+    color: rgb(216, 215, 215);
+    font-size: 1.1rem;
+    padding-top: 15px;
+    text-shadow: 0 5px 5px rgba(0,0,0,0.8);
+}
+
+section > h1 {
+    color: #64d3a8;
+    margin: auto;
+    border: 1px solid purple;
+    text-align: center;
+}
+
+.venue_cal_cards {
+    padding: 30px;
+    /* border: 1px solid firebrick; */
+}
+
+.badge_expand {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.venue_card_badge {
+    border-radius: 100%;
+    max-width: 60px;
+}
+
+.cal_card {
+    display: inline-block;
+    vertical-align: top;
+    min-width: 250px;
+    /* max-width: 300px; */
+    max-width: 320px;
+    /* min-height: 275px; */
+    width: 100%;
+    margin: 15px;
+    border-radius: 15px;
+    /* background-color: #202920; */
+    background-color: #2d3a2d;
+    color: #e8ebe9;
+    padding: 15px;
+    padding-right: 0px;
+}
+
+.venue_name {
+    padding-bottom: 4px;
+    font-size: 1.7rem;
+    transition: color 0.2s ease;
+}
+
+.venue_name:hover {
+    color: #e2bd97;
+}
+
+.neighborhood {
+    font-size: 0.8rem;
+    color: #adafad;
+}
+
+.venue_next_show_label {
+    color: #a5d3c1;
+    padding-bottom: 5px;
+}
+
+.next_event {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    row-gap: 9px;
+    column-gap: 10px;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    /* background-color: lightblue; */
+}
+
+.rest_of_events {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    row-gap: 15px;
+    column-gap: 10px;
+    max-height: 500px;
+    transition: max-height 0.5s ease;
+}
+
+.rest_of_events.expanded {
+    max-height: 500px;
+}
+
+.hidden {
+    max-height: 0px;
+    overflow: hidden;
+}
+
+.event {
+    grid-column: 2;
+    font-size: .95rem;
+    font-family: 'Segoe UI';
+    /* border: 1px solid sandybrown; */
+}
+
+.time_and_genre {
+    color: #dbbda1;
+}
+
+.date {
+    grid-column: 1;
+    display: flex;
+    max-width: max-content;
+    align-items: center;
+    margin-right: 10px;
+    padding-right: 5px;
+    border-radius: 25%;
+    padding-left: 10px;
+}
+
+.date_badge {
+    grid-column: 1;
+    /* border: 1px solid turquoise; */
+    /* background-color: #1a221a; */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /* border: 1px solid red; */
+    background-color: #1a221a;
+    gap: 2px;
+    /* margin-top: 8px;
+    margin-bottom: 8px; */
+    /* border-right: 1px solid #b9ddd1; */
+}
+
+.date_badge h4 {
+    display: block;
+    margin: auto;
+    margin-top: .45rem;
+    font-size: .85rem;
+    color: #b9ddd1;
+    /* border: 1px solid red; */
+}
+
+.date_badge div {
+    display: block;
+    margin: auto;
+    font-size: 1.0rem;
+
+}
+
+.time {
+    font-size: 0.85rem;
+    text-align: left;
+    margin-top: 6px;
+    padding-left: 9px;
+    padding-right: 5px;
+    /* margin-right: 5px; */
+    height: 100%;
+    /* border-left: 1px solid #b9ddd1;
+    border-right: 1px solid #b9ddd1; */
+}
+
+.ticket_link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    width: 45px;
+    margin-right: 15px;
+    border-radius: 50%;
+    /* border: 2.5px solid #64d3a8; */
+    color: black;
+    transition: background-color 0.2s ease;
+
+}
+
+.ticket_link:hover {
+    background-color:rgb(226, 204, 133)
+}
+
+.expander {
+    font-family: "Plus Jakarta Sans";
+    color: #a5d3c1;
+    background-color: #52625C;
+    font-size: 1.8rem;
+    margin-right: 15px;
+    width: 45px;
+    height: 45px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.1s ease-out;
+}
+
+.expander:hover {
+    transform: scale(1.1);
+}
+
+.expander:active {
+    transform: scale(0.75);
+    transform: translateY(2px);
+    transform: rotate(45deg);
+}
+
+.font_jakarta {
+    font-family: "Plus Jakarta Sans";
+}
+
+
+@media(max-width:1280px){
+    .container {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .brandButton {
+        font-size: 1.1rem;
+    }
+
+    .logo_image {
+        max-height: 70px;
+    }
+
+    .nav-menu {
+        flex-wrap: wrap;
+        padding: 5px;
+        padding-right: 5px;
+        gap: 10px;
+        display: none;
+    }
+
+    .venue_cal_cards {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .cal_card {
+        margin: auto;
+        margin-bottom: 15px;
+    }
+}
