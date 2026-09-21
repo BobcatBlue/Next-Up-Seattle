@@ -1,42 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-  <!--  <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" name="viewport" content="width-device-width, initial-scale=1.0">
-    <title>{% block title %}Next Up Seattle{% endblock %}</title>
+<head>
+    <meta http-equiv="X-UA-Compatible" name="viewport" content="IE=edge, width-
+    device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/third_styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/new_styles.css">
-    <script src="/static/new_script.js" defer></script>
-  </head>
-  <header style="max-width: 1600px;">
-    <div class="container">
-        <nav class="navbar">
-            <a href="/" class="nav-branding font_jakarta" style="font-size: 1.75rem;">
-                <img src="static/images/Next Up Logo Transparent.png" alt="" style="padding-top: 10px; padding-bottom: 10px;" class="logo_image">
-                <div class="brandButton" style="padding: 15px;">
-                    <b>Next Up, Seattle!</b>
-                </div>
-            </a>
-            <ul class="nav-menu">
-<!--                <li class="nav-link" style="text-align: center;"><a href="/">Tonight's Events</a></li>-->
-                <li class="nav-link" style="text-align: center;"><a href="/">Upcoming Shows</a></li>
-                <li class="nav-link"><a href="/"></a>About Us</li>
-                <li class="nav-link"><a href="/">Contact</a></li>
-            </ul>
-            <div class="hamburger_icon">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+      rel="stylesheet">
+    <title>Next Up, Seattle!</title>
+</head>
+
+<body>
+<header style="max-width: 1600px;">
+<div class="container">
+    <nav class="navbar">
+        <a href="/" class="nav-branding font_jakarta" style="font-size: 1.75rem;">
+            <img src="Next Up Logo Transparent and Narrow.png" alt="" style="padding-top: 10px; padding-bottom: 10px;" class="logo_image">
+            <div class="brandButton" style=" padding: 15px;">
+                <!-- <b>Next Up, <br>Seattle!</b> -->
             </div>
-        </nav>
-    </div>
+        </a>
+        <ul class="nav-menu">
+            <li class="nav-link" style="text-align: center;"><a href="/">Tonight's Events</a></li>
+            <li class="nav-link" style="text-align: center;"><a href="/">Live Music</a></li>
+            <li class="nav-link"><a href="/">Art Events</a></li>
+            <li class="nav-link"><a href="/">DJs & Dancing</a></li>
+            <li class="nav-link"><a href="/"></a>About Next Up</li>
+            <li class="nav-link"><a href="/">Contact</a></li>
+        </ul>
+        <div class="hamburger_icon">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+</div>
 </header>
-  <body>
-    <main>
-      {% block content %}{% endblock %}
-    </main>
-  </body>
+
+    {% block content %}{% endblock %}
+    <script src="/static/third_script.js"></script>
+</body>
 </html>

@@ -16,10 +16,10 @@ import pprint
 """
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
-
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like '
                   'Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
 # UA = UserAgent()
 
 # Extract the url components and API key from app.yaml
@@ -98,6 +98,43 @@ def extract_json_from_script(script_text):
     return json.loads(json_str)
 
 
+def add_years(dates_no_years):
+    dates = dates_no_years
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+    next_year = current_year + 1
+    for index, date in enumerate(dates):
+        if date[0:3] == "Jan" and current_month == 12:
+            date = f"{date}, {next_year}"
+            dates[index] = date
+        else:
+            date = f"{date}, {current_year}"
+            dates[index] = date
+    return dates
+
+
+def dtzip_12hr(dates, times):
+    date_tuples = list(zip(dates, times))
+    # print(date_tuples)
+    iso_dates = []
+    for datetime_string in date_tuples:
+        dt = datetime.strptime(f"{datetime_string[0]} {datetime_string[1]}",
+                               "%b %d, %Y %I:%M %p")
+        dt = dt.replace(tzinfo=PACIFIC)
+        iso_dates.append(dt.isoformat())
+    return iso_dates
+
+
+def dtzip_24hr(dates, times):
+    date_tuples = list(zip(dates, times))
+    # print(date_tuples)
+    iso_dates = []
+    for datetime_string in date_tuples:
+        dt = datetime.strptime(f"{datetime_string[0]} {datetime_string[1]}",
+                               "%b %d, %Y %H:%M:%S")
+        dt = dt.replace(tzinfo=PACIFIC)
+        iso_dates.append(dt.isoformat())
+    return iso_dates
 
 
 """
@@ -121,23 +158,24 @@ def scrape_central():
     neighborhood = "Pioneer Square"
     url = "https://centralsaloon.com/music-events/"
 
-    """
-    headers = requests.utils.default_headers()
-    headers.update(
-        {
-            'User-Agent': 'My User Agent 1.0'
-        }
-    )"""
-
     try:
         soup = get_soup(url)
+
+        # Find tags for events, dates, times, and ticket links
         event_tags = soup.find_all('h3', class_='mec-event-title')
         date_tags = soup.find_all('span', class_="mec-start-date-label")
         time_tags = soup.find_all('span', class_="mec-start-time")
+        ticket_link_div_tags = soup.find_all('div', class_="mec-event-image")
 
+        # Extract text from tags for events, dates, times and ticket links
         events = [item.text.replace(" • ", ", ") for item in event_tags[0:5]]
         dates_text = [item.text for item in date_tags[0:5]]
         times = [item.text for item in time_tags[0:5]]
+        ticket_links = []
+        for tag in ticket_link_div_tags[0:5]:
+            a = tag.find("a", href=True)
+            ticket_links.append(a["href"])
+            # print(a["href"])
 
         days = []
         months = []
@@ -148,11 +186,6 @@ def scrape_central():
             else:
                 days.append(date[0:2])
                 months.append(date[3:])
-
-        """
-        months = [item[3:] for item in dates_text]
-        days = [item[0:2] for item in dates_text]
-        """
 
         current_month = datetime.now().month
         current_year = datetime.now().year
@@ -168,31 +201,15 @@ def scrape_central():
             dates.append(date)
             i += 1
 
-        # for date in dates:
-        #     print(date)
-        #
-        # for time in times:
-        #     print(time)
-
-        date_tuples = list(zip(dates, times))
-        iso_dates = []
-        for datetime_string in date_tuples:
-            dt = datetime.strptime(f"{datetime_string[0]} {datetime_string[1]}",
-                                   "%b %d, %Y %I:%M %p")
-            dt = dt.replace(tzinfo=PACIFIC)
-            iso_dates.append(dt.isoformat())
-
-        # for date in iso_dates:
-        #     print(date)
-
-
+        iso_dates = dtzip_12hr(dates, times)
 
     except Exception:
         events = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, events, dates, iso_dates
+    return venue, website, neighborhood, events, dates, iso_dates, ticket_links
 
 
 def scrape_babayaga():
@@ -243,36 +260,49 @@ def scrape_babayaga():
 
         # The dates-list includes dates well before today's date
         # This code finds the index number for today's dates
-        index_of_today = 0
+        todays_index = 0
         for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
             date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
             date = datetime.strptime(date, "%b %d, %Y")
 
             if today > date:
-                index_of_today += 1
+                todays_index += 1
             else:
                 break
 
         # This is a list of dictionaries
-        events_dictionaries = raw_calendar_data["data"]["paginatedEvents"]["collection"][
-                              index_of_today:index_of_today + 5]
+        event_data = raw_calendar_data["data"]["paginatedEvents"]["collection"][
+                              todays_index:todays_index + 5]
 
         bands = []
         unformatted_dates = []
+        times = []
+        iso_dates = []
+        ticket_urls = []
 
-        for item in events_dictionaries:
+        for item in event_data:
             bands.append(item["name"])
             unformatted_dates.append(item["date"])
-
+            times.append(item["startTime"])
+            ticket_urls.append(item["ticketsUrl"])
         # Reformat the dates and put them in a new list
         dates = [datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y") for date in unformatted_dates]
+        dt_tuples = list(zip(dates, times))
+        # print(dt_tuples)
+        for pair in dt_tuples:
+            dt = datetime.strptime(f"{pair[0]} {pair[1]}",
+                                   "%b %d, %Y %H:%M:%S")
+            dt = dt.replace(tzinfo=PACIFIC)
+            iso_dates.append(dt.isoformat())
 
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_urls = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_urls
 
 
 def scrape_el_corazon():
@@ -284,12 +314,24 @@ def scrape_el_corazon():
         url = "https://elcorazonseattle.com/"
         soup = get_soup(url)
         el_corazon_calendar = soup.find("div", class_="el-corazon")
-        headliner_tags = el_corazon_calendar.find_all("a", class_="link-block-3 no-underline w-inline-"
-                                                                  "block w-condition-invisible")[0:5]
-        headliners = [headliner.find("div", class_="headliners").text for headliner
-                      in headliner_tags]
-        supporting_acts = [support.text for support
-                           in el_corazon_calendar.find_all("div", class_="supports")][0:5]
+        headliners = [headliner.find("div", class_="headliners").text
+                      for headliner in
+                      el_corazon_calendar.find_all("a", class_="link-block-3 no-underline "
+                                                                  "w-inline-block w-condition-"
+                                                                  "invisible")[0:5]]
+        supporting_acts = [support.text
+                           for support in
+                           el_corazon_calendar.find_all("div", class_="supports")][0:5]
+
+        times = [showtime.find_all("div", class_="text-block-75")[4].text
+                      for showtime in
+                      el_corazon_calendar.find_all("div", class_="show-times")[0:5]]
+
+        ticket_links = [f"www.elcorazonseattle.com{a['href']}"
+                       for a in
+                       el_corazon_calendar.find_all("a", class_="uui-button w-inline-block")[0:5]]
+
+        # Concatenate strings for headliners and supporting acts into bands[]
         bands = []
         for index, headliner in enumerate(headliners):
             if headliner == "":
@@ -298,25 +340,23 @@ def scrape_el_corazon():
                 band = f"{headliner}, {supporting_acts[index]}"
             bands.append(band)
 
+        # This block creates a list of 2-item lists made of a weekday ("Sun") and date ("May 17")
         day_dates = [date.find_all("div", class_="text-block-72") for date
                      in el_corazon_calendar.find_all("div", class_="day-date")][0:5]
-        dates = [date[1].text for date in day_dates]
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-        next_year = current_year + 1
-        for index, date in enumerate(dates):
-            if date[0:3] == "Jan" and current_month == 12:
-                date = f"{date}, {next_year}"
-                dates[index] = date
-            else:
-                date = f"{date}, {current_year}"
-                dates[index] = date
+
+        # Extract month and day into a list
+        dates_no_year = [date[1].text for date in day_dates]
+        dates = add_years(dates_no_year)
+
+        iso_dates = dtzip_12hr(dates, times)
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
 
 def scrape_funhouse():
@@ -328,12 +368,27 @@ def scrape_funhouse():
         url = "https://elcorazonseattle.com/"
         soup = get_soup(url)
         funhouse_calendar = soup.find("div", class_="funhouse")
-        headliner_tags = funhouse_calendar.find_all("a", class_="link-block-3 no-underline w-inline-"
-                                                                  "block w-condition-invisible")[0:5]
-        headliners = [headliner.find("div", class_="headliners").text for headliner
-                      in headliner_tags]
-        supporting_acts = [support.text for support
-                           in funhouse_calendar.find_all("div", class_="supports")][0:5]
+        headliner_tags = funhouse_calendar.find_all("a",
+                                                    class_="link-block-3 no-underline w-inline-"
+                                                           "block w-condition-invisible")[0:5]
+
+        headliners = [headliner.find("div", class_="headliners").text
+                      for headliner in
+                      headliner_tags]
+
+        supporting_acts = [support.text
+                           for support in
+                           funhouse_calendar.find_all("div", class_="supports")][0:5]
+
+        times = [showtime.find_all("div", class_="text-block-75")[4].text
+                      for showtime in
+                      funhouse_calendar.find_all("div", class_="show-times")[0:5]]
+
+        ticket_links = [f"www.elcorazonseattle.com{a['href']}"
+                       for a in
+                       funhouse_calendar.find_all("a", class_="uui-button w-inline-block")[0:5]]
+
+
         bands = []
         for index, headliner in enumerate(headliners):
             if headliner == "":
@@ -345,26 +400,20 @@ def scrape_funhouse():
 
         day_dates = [date.find_all("div", class_="text-block-72") for date
                      in funhouse_calendar.find_all("div", class_="day-date")][0:5]
-        dates = [date[1].text for date in day_dates]
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-        next_year = current_year + 1
-        for index, date in enumerate(dates):
-            if date[0:3] == "Jan" and current_month == 12:
-                date = f"{date}, {next_year}"
-                dates[index] = date
-            else:
-                date = f"{date}, {current_year}"
-                dates[index] = date
-        # for band in bands:
-        #     print(band)
-        # print(dates)
+
+        dates_no_year = [date[1].text for date in day_dates]
+        dates = add_years(dates_no_year)
+
+        iso_dates = dtzip_12hr(dates, times)
+
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
 
 def scrape_neumos():
@@ -372,139 +421,139 @@ def scrape_neumos():
     website = "https://www.nuemos.com/"
     neighborhood = "Capitol Hill"
     try:
-        website = "https://www.neumos.com/events"
-        response = requests.get(website, headers=HEADERS)
-        response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("extract_nuemos.yaml")
-        bands = extractor.extract(source)["bands"][0:5]
-        dates = extractor.extract(source)["date"][0:5]
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-        next_year = current_year + 1
+        url = "https://www.neumos.com/events"
+        soup = get_soup(url)
 
-        for index, date in enumerate(dates):
-            if date[0:3] == "Jan" and current_month == 12:
-                date = f"{date}, {next_year}"
-                dates[index] = date
-            else:
-                date = f"{date}, {current_year}"
-                dates[index] = date
-
-        # print(bands)
-        # print(dates)
+        bands = [band.text for band in soup.find_all("a", title="More Info")[0:5]]
+        date_tuples = [date.find_all("span")
+                       for date in
+                       soup.find_all("span", class_="m-date__singleDate")[0:5]]
+        dates_no_year = [f"{date[0].text.strip()[0:3]} {date[1].text}" for date in date_tuples]
+        dates = add_years(dates_no_year)
+        times = [time.text.strip()[7:] for time in soup.find_all("div", class_="time")[0:5]]
+        iso_dates = dtzip_12hr(dates, times)
+        ticket_links = [a["href"] for a in soup.find_all("a", class_="tickets onsalenow")[0:5]]
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    # print(bands)
-    # print(dates)
-    return venue, website, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
 
 def scrape_barboza():
     venue = "Barboza"
     website = "https://www.thebarboza.com/events"
     neighborhood = "Capitol Hill"
-    url = "https://www.thebarboza.com//events/calendar/2026/3?v=2"
+    url = website
     try:
-        soup = get_soup(website)
-        events = soup.find_all("div", class_="entry")
-        bands = []
-        month_day = []
+        soup = get_soup(url)
 
-        for event in events[0:5]:
-            headliner_tag = event.find("a", title="More Info")
-            support_tag = event.find("h4", class_="tagline")
-            month = event.find("span", class_="m-date__month").text.strip()
-            day = event.find("span", class_="m-date__day").text.strip()
-            month_day.append(f"{month} {day}")
+        bands = [band.text for band in soup.find_all("a", title="More Info")[0:5]]
+        date_tuples = [date.find_all("span")
+                       for date in
+                       soup.find_all("span", class_="m-date__singleDate")[0:5]]
+        dates_no_year = [f"{date[0].text.strip()[0:3]} {date[1].text}" for date in date_tuples]
+        dates = add_years(dates_no_year)
+        times = [time.text.strip()[7:] for time in soup.find_all("div", class_="time")[0:5]]
+        iso_dates = dtzip_12hr(dates, times)
+        ticket_links = [a["href"] for a in soup.find_all("a", class_="tickets onsalenow")[0:5]]
 
-            headliner = headliner_tag.text.strip() if headliner_tag else None
-            support = support_tag.text.strip() if support_tag else None
-
-            if support is None:
-                bands.append(headliner)
-            else:
-                bands.append(f"{headliner} w/ {support}")
-
-        dates = []
-        month = datetime.now().month
-        for date in month_day:
-            year = datetime.now().year
-            if month == 12 and date[0:3] == "Jan":
-                year += 1
-            else:
-                pass
-            dates.append(f"{date}, {year}")
     except Exception:
-        events = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
 
 def scrape_showbox_presents():
     url = "https://www.showboxpresents.com"
     try:
-        response = requests.get("https://www.showboxpresents.com/events/all", headers=HEADERS)
-        response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("extract_showbox.yaml")
-        events = extractor.extract(source)["event_name"][0:100]
-        dates = extractor.extract(source)["date"][0:100]
-        venues = extractor.extract(source)["venue"][0:100]
+        soup = get_soup(url)
+        # print(soup)
+        event_cards = soup.find_all("div", class_="entry")
+        # print(event_cards)
 
-        counter = 0
-        showbox_list = []
-        showbox_sodo_list = []
-        while counter < (len(events)):
-            event = [venues[counter], events[counter], dates[counter]]
-            match event[0]:
-                case "@ Showbox SoDo":
-                    showbox_sodo_list.append(event)
-                case "@ The Showbox":
-                    showbox_list.append(event)
-                case _:
-                    pass
-            counter += 1
-
-        showbox_list = showbox_list[0:5]
-        showbox_sodo_list = showbox_sodo_list[0:5]
-
-        showbox_dates = []
         showbox_bands = []
-        for item in showbox_list:
-            showbox_dates.append(item[2])
-            showbox_bands.append(item[1])
-        showbox_dates = [item[5:] for item in showbox_dates]
+        showbox_dates = []
+        showbox_times = []
+        showbox_links = []
 
-        showbox_sodo_dates = []
-        showbox_sodo_bands = []
-        for item in showbox_sodo_list:
-            showbox_sodo_dates.append(item[2])
-            showbox_sodo_bands.append(item[1])
-        showbox_sodo_dates = [item[5:] for item in showbox_sodo_dates]
+        sodo_bands = []
+        sodo_dates = []
+        sodo_times = []
+        sodo_links = []
 
-        showbox_shows = ["The Showbox at the Market", url, "Pike Place Market",
-                         showbox_bands, showbox_dates]
-        showbox_sodo_shows = ["The Showbox SODO", url, "SODO", showbox_sodo_bands,
-                              showbox_sodo_dates]
+        for card in event_cards:
+            match card.find("div", class_="event_venue").text:
+                case "The Showbox":
+                    if len(showbox_bands) == 5:
+                        pass
+                    showbox_bands.append(card.select_one("h3.carousel_item_title_small a").text.strip())
+                    showbox_dates.append(card.find("div", class_="date").text.strip())
+                    showbox_links.append(card.find("a", class_="tickets")["href"])
+
+                case "Showbox SoDo":
+                    if len(sodo_bands) == 5:
+                        pass
+                    sodo_bands.append(card.select_one("h3.carousel_item_title_small a").text.strip())
+                    sodo_dates.append(card.find("div", class_="date").text.strip())
+                    sodo_links.append(card.find("a", class_="tickets")["href"])
+
+        for index, date in enumerate(showbox_dates):
+            parts = date.split(' ')
+            parts[0] = parts[0].strip(',')
+            result = [' '.join(parts[1:4]), ' '.join(parts[4:])]
+            showbox_dates[index] = result[0]
+            showbox_times.append(result[1])
+
+        for index, date in enumerate(sodo_dates):
+            parts = date.split(' ')
+            parts[0] = parts[0].strip(',')
+            result = [' '.join(parts[1:4]), ' '.join(parts[4:])]
+            sodo_dates[index] = result[0]
+            sodo_times.append(result[1])
+
+        showbox_iso_dates = dtzip_12hr(showbox_dates, showbox_times)
+        sodo_iso_dates = dtzip_12hr(sodo_dates, sodo_times)
+
+        showbox_info = ["The Showbox at the Market",
+                        url,
+                        "Downtown",
+                        showbox_bands,
+                        showbox_dates,
+                        showbox_iso_dates,
+                        showbox_links]
+        sodo_info = ["Showbox Sodo",
+                     url,
+                     "SODO",
+                     sodo_bands,
+                     sodo_dates,
+                     sodo_iso_dates,
+                     sodo_links]
 
     except Exception:
-        showbox_shows = ["The Showbox at the Market",
+        showbox_info = ["The Showbox at the Market",
                          url,
-                         "Pike Place",
+                         "Downtown",
                          ["No info - Check venue website", "--", "--", "--", "--"],
-                         ["--", "--", "--", "--", "--"]]
-        showbox_sodo_shows = ["The Showbox SODO",
+                         ["--", "--", "--", "--", "--"],
+                         ["--", "--", "--", "--", "--"],
+                         ["", "", "", "", ""]]
+
+        sodo_info = ["The Showbox SODO",
                               url,
                               "SODO",
                               ["No info - Check venue website", "--", "--", "--", "--"],
-                              ["--", "--", "--", "--", "--"]]
+                              ["--", "--", "--", "--", "--"],
+                              ["--", "--", "--", "--", "--"],
+                              ["", "", "", "", ""]]
 
-    return showbox_shows, showbox_sodo_shows
+    return showbox_info, sodo_info
 
 
 def scrape_nectar():
@@ -523,15 +572,23 @@ def scrape_nectar():
                  for item in event_elements[0:5]]
         bands = [item.find("a", attrs={"class": "sg-events__event-title-link"}).text.strip()
                  for item in event_elements[0:5]]
+        times = [item.find("time", class_="sg-events__event-start").text.strip()
+                 for item in event_elements[0:5]]
+        ticket_links = [item.find("a", class_="sg-events__event-ticket-link")["href"]
+                        for item in event_elements[0:5]]
         dates = []
         for month, day, year in zip(months, days, years):
             dates.append(f"{month} {day}, {year}")
 
+        iso_dates = dtzip_12hr(dates, times)
+
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
 
 def scrape_hidden_hall():
@@ -550,63 +607,96 @@ def scrape_hidden_hall():
                  for item in event_elements[0:5]]
         bands = [item.find("a", attrs={"class": "sg-events__event-title-link"}).text.strip()
                  for item in event_elements[0:5]]
+        times = [item.find("time", class_="sg-events__event-start").text
+                 for item in event_elements[0:5]]
+        ticket_links = [item.find("a", class_="sg-events__event-ticket-link")["href"]
+                        for item in event_elements[0:5]]
         dates = []
         for month, day, year in zip(months, days, years):
             dates.append(f"{month} {day}, {year}")
 
+        iso_dates = dtzip_12hr(dates, times)
+
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, bands, dates
+
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
 
 def scrape_crocodile():
     venue = "The Crocodile"
     website = "https://www.thecrocodile.com/"
     neighborhood = "Belltown"
-    venueId = "KovZpZA1vFtA"
-    url = f"{URL_1}{venueId}{URL_2}{API_KEY}"
+    url = "https://calendar.thecrocodile.com/"
 
-    """
     try:
-        response = requests.get(url, headers=HEADERS)
-        response.encoding = 'utf-8'
-        data = response.json()
-        events = data["_embedded"]["events"]
+        soup = get_soup(url)
+        event_tags = [event for event in soup.find_all("a", class_="link-block-2")
+                      if "w-condition-invisible" not in event.get("class")]
 
-        index = 0
+        croc_counter = 0
+        croc_indices = []
         bands = []
         dates = []
 
-        while index <= 4:
-            band = events[index]["name"]
-            date = events[index]["dates"]["start"]["localDate"]
-            bands.append(band)
-            dates.append(date)
-            index += 1
 
-        dates = [datetime.strptime(item, "%Y-%m-%d").strftime("%b %d, %Y") for item in dates]
+        for index, event_tag in enumerate(event_tags):
+            if croc_counter > 4:
+                break
+            else:
+                venue_wrapper = event_tag.find("div", class_="venue-blcok uui-event_time-wrapper")
+                the_venue = venue_wrapper.find( "div", class_="text-block-71 cal-start-date").text
+
+                if the_venue == "The Crocodile":
+                    croc_counter += 1
+                    croc_indices.append(index)
+                    bands.append(event_tag.find("h3", class_="uui-heading-xxsmall-2").text)
+                    date_wrapper = event_tag.find("div",
+                                                  class_="date-range-block uui-event_time-wrapper")
+                    date_text = date_wrapper.find("div", class_="text-block-71 cal-start-date").text
+                    month = date_text[0:3]
+                    day = date_text.split(',', 1)[0][-2:]
+                    year = date_text.split(',', 1)[1].strip()[0:4]
+                    dates.append(f"{month} {day}, {year}")
+
+        """The follwoing comment code is to be used later on for getting individual event times.
+            You will have to scrape event pages individually, and use two different sites:
+            the Crocodile's... and TicketWeb :(  """
+
+        iso_dates = ["--", "--", "--", "--", "--"]
+
+        url_prefix = "https://calendar.thecrocodile.com"
+        for index in croc_indices:
+            ticket_linkes = event_tags[index].get("href")
+            if ticket_linkes[0:4] != "http":
+                ticket_linkes = f"{url_prefix}{ticket_linkes}"
+            new_soup = get_soup(ticket_linkes)
+
+        #     if "ticketweb" in href:
+        #         time_text = soup.find_all("div", class_="text-block-71 cal-start-date")
+        #         print(new_soup)
+        #         # for time in time_text:
+        #         #     print(time)
+        #     else:
+        #         pass
+        #
+        # for band, date in zip(bands, dates):
+        #     print(date, band)
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
-    """
-
-    bands = ["LANGHORNE SLIM: The Dreamin’ Kind Tour w/ Laney Jones and the Spirits",
-             "Saxsquatch, Lola K",
-             "THE WEDDING PRESENT: Seamonsters 35th Anniversary Tour w/ Mark Robinson sings Unrest",
-             "Liz Miele",
-             "Earlybirds Club"]
-
-    dates = ["Apr 25 - 06:00pm",
-             "Apr 25 - 10:00pm",
-             "Apr 26 - 08:00pm",
-             "Apr 30 - 07:00pm",
-             "May 01 - 05:30pm"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
     return venue, website, neighborhood, bands, dates
 
+
+""" This module is decommissioned
 
 def scrape_madame_lous():
     venue = "Madame Lous"
@@ -638,6 +728,7 @@ def scrape_madame_lous():
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
+"""
 
 
 def scrape_tractor_tavern():
@@ -646,31 +737,26 @@ def scrape_tractor_tavern():
     neighborhood = "Ballard"
     try:
         url = "https://tractortavern.com/"
-        response = requests.get(url, headers=HEADERS)
-        response.encoding = 'utf-8'
-        source = response.text
-        extractor = selectorlib.Extractor.from_yaml_file("extract_tractor.yaml")
-        bands = extractor.extract(source)["bands"][0:5]
-        dates = extractor.extract(source)["dates"][0:5]
-        dates = [item[0:6].strip() for item in dates]
-        current_month = datetime.now().month
-        current_year = datetime.now().year
-        next_year = current_year + 1
+        soup = get_soup(url)
+        bands = [band.text for band in soup.find_all("span", class_="artisteventsname")[0:5]]
+        days_and_times = [daytime.text.split("@")
+                          for daytime in soup.find_all("span", class_="artisteventstime")[0:5]]
+        dates_no_years = [day[0].strip() for day in days_and_times]
+        times = [time[1].strip() for time in days_and_times]
+        ticket_links = [a["href"]
+                        for a in
+                        soup.select("div.eventsbutton a.button")[0:5]]
 
-        for index, date in enumerate(dates):
-            if date[0:3] == "Jan" and current_month == 12:
-                date = f"{date}, {next_year}"
-                dates[index] = date
-            else:
-                date = f"{date}, {current_year}"
-                dates[index] = date
-
+        dates = add_years(dates_no_years)
+        iso_dates = dtzip_12hr(dates, times)
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
 
 def scrape_conor_byrne():
@@ -697,6 +783,8 @@ def scrape_conor_byrne():
                         collection {
                             name
                             date
+                            startTime
+                            ticketsUrl
                         }
                     }
                 }
@@ -716,40 +804,50 @@ def scrape_conor_byrne():
 
         # The dates-list includes dates well before today's date
         # This code finds the index number for today's dates
-        index_of_today = 0
+        todays_index = 0
         for event in raw_calendar_data["data"]["paginatedEvents"]["collection"]:
             date = datetime.strptime(event["date"], "%Y-%m-%d").strftime("%b %d, %Y")
             date = datetime.strptime(date, "%b %d, %Y")
 
             if today > date:
-                index_of_today += 1
+                todays_index += 1
             else:
                 break
 
-        # print(raw_calendar_data["data"]["paginatedEvents"]["collection"])
-
         # This is a list of dictionaries
         events_dictionaries = raw_calendar_data["data"]["paginatedEvents"]["collection"][
-                              index_of_today:index_of_today + 5]
+                              todays_index:todays_index + 5]
 
         bands = []
         unformatted_dates = []
+        times = []
+        ticket_links = []
 
         for item in events_dictionaries:
             bands.append(item["name"])
             unformatted_dates.append(item["date"])
+            times.append(item["startTime"])
+            if item["ticketsUrl"] is None:
+                ticket_links.append("")
+            else:
+                ticket_links.append(item["ticketsUrl"])
+
 
 
         # Reformat the dates and put them in a new list
         dates = [datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y") for date in
                  unformatted_dates]
 
+        iso_dates = dtzip_24hr(dates, times)
+
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["", "", "", "", ""]
 
-    return venue, website, neighborhood, bands, dates
+    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
 
 def scrape_seamonster():
@@ -764,11 +862,11 @@ def scrape_seamonster():
         data = json.loads(script.string)
 
         # Retrieve the first 5 events with all their data
-        first_five = data["appsWarmupData"]["140603ad-af8d-84a5-2c80-a0f60cb47351"]["widgetcomp-kx2nxyph"]["events"]["events"][0:5]
+        events = data["appsWarmupData"]["140603ad-af8d-84a5-2c80-a0f60cb47351"]["widgetcomp-kx2nxyph"]["events"]["events"][0:5]
 
         # Parse out desired information from first 5 events
-        bands = [event["title"] for event in first_five]
-        dates_unformatted = [event["scheduling"]["startDateFormatted"] for event in first_five]
+        bands = [event["title"] for event in events]
+        dates_unformatted = [event["scheduling"]["startDateFormatted"] for event in events]
         dates = [datetime.strptime(date, "%B %d, %Y").strftime("%b %e, %Y") for date in dates_unformatted]
 
 
@@ -989,7 +1087,7 @@ def scrape_rendezvous():
         data_next.reverse()
         data = data_current + data_next
 
-        timestamps = [datetime.fromtimestamp(item["startDate"] / 1000) for item in data]
+        timestamps = [datetime.fromtimestamp(item["structuredContent"]["startDate"] / 1000) for item in data]
         dates_all = [date.strftime("%b %d, %Y") for date in timestamps]
         bands_all = [item["title"] for item in data]
         zipped_list = list(zip(dates_all, bands_all))
@@ -997,15 +1095,6 @@ def scrape_rendezvous():
                               if datetime.strptime(item[0], "%b %d, %Y") > datetime.now()]
         dates = [pair[0] for pair in future_event_pairs[0:5]]
         bands = [pair[1] for pair in future_event_pairs[0:5]]
-
-
-        # Tester Code
-        # print(len(dates))
-        # print(len(bands))
-        # x = 0
-        # while x < len(dates):
-        #     print(f"{dates[x]} {bands[x]}")
-        #     x += 1
 
     except Exception:
         bands = ["No info - Check venue website", "--", "--", "--", "--"]
@@ -1026,13 +1115,12 @@ def scrape_triple_door():
     date_tags = soup.find_all("span", class_="date")
     when_tags = soup.find_all("span", class_="event-when with-time")
     description_tags = soup.find_all("div", class_="event-description")
-    print(len(description_tags))
+    # print(len(description_tags))
     acts = [act.text for act in act_tags]
     times = [time.text for time in time_tags]
     dates = [date.text for date in date_tags]
 
     print("hello")
-
 
 
 def scrape_egans():
@@ -1044,7 +1132,8 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_babayaga())
+    print(scrape_crocodile())
+
 
 
 

@@ -16,133 +16,27 @@ Home Page
             </div>
         </div>
 
-        <div class="venue_cal_cards all_venues">
+       <div style="color:light blue">
+            {{ dictionary["Central Saloon"][3] }}
+           <br><br><br><br>
+            {% set ts_list = dictionary["Central Saloon"][4] %}
 
-
-
-
-
-            <div class="cal_card font_jakarta">
-                <div class="venue_title_div">
-                    <div class="badge_expand">
-                        <img src="Central Saloon 2.jpg" alt="" class="venue_card_badge">
-                        <div class="Central Saloon expander">
-                            <span>+</span>
-                        </div>
-                    </div>
-                    <a href="" target="_blank" rel="noopener"><h2 class="venue_name">Central Saloon</h2></a>
-                    <p class="neighborhood">Pioneer Square</p>
-                </div>
-                <hr style="margin-right: 15px; margin-top: 10px; margin-bottom: 10px;">
-                <h5 class="venue_next_show_label">Next Show</h5>
-                <div class="next_event">
-                    <div class="date_badge">
-                        <h4>Thu</h4>
-                        <div>
-                            06
-                        </div>
-                    </div>
-                    <div class="event">
-                        <div>
-                            Honestly No, Yellow Peddled Flowers, Yellow Crane
-                        </div>
-                        <div class="time_and_genre">
-                            <span class="event_time"><b>7:00pm</b></span>
-                            <span class="event_genre"><b> · Rock</b></span>
-                        </div>
-                    </div>
-                    <a href="" class="">
-                        <div class="ticket_link">
-                            <img src="/static/images/ticket.png" alt="" style="max-width: 80%;">
-                        </div>
-                    </a>
-                </div>
-                <div class="rest_of_events Central Saloon expandable hidden">
-                    <div class="date_badge">
-                        <h4>Thu</h4>
-                        <div>
-                            06
-                        </div>
-                    </div>
-                    <div class="event">
-                        <div>
-                            VEGA: Feat. Ed Hooter, M4LAiSE, Pooler, Shockleberry Crunch, Soundlogic
-                        </div>
-                        <div class="time_and_genre">
-                            <span class="event_time"><b>7:00pm</b></span>
-                            <span class="event_genre"><b> · Rock</b></span>
-                        </div>
-                    </div>
-                    <a href="" class="">
-                        <div class="ticket_link">
-                            <img src="ticket.png" alt="" style="max-width: 80%;">
-                        </div>
-                    </a>
-
-                    <div class="date_badge">
-                        <h4>Thu</h4>
-                        <div>
-                            06
-                        </div>
-                    </div>
-                    <div class="event">
-                        <div>
-                            My Next Planet, Honeyed, Silk Letdown
-                        </div>
-                        <div class="time_and_genre">
-                            <span class="event_time"><b>7:00pm</b></span>
-                            <span class="event_genre"><b> · Rock</b></span>
-                        </div>
-                    </div>
-                    <a href="" class="">
-                        <div class="ticket_link">
-                            <img src="images/ticket.png" alt="" style="max-width: 80%;">
-                        </div>
-                    </a>
-
-                    <div class="date_badge">
-                        <h4>Thu</h4>
-                        <div>
-                            06
-                        </div>
-                    </div>
-                    <div class="event">
-                        <div>
-                            Keenan Trevon “ByMeFlowers” Tour w/ special guest: AC Yung
-                        </div>
-                        <div class="time_and_genre">
-                            <span class="event_time"><b>7:00pm</b></span>
-                            <span class="event_genre"><b> · Rock</b></span>
-                        </div>
-                    </div>
-                    <a href="" class="">
-                        <div class="ticket_link">
-                            <img src="ticket.png" alt="" style="max-width: 80%;">
-                        </div>
-                    </a>
-
-                    <div class="date_badge">
-                        <h4>Thu</h4>
-                        <div>
-                            06
-                        </div>
-                    </div>
-                    <div class="event">
-                        <div>
-                            Foul Blooded, Deafbloom, Wyoming Young & Strong
-                        </div>
-                        <div class="time_and_genre">
-                            <span class="event_time"><b>7:00pm</b></span>
-                            <span class="event_genre"><b> · Rock</b></span>
-                        </div>
-                    </div>
-                    <a href="" class="">
-                        <div class="ticket_link">
-                            <img src="ticket.png" alt="" style="max-width: 80%;">
-                        </div>
-                    </a>
-                </div>
-            </div>
+            {% for ts in ts_list %}
+                 <p>
+                     {{ ts_list[0].__class__.__name__ }}
+                     {{ datetime.strftime(ts, "%a %d %#I:%M %p") }}
+                     {{ datetime.strftime(ts, "%a %d %#I:%M %p") }}
+                 </p>
+            {% endfor %}
+<!--           -->
+<!--            <p>Hello!@</p>-->
         </div>
+        {{ dictionary["Central Saloon"] }}
+        {% for key, item in dictionary.items() %}
+        <div style="color:white">
+            {{key}}
+            {{item[0]}}
+        </div>
+        {% endfor %}
     </section>
 {% endblock %}

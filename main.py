@@ -30,16 +30,23 @@ def download_shows():
     bucket = client.bucket(bucket_name)
     blob = bucket.blob(file_name)
     returned_csv_content = blob.download_as_text()
-    # print(returned_csv_content)
+    # pprint(returned_csv_content)
 
     with io.StringIO(returned_csv_content) as file:
         reader = csv.reader(file)
         for row in reader:
             downloaded_shows.append(row)
 
+
+    """============TEST PRINTS============"""
     # pprint.pp(downloaded_shows)
+    # for item in downloaded_shows[0]:
+    #     print(item)
+    """+=================================="""
+
 
     for item in downloaded_shows:
+        # print(item)
         """
                                         FOR THE REWORK
         -------------------------------------------------------------------------------
@@ -72,15 +79,29 @@ def download_shows():
         if 5 < len(item):
             iso_string = item[5]
             iso_list = ast.literal_eval(iso_string)
-            dt_list = [datetime.fromisoformat(iso) for iso in iso_list]
+            # dt_list = [datetime.fromisoformat(iso) for iso in iso_list]
+
+            dt_list = []
+            for iso in iso_list:
+                if iso == "--":
+                    dt_list.append(item)
+                else:
+                    dt_list.append(datetime.fromisoformat(iso))
             item[5] = dt_list
-            for list_item in item[5]:
-                print(list_item.strftime("%a %d %#I:%M %p"))
+            # for list_item in item[5]:
+            #     print(list_item.strftime("%a %d %#I:%M %p"))
         else:
             pass
         show_dictionary[item[0]] = item[1:]
 
+    """============TEST PRINTS============"""
     # pprint.pp(downloaded_shows)
+    # print(type(show_dictionary))
+    # print(show_dictionary)
+    pprint.pp(show_dictionary)
+    """++++++++++++======================="""
+
+
     return show_dictionary
 
 
@@ -100,6 +121,20 @@ def index():
 def home():
     dictionary = download_shows()
     response = make_response(render_template("home.html",
+                                             dictionary=dictionary,
+                                             datetime=datetime))
+    response.headers["Connection"] = "close"
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Expires"] = "0"
+    return response
+
+
+@app.route("/index2")
+def index2():
+    dictionary = download_shows()
+    # pprint.pp(dictionary)
+
+    response = make_response(render_template("new_index.html",
                                              dictionary=dictionary,
                                              datetime=datetime))
     response.headers["Connection"] = "close"
@@ -159,8 +194,8 @@ def run_update_job():
         cr.scrape_funhouse(),
         cr.scrape_neumos(),
         cr.scrape_barboza(),
-        cr.scrape_showbox_presents()[0],
-        cr.scrape_showbox_presents()[1],
+        # cr.scrape_showbox_presents()[0],
+        # cr.scrape_showbox_presents()[1],
         cr.scrape_nectar(),
         cr.scrape_hidden_hall(),
         cr.scrape_substation(),

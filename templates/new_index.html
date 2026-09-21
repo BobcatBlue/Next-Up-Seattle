@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block content %}
+    <div class="container venue_cal_header">
+        <div class="home_title">
+            <div>
+                <!-- <h1 class="small-caps">Upcoming <br> Shows</h1> -->
+                <h1 class="small-caps">Next Up, Seattle!</h1>
+                <!-- <h2 class="small-caps">by Venue</h2> -->
+                <p class="title-subtext font_jakarta">The fastest way to find out who's playing next in Seattle!</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="venue_cal_cards all_venues">
+        {% for key, info in dictionary.items() %}
+            <div class="cal_card font_jakarta">
+                <div class="venue_title_div">
+                    <div class="washed-bg-layer" style="background-image: url('/static/images/{{ key }}.png');"></div>
+                    <div class="badge_expand">
+                        <!-- <img src="/Central Saloon 2.png" alt="" class="venue_card_badge"> -->
+                        <div style="width: 100%; display: flex; justify-content: flex-end;">
+                            <div class="{{key}} expander">
+                                <span>+</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ info[0] }}" target="_blank" rel="noopener">
+                        <h2 class="venue_name">{{ key }}</h2>
+                    </a>
+                    <p class="neighborhood">{{ info[1] }}</p>
+
+                </div>
+                <hr style="margin-right: 15px; margin-top: 10px; margin-bottom: 10px;">
+                <h5 class="venue_next_show_label">Next Show</h5>
+                <div class="next_event">
+
+        <!--        NEED AN IF-STATEMENT HERE TO DEAL WITH DATE INFO FORMAT VARIATIONS  -->
+                    <div>
+                        {% if info[4] is defined %}
+                            {% if info[4][0].strftime is defined %}
+                            <div class="date_badge" style="padding-top: 1px;">
+                                <h4>
+                                    {{ datetime.strftime(info[4][0], "%a") }}
+                                </h4>
+                                <div>
+                                    {{ datetime.strftime(info[4][0], "%d") }}
+                                </div>
+                            </div>
+                            <span class="event_time">
+                                <b>
+                                    {{ datetime.strftime(info[4][0], "%I:%M%p").lstrip("0").lower() }}
+                                </b>
+                            </span>
+                            {% endif %}
+                        {% else %}
+                            <div class="date_badge" style="padding-top: 1px;">
+                                <h4>
+                                    {{ info[3][0][0:3] }}
+                                </h4>
+                                <div>
+                                    {{ info[3][0][4:6] }}
+                                </div>
+                            </div>
+                            <span class="event_time test_event_time" style="font-size: 0.65rem">
+                                <b>See tix link</b>
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="event">
+                        <div class="band_name">
+                            {{ info[2][0] }}
+                        </div>
+                    </div>
+
+
+        <!--            NEED AN IF-STATEMENT TO DEAL WITH PRESENCE OR LACK OF A DIRECT LINK TO TICKETS
+        IF THERE IS NO TICKET LINK, JUST LINK IT BACK TO THE VENUE'S CALENDAR LINK, SAME AS THE VENUE LINK-->
+
+
+                    {% if info[5] is defined %}
+                        <a href="{{ info[5][0] }}" class="">
+                            <div class="ticket_link">
+                                <img src="/static/images/infoticket.png" alt="" style="max-width: 80%;">
+                            </div>
+                        </a>
+                    {% else %}
+                        <a href="{{ info[0] }}" class="">
+                        <div class="ticket_link">
+                            <img src="/static/images/infoticket.png" alt="" style="max-width: 80%;">
+                        </div>
+                        </a>
+                    {% endif %}
+
+                </div>
+
+<!--                <h5 class="venue_rest_show_label">Coming Up...</h5>-->
+
+                <div class="rest_of_events {{key}} expandable hidden">
+
+                    {% for band in info[2] %}
+                        {% if loop.index0 > 0 %}
+                            <div >
+                            {% if info[4] is defined %}
+                                {% if info[4][0].strftime is defined %}
+                                    <div class="date_badge" style="padding-top: 1px;">
+                                        <h4>
+                                            {{ datetime.strftime(info[4][loop.index0], "%a") }}
+                                        </h4>
+                                        <div>
+                                            {{ datetime.strftime(info[4][loop.index0], "%d") }}
+                                        </div>
+                                    </div>
+                                    <span class="event_time">
+                                    <b>
+                                        {{ datetime.strftime(info[4][loop.index0], "%I:%M%p").lstrip("0").lower() }}
+                                    </b>
+                                    </span>
+                                {% else %}
+                                <div class="date_badge" style="padding-top: 1px;">
+                                    <h4>
+                                        {{ info[3][loop.index0][0:3] }}
+                                    </h4>
+                                    <div>
+                                        {{ info[3][loop.index0][4:6] }}
+                                    </div>
+                                </div>
+                                <span class="event_time test_event_time" style="font-size: 0.65rem">
+                                    <b>See tix link</b>
+                                </span>
+                                {% endif %}
+                            {% else %}
+                                <div class="date_badge" style="padding-top: 1px;">
+                                    <h4>
+                                        {{ info[3][loop.index0][0:3] }}
+                                    </h4>
+                                    <div>
+                                        {{ info[3][loop.index0][4:6] }}
+                                    </div>
+                                </div>
+                                <span class="event_time test_event_time" style="font-size: 0.65rem">
+                                    <b>See tix link</b>
+                                </span>
+                            {% endif %}
+                            </div>
+
+
+                            <div class="event">
+                                <div class="band_name">
+                                    {{ band }}
+                                </div>
+                            </div>
+
+
+                            {% if info[5] is defined %}
+                                <a href="{{ info[5][loop.index0] }}" class="">
+                                    <div class="ticket_link">
+                                        <img src="/static/images/infoticket.png" alt="" style="max-width: 80%;">
+                                    </div>
+                                </a>
+                            {% else %}
+                                <a href="{{ info[0] }}" class="">
+                                <div class="ticket_link">
+                                    <img src="/static/images/infoticket.png" alt="" style="max-width: 80%;">
+                                </div>
+                            </a>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
