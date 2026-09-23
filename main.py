@@ -73,6 +73,13 @@ def download_shows():
         item[3] = bands_list
         item[4] = dates_list
 
+        if 0 <= 6 < len(item):
+            ticket_urls = ast.literal_eval(item[6])
+            print(type(ticket_urls))
+            item[6] = ticket_urls
+
+
+
         """The following if/else statement is only necessary while all the scraping
         modules have NOT been updated to include datetime objects"""
 
@@ -92,6 +99,8 @@ def download_shows():
             #     print(list_item.strftime("%a %d %#I:%M %p"))
         else:
             pass
+
+
         show_dictionary[item[0]] = item[1:]
 
     """============TEST PRINTS============"""
@@ -149,11 +158,22 @@ def contact_us():
     return response
 
 
+@app.route("/Contact")
+def new_contact_us():
+    response = make_response(render_template("new_contact_us.html"))
+    return response
+
+
 @app.route("/About")
 def about_us():
     response = make_response(render_template("About.html"))
     return response
 
+
+@app.route("/AboutUs")
+def new_about_us():
+    response = make_response(render_template("new_about_us.html"))
+    return response
 
 """
 =================================
@@ -194,12 +214,12 @@ def run_update_job():
         cr.scrape_funhouse(),
         cr.scrape_neumos(),
         cr.scrape_barboza(),
-        # cr.scrape_showbox_presents()[0],
-        # cr.scrape_showbox_presents()[1],
+        cr.scrape_showbox_presents()[0],
+        cr.scrape_showbox_presents()[1],
         cr.scrape_nectar(),
         cr.scrape_hidden_hall(),
         cr.scrape_substation(),
-        cr.scrape_neptune(),
+        # cr.scrape_neptune(),
         cr.scrape_crocodile(),
         cr.scrape_rendezvous(),
         cr.scrape_tractor_tavern(),
@@ -234,7 +254,7 @@ def run_update_job():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001, use_reloader=False)
-    # app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
+    # app.run(debug=True, port=5001, use_reloader=False)
+    app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
 
 

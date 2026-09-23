@@ -204,17 +204,21 @@ def scrape_central():
         iso_dates = dtzip_12hr(dates, times)
 
     except Exception:
-        events = ["No info - Check venue website", "--", "--", "--", "--"]
+        events = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://centralsaloon.com/music-events/",
+                        "https://centralsaloon.com/music-events/",
+                        "https://centralsaloon.com/music-events/",
+                        "https://centralsaloon.com/music-events/",
+                        "https://centralsaloon.com/music-events/"]
 
     return venue, website, neighborhood, events, dates, iso_dates, ticket_links
 
 
 def scrape_babayaga():
     venue = "Baba Yaga"
-    website = "https://babayagaseattle.com/"
+    website = "https://babayagaseattle.com/seattle-pioneer-square-baba-yaga-events-days#/events"
     neighborhood = "Pioneer Square"
     start_date = datetime.now()
     start_date = start_date.strftime("%Y-%m-%d")
@@ -297,10 +301,14 @@ def scrape_babayaga():
 
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_urls = ["", "", "", "", ""]
+        ticket_urls = ["https://babayagaseattle.com/seattle-pioneer-square-baba-yaga-events-days#/events",
+                       "https://babayagaseattle.com/seattle-pioneer-square-baba-yaga-events-days#/events",
+                       "https://babayagaseattle.com/seattle-pioneer-square-baba-yaga-events-days#/events",
+                       "https://babayagaseattle.com/seattle-pioneer-square-baba-yaga-events-days#/events",
+                       "https://babayagaseattle.com/seattle-pioneer-square-baba-yaga-events-days#/events"]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_urls
 
@@ -351,10 +359,14 @@ def scrape_el_corazon():
         iso_dates = dtzip_12hr(dates, times)
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://elcorazonseattle.com/",
+                        "https://elcorazonseattle.com/",
+                        "https://elcorazonseattle.com/",
+                        "https://elcorazonseattle.com/",
+                        "https://elcorazonseattle.com/"]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
@@ -408,10 +420,14 @@ def scrape_funhouse():
 
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://elcorazonseattle.com/",
+                        "https://elcorazonseattle.com/",
+                        "https://elcorazonseattle.com/",
+                        "https://elcorazonseattle.com/",
+                        "https://elcorazonseattle.com/"]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
@@ -435,10 +451,14 @@ def scrape_neumos():
         ticket_links = [a["href"] for a in soup.find_all("a", class_="tickets onsalenow")[0:5]]
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://www.neumos.com/events",
+                        "https://www.neumos.com/events",
+                        "https://www.neumos.com/events",
+                        "https://www.neumos.com/events",
+                        "https://www.neumos.com/events"]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
@@ -462,10 +482,14 @@ def scrape_barboza():
         ticket_links = [a["href"] for a in soup.find_all("a", class_="tickets onsalenow")[0:5]]
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://www.thebarboza.com/events",
+                        "https://www.thebarboza.com/events",
+                        "https://www.thebarboza.com/events",
+                        "https://www.thebarboza.com/events",
+                        "https://www.thebarboza.com/events"]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
@@ -524,23 +548,23 @@ def scrape_showbox_presents():
         showbox_info = ["The Showbox at the Market",
                         url,
                         "Downtown",
-                        showbox_bands,
-                        showbox_dates,
-                        showbox_iso_dates,
-                        showbox_links]
+                        showbox_bands[0:5],
+                        showbox_dates[0:5],
+                        showbox_iso_dates[0:5],
+                        showbox_links[0:5]]
         sodo_info = ["Showbox Sodo",
                      url,
                      "SODO",
-                     sodo_bands,
-                     sodo_dates,
-                     sodo_iso_dates,
-                     sodo_links]
+                     sodo_bands[0:5],
+                     sodo_dates[0:5],
+                     sodo_iso_dates[0:5],
+                     sodo_links[0:5]]
 
     except Exception:
         showbox_info = ["The Showbox at the Market",
                          url,
                          "Downtown",
-                         ["No info - Check venue website", "--", "--", "--", "--"],
+                         ["No info - Click the venue name for info", "--", "--", "--", "--"],
                          ["--", "--", "--", "--", "--"],
                          ["--", "--", "--", "--", "--"],
                          ["", "", "", "", ""]]
@@ -548,7 +572,7 @@ def scrape_showbox_presents():
         sodo_info = ["The Showbox SODO",
                               url,
                               "SODO",
-                              ["No info - Check venue website", "--", "--", "--", "--"],
+                              ["No info - Click the venue name for info", "--", "--", "--", "--"],
                               ["--", "--", "--", "--", "--"],
                               ["--", "--", "--", "--", "--"],
                               ["", "", "", "", ""]]
@@ -583,10 +607,14 @@ def scrape_nectar():
         iso_dates = dtzip_12hr(dates, times)
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://nectarlounge.com/events/calendar/",
+                        "https://nectarlounge.com/events/calendar/",
+                        "https://nectarlounge.com/events/calendar/",
+                        "https://nectarlounge.com/events/calendar/",
+                        "https://nectarlounge.com/events/calendar/"]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
@@ -618,10 +646,14 @@ def scrape_hidden_hall():
         iso_dates = dtzip_12hr(dates, times)
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://nectarlounge.com/events/calendar/",
+                        "https://nectarlounge.com/events/calendar/",
+                        "https://nectarlounge.com/events/calendar/",
+                        "https://nectarlounge.com/events/calendar/",
+                        "https://nectarlounge.com/events/calendar/"]
 
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
@@ -671,10 +703,10 @@ def scrape_crocodile():
 
         url_prefix = "https://calendar.thecrocodile.com"
         for index in croc_indices:
-            ticket_linkes = event_tags[index].get("href")
-            if ticket_linkes[0:4] != "http":
-                ticket_linkes = f"{url_prefix}{ticket_linkes}"
-            new_soup = get_soup(ticket_linkes)
+            ticket_links = event_tags[index].get("href")
+            if ticket_links[0:4] != "http":
+                ticket_links = f"{url_prefix}{ticket_links}"
+            new_soup = get_soup(ticket_links)
 
         #     if "ticketweb" in href:
         #         time_text = soup.find_all("div", class_="text-block-71 cal-start-date")
@@ -688,7 +720,7 @@ def scrape_crocodile():
         #     print(date, band)
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
         ticket_links = ["", "", "", "", ""]
@@ -751,10 +783,14 @@ def scrape_tractor_tavern():
         iso_dates = dtzip_12hr(dates, times)
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://tractortavern.com/",
+                        "https://tractortavern.com/",
+                        "https://tractortavern.com/",
+                        "https://tractortavern.com/",
+                        "https://tractortavern.com/"]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
@@ -842,10 +878,14 @@ def scrape_conor_byrne():
 
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["", "", "", "", ""]
+        ticket_links = ["https://www.conorbyrnepub.com/#/events",
+                        "https://www.conorbyrnepub.com/#/events",
+                        "https://www.conorbyrnepub.com/#/events",
+                        "https://www.conorbyrnepub.com/#/events",
+                        "https://www.conorbyrnepub.com/#/events"]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
@@ -895,7 +935,7 @@ def scrape_neptune():
             dates.append(strip_full_days(date))
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
@@ -929,7 +969,7 @@ def scrape_royal_room():
             x += 1
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
@@ -962,7 +1002,7 @@ def scrape_substation():
     # dates = [datetime.strptime(date, "%Y-%m-%d").strftime("%b %d, %Y") for date in raw_dates]
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
@@ -992,7 +1032,7 @@ def scrape_sunset_tavern():
                  for date in dates_unformatted]
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
@@ -1032,7 +1072,7 @@ def scrape_bluemoon():
         #     print(f"{date} -- {band}")
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates
@@ -1049,7 +1089,7 @@ def scrape_skylark():
         dates = [datetime.strptime(date, "%B %d, %Y %I:%M %p").strftime("%b %d, %Y")
                  for date in dates_unformatted[0:5]]
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
     return venue, url, neighborhood, bands, dates
 
@@ -1097,7 +1137,7 @@ def scrape_rendezvous():
         bands = [pair[1] for pair in future_event_pairs[0:5]]
 
     except Exception:
-        bands = ["No info - Check venue website", "--", "--", "--", "--"]
+        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
 
     return venue, website, neighborhood, bands, dates

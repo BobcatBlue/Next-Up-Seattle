@@ -41,7 +41,8 @@ a {
 .navbar {
     width: 95%;
     margin: auto;
-    min-height: 70px;
+    /*min-height: 70px;*/
+    height: 75px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -92,6 +93,10 @@ a {
 
 .logo_image {
     max-height: 75px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(0, 0, 0, 0.555);
+
 }
 
 .brandButton {
@@ -100,12 +105,14 @@ a {
 }
 
 .venue_cal_header {
-    margin-top: 100px;
+    margin-top: 75px;
     /* padding-top: 20px; */
-    padding-bottom: 30px;
+    padding-bottom: 0px;
+    background-color: rgba(0, 0, 0, 0.555);
 }
 
 .home_title {
+    margin: auto;
     background-image: url("/static/images/Seattle_Skyline_2019-1117.jpg");
     background-position: bottom left;
     background-size: cover;
@@ -114,6 +121,12 @@ a {
     display: flex;
     align-items: center;
     min-height: 175px;
+    justify-content: center;
+
+}
+
+.next_up_logo {
+    max-height: 150px;
 }
 
 
@@ -125,9 +138,11 @@ h1.small-caps{
     color:#64d3a8;
     text-shadow: 0 5px 5px rgba(0, 0, 0, 0.904);
     background-color: rgba(0, 0, 0, 0.555);
-    max-width: fit-content;
-    padding-left: 10px;
+    /*max-width: fit-content;*/
+    max-width: 100%
+    padding-left: 15px;
     padding-right: 10px;
+    display: inline-block;
 }
 
 h2.small-caps{
@@ -141,7 +156,10 @@ p.title-subtext {
     color: rgb(216, 215, 215);
     font-size: 1.1rem;
     padding-top: 15px;
+    padding-left: 10px;
+    padding-bottom: 15px;
     text-shadow: 0 5px 5px rgba(0,0,0,0.8);
+    background-color: rgba(0, 0, 0, 0.555);
 }
 
 section > h1 {
@@ -167,32 +185,50 @@ section > h1 {
 .venue_card_badge {
     border-radius: 50%;
     max-width: 45px;
+    font-size: 0;
 }
 
+/*
 .cal_card {
     display: inline-block;
     vertical-align: top;
     min-width: 250px;
-    /* max-width: 300px; */
     max-width: 320px;
-    /* min-height: 275px; */
     width: 100%;
     margin: 15px;
     border-radius: 15px;
-    /* background-color: #202920; */
     background-color: #2d3a2d;
     color: #f7f8f7;
     padding: 15px;
     padding-right: 0px;
 }
+*/
+
+.cal_card {
+    display: inline-block;
+    vertical-align: top;
+    width: 350px;
+    /*
+    min-width: 250px;
+    max-width: 350px;
+    */
+    /*width: 100%;*/
+    margin: 7px;
+    border-radius: 15px;
+    background-color: #2d3a2d;
+    color: #f7f8f7;
+}
 
 .venue_title_div {
     position: relative;
     margin-right: 15px;
+    margin-left: 15px;
+    margin-top: 15px;
 }
+
 .washed-bg-layer {
     position: absolute;
-    inset: 0; /* Stretches to fill the container perfectly */
+    inset: 0;
     background-size: contain;
     background-position: center;
     filter: brightness(1.2) contrast(0.9);
@@ -232,9 +268,10 @@ section > h1 {
     padding-bottom: 0px;
 }
 
-.venue_rest_show_label {
+.venue_next_show_label {
     color: #a5d3c1;
     padding-bottom: 0px;
+    margin-left: 15px;
 }
 
 
@@ -244,20 +281,33 @@ section > h1 {
     align-items: center;
     row-gap: 9px;
     column-gap: 10px;
+    margin-bottom: 10px;
     margin-top: 10px;
-    /* background-color: lightblue; */
+    margin-left: 10px;
+    margin-right: 5px;
 }
 
 .rest_of_events {
+    max-height: 1000px;
+    transition: max-height 0.5s ease;
+    margin-left: 10px;
+    margin-right: 5px;
+    margin-bottom: 15px;
+    margin-top: 25px;
+}
+
+
+.rest_events {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
     row-gap: 25px;
     column-gap: 10px;
-    max-height: 1000px;
-    transition: max-height 0.5s ease;
-    padding-bottom: 30px;
-    margin-top: 40px;
+}
+
+.hidden {
+    max-height: 0px;
+    overflow: hidden;
 }
 
 .rest_of_events.hidden {
@@ -269,10 +319,7 @@ section > h1 {
     max-height: 500px;
 }
 
-.hidden {
-    max-height: 0px;
-    overflow: hidden;
-}
+
 
 .event {
     grid-column: 2;
@@ -289,7 +336,7 @@ section > h1 {
 
 .event_time {
     color: #f8b16e;
-    font-size: 0.70rem;
+    font-size: 0.80rem;
 }
 
 .date {
@@ -305,22 +352,19 @@ section > h1 {
 
 .date_badge {
     grid-column: 1;
-    /* border: 1px solid turquoise; */
-    /* background-color: #1a221a; */
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: block;
+    max-height: fit-content;
+    place-self: center;
+    border-radius: 15%;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    /* border: 1px solid red; */
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
     background-color: #1a221a;
     gap: 2px;
-    /* margin-top: 8px;
-    margin-bottom: 8px; */
-    /* border-right: 1px solid #b9ddd1; */
 }
 
 .date_badge h4 {
@@ -335,7 +379,7 @@ section > h1 {
 .date_badge div {
     display: block;
     margin: auto;
-    font-size: 1.0rem;
+    /* font-size: 1.0rem;*/
 
 }
 
@@ -420,7 +464,7 @@ section > h1 {
 
 @media screen and (max-width: 600px) {
     .venue_cal_header {
-        margin-top: 85px;
+        margin-top: 75px;
     }
 
     .home_title {

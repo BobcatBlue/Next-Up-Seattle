@@ -27,10 +27,10 @@ for(let i = 0; i < btnsExpand.length; i++) {
                 console.log(currentElement.classList);
 
                 if (currentElement.classList.contains("hidden") === false) {
-                    console.log("This list does not contain Hidden:");
+                    //console.log("This list does not contain Hidden:");
                     console.log(currentElement.classList);
                     currentElement.classList.add("hidden");
-                    console.log("There I fixed it");
+                    //console.log("There I fixed it");
                     console.log(currentElement.classList);
 
                     let button_class_string = ".";
