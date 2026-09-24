@@ -42,7 +42,7 @@ a {
     width: 95%;
     margin: auto;
     /*min-height: 70px;*/
-    height: 75px;
+    height: 90px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -54,12 +54,13 @@ a {
     align-items: center;
     /* border: 1px solid fuchsia; */
     padding-right: 0px;
-    color:#95d3ba;
+    color: #95d3ba;
     max-width: max-content;
 }
 
 .nav-menu {
     display: flex;
+    margin: auto;
     /* justify-content: space-between; */
     align-items: center;
     justify-content: center;
@@ -67,6 +68,7 @@ a {
     padding-right: 50px;
     /* border: 1px solid red; */
     flex-wrap: wrap;
+    font-family: "Plus Jakarta Sans";
 }
 
 .nav-link {
@@ -91,10 +93,41 @@ a {
     margin-top: 6.5px;
 }
 
+.side_menu {
+    position: fixed;
+    top: 90px;
+    right: -300px;
+    width: 280px;
+    height: calc(100vh - 75px);
+    background-color: #111811;
+    border-left: 1px solid #2a3f2a;
+    z-index: 3;
+    transition: right 0.3s ease;
+    padding-top: 15px;
+}
+
+.side_menu.open {
+    right: 0;
+}
+
+.side_menu a {
+    display: block;
+    padding: 18px 25px;
+    color: #ecfdf5;
+    font-family: "Plus Jakarta Sans";
+    font-size: 1rem;
+    border-bottom: 1px solid #2a3f2a;
+}
+
+.side_menu a:hover {
+    color: #64d3a8;
+    background-color: #1a221a;
+}
+
 .logo_image {
     max-height: 75px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    /*margin-top: 10px;
+    margin-bottom: 10px;*/
     background-color: rgba(0, 0, 0, 0.555);
 
 }
@@ -107,22 +140,72 @@ a {
 .venue_cal_header {
     margin-top: 75px;
     /* padding-top: 20px; */
-    padding-bottom: 0px;
-    background-color: rgba(0, 0, 0, 0.555);
+    /* border: 1px solid rgb(255, 145, 0); */
+    /* background-image: url("/Seattle_Skyline_2019-1117.jpg"); */
+    /* background-image: url("/20th\ Ave\ Bridge.jpg"); */
+    background-image: url("/static/images/Seattle_aerial_2,_May_2023.png");
+    /* background-position: top left; */
+    background-position: top left;
+    background-size: cover;
 }
 
+.home_title {
+    background-color: rgba(230, 243, 210, 0.185);
+    /* background-color: rgba(218, 255, 207, 0.678); */
+    display: flex;
+    align-items: center;
+    min-height: 350px;
+    height: 100%;
+    /* border: 1px solid red; */
+}
+
+/*
 .home_title {
     margin: auto;
     background-image: url("/static/images/Seattle_Skyline_2019-1117.jpg");
     background-position: bottom left;
     background-size: cover;
-    padding: 15px;
-    padding-top: 55px;
     display: flex;
     align-items: center;
-    min-height: 175px;
+    min-height: 250px;
     justify-content: center;
+}*/
 
+.tagline {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 15px;
+    /* border: 1px solid yellow; */
+}
+
+.tagline h1 {
+    font-size: 6rem;
+    margin-bottom: 35px;
+    color: white;
+    text-shadow: 0 0 20px #003b30, 0 0 20px #00b38fee;
+    margin: auto;
+    text-align: center;
+}
+
+.tagline h4 {
+    /* border: 1px solid blue; */
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    max-width: 60%;
+    background-color: rgba(0, 0, 0, 0.250);
+    /*color: rgb(0, 0, 0); */
+    color: white;
+    text-shadow: 0 0 35px #0d1413, 0 0 30px #000000;
+    margin: auto;
+    text-align: center;
+    text-align: center;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 2rem;
 }
 
 .next_up_logo {
@@ -188,31 +271,11 @@ section > h1 {
     font-size: 0;
 }
 
-/*
-.cal_card {
-    display: inline-block;
-    vertical-align: top;
-    min-width: 250px;
-    max-width: 320px;
-    width: 100%;
-    margin: 15px;
-    border-radius: 15px;
-    background-color: #2d3a2d;
-    color: #f7f8f7;
-    padding: 15px;
-    padding-right: 0px;
-}
-*/
 
 .cal_card {
     display: inline-block;
     vertical-align: top;
     width: 350px;
-    /*
-    min-width: 250px;
-    max-width: 350px;
-    */
-    /*width: 100%;*/
     margin: 7px;
     border-radius: 15px;
     background-color: #2d3a2d;
@@ -462,6 +525,12 @@ section > h1 {
     }
 }
 
+@media screen and (min-width: 599px) {
+    .hamburger_icon {
+        display: none;
+    }
+}
+
 @media screen and (max-width: 600px) {
     .venue_cal_header {
         margin-top: 75px;
@@ -490,6 +559,16 @@ section > h1 {
         padding-right: 5px;
         gap: 10px;
         display: none;
+    }
+
+    .tagline h1 {
+        font-size: 4.5rem;
+        margin-bottom: 20px;
+    }
+
+    .tagline h4 {
+        font-size: 1.5rem;
+        max-width: 90%;
     }
 
     .venue_cal_cards {

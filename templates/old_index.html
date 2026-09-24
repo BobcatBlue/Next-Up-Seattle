@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width-device-width, initial-scale=1">
+        <link rel="stylesheet" href="/static/styles.css">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='Next Up Seattle Logo 2.ico') }}">
+        <title>Next Up, Seattle!</title>
+    </head>
+    <body>
+        <div class="btnOpenNav">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+        <div class="sideNav">
+            <button class="btnCloseNav">X</button>
+            <br>
+            <a href="/" class="navOption">Home</a>
+            <br>
+            <a href="/About" class="navOption">About Us</a>
+            <br>
+            <a href="/Contact_Us" class="navOption">Contact Us</a>
+        </div>
+
+        <div class="title_image">
+            <img src="static/Next Up Seattle with Text - Block Cropped 1.jpg" alt="Next Up, Seattle!"
+            style="max-width: 100%">
+        </div>
+
+        <div class="catchphrase">
+            <hr>
+            <p><i>The fastest way to find out who's playing next on any given
+            stage in Seattle!</i></p>
+            <hr>
+        </div>
+
+        {% for key, info in dictionary.items() %}
+        <div class="venue_events_container">
+            <div class="expand_button">
+                <button class="{{key}} expander" style="font-size: 20px; height: 25x; width: 30px;">+</button>
+            </div>
+            <div class="venue_name">
+                <a href="{{info[0]}}" target="_blank" style="color: darkblue;"><b>{{key}}</b></a>
+            </div>
+            <div class="ph1"></div>
+
+            <div class="ph2"></div>
+            <div class="venue_neighborhood"><i>{{ info[1] }}</i></div>
+            <div class="ph3"></div>
+
+            <div class="first_event">
+                <ul>
+                    <li class="event"><b>{{ info[2][0] }}</b></li>
+                    <li class="date"><b>{{ info[3][0] }}</b></li>
+                </ul>
+            </div>
+            <div class="rest_of_events {{key}} expandable hidden">
+                <ul>
+                    <li class="event">{{ info[2][1] }}</li>
+                    <li class="date">{{ info[3][1] }}</li>
+                </ul>
+                <ul>
+                    <li class="event">{{ info[2][2] }}</li>
+                    <li class="date">{{ info[3][2] }}</li>
+                </ul>
+                <ul>
+                    <li class="event">{{ info[2][3] }}</li>
+                    <li class="date">{{ info[3][3] }}</li>
+                </ul>
+                <ul>
+                    <li class="event">{{ info[2][4] }}</li>
+                    <li class="date">{{ info[3][4] }}</li>
+                </ul>
+            </div>
+        </div>
+        <hr style="margin: auto; max-width: 650px;">
+        {% endfor %}
+
+        <div class="art hidden">
+            This section coming soon!
+        </div>
+
+        <div class="performance hidden">
+            This section coming soon!
+        </div>
+
+        <div class="venues hidden">
+            This section coming soon!
+        </div>
+
+    <script src="/static/script.js"></script>
+    </body>
+</html>

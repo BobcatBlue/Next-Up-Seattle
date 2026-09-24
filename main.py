@@ -119,13 +119,15 @@ def index():
     dictionary = download_shows()
     # pprint.pp(dictionary)
 
-    response = make_response(render_template("index.html", dictionary=dictionary))
+    response = make_response(render_template("index.html",
+                                             dictionary=dictionary,
+                                             datetime=datetime))
     response.headers["Connection"] = "close"
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Expires"] = "0"
     return response
 
-
+"""
 @app.route("/home")
 def home():
     dictionary = download_shows()
@@ -136,14 +138,15 @@ def home():
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Expires"] = "0"
     return response
+"""
 
 
 @app.route("/index2")
-def index2():
+def home():
     dictionary = download_shows()
     # pprint.pp(dictionary)
 
-    response = make_response(render_template("new_index.html",
+    response = make_response(render_template("index.html",
                                              dictionary=dictionary,
                                              datetime=datetime))
     response.headers["Connection"] = "close"
@@ -153,26 +156,26 @@ def index2():
 
 
 @app.route("/Contact_Us")
-def contact_us():
-    response = make_response(render_template("Contact Us.html"))
+def old_contact_us():
+    response = make_response(render_template("old contact us.html"))
     return response
 
 
 @app.route("/Contact")
 def new_contact_us():
-    response = make_response(render_template("new_contact_us.html"))
-    return response
-
-
-@app.route("/About")
-def about_us():
-    response = make_response(render_template("About.html"))
+    response = make_response(render_template("contact us.html"))
     return response
 
 
 @app.route("/AboutUs")
+def old_about_us():
+    response = make_response(render_template("old_about.html"))
+    return response
+
+
+@app.route("/About")
 def new_about_us():
-    response = make_response(render_template("new_about_us.html"))
+    response = make_response(render_template("about.html"))
     return response
 
 """

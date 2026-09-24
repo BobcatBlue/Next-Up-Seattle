@@ -3,6 +3,30 @@
 const btnsExpand = document.querySelectorAll(".expander");
 const collapsableElements = document.querySelectorAll(".rest_of_events");
 
+//const hamburger = document.getElementById("hamburger");
+//const sideMenu = document.getElementById("sideMenu");
+//
+//hamburger.addEventListener("click", function () {
+//    sideMenu.classList.toggle("open");
+//});
+
+const hamburger = document.getElementById("hamburger");
+const sideMenu = document.getElementById("sideMenu");
+
+hamburger.addEventListener("click", function () {
+    sideMenu.classList.toggle("open");
+});
+
+document.addEventListener("click", function (event) {
+    if (
+        sideMenu.classList.contains("open") &&
+        !sideMenu.contains(event.target) &&
+        !hamburger.contains(event.target)
+    ) {
+        sideMenu.classList.remove("open");
+    }
+});
+
 console.log(btnsExpand);
 console.log(collapsableElements);
 
