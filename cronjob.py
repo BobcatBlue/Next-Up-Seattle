@@ -4,10 +4,8 @@ import requests
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 import yaml
-import selectorlib
 import json
 from bs4 import BeautifulSoup
-import pprint
 
 """
 ============================
@@ -207,11 +205,8 @@ def scrape_central():
         events = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["https://centralsaloon.com/music-events/",
-                        "https://centralsaloon.com/music-events/",
-                        "https://centralsaloon.com/music-events/",
-                        "https://centralsaloon.com/music-events/",
-                        "https://centralsaloon.com/music-events/"]
+        ticket_links = ["https://centralsaloon.com/music-events/" for _ in range(5)]
+
 
     return venue, website, neighborhood, events, dates, iso_dates, ticket_links
 
