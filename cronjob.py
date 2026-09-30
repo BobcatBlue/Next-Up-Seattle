@@ -322,11 +322,24 @@ def scrape_el_corazon():
         url = "https://elcorazonseattle.com/"
         soup = get_soup(url)
         el_corazon_calendar = soup.find("div", class_="el-corazon")
-        headliners = [headliner.find("div", class_="headliners").text
-                      for headliner in
-                      el_corazon_calendar.find_all("a", class_="link-block-3 no-underline "
-                                                                  "w-inline-block w-condition-"
-                                                                  "invisible")[0:5]]
+        # headliners = [headliner.find("div", class_="headliners").text
+        #               for headliner in
+        #               el_corazon_calendar.find_all("a", class_="link-block-3 no-underline "
+        #                                                           "w-inline-block w-condition-"
+        #                                                           "invisible")[0:5]]
+
+        headliners = []
+        for headliner_block in el_corazon_calendar.find_all("a",
+                                                            class_="link-block-3 no-underline "
+                                                            "w-inline-block w-condition-"
+                                                            "invisible")[0:5]:
+            headliner = headliner_block.find("div", class_="headliners").text
+            if headliner == "":
+                headliner = headliner_block.find("div", class_="event-title").text
+            else:
+                pass
+            headliners.append(headliner)
+
         supporting_acts = [support.text
                            for support in
                            el_corazon_calendar.find_all("div", class_="supports")][0:5]
@@ -362,11 +375,7 @@ def scrape_el_corazon():
         bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["https://elcorazonseattle.com/",
-                        "https://elcorazonseattle.com/",
-                        "https://elcorazonseattle.com/",
-                        "https://elcorazonseattle.com/",
-                        "https://elcorazonseattle.com/"]
+        ticket_links = ["https://elcorazonseattle.com/" for _ in range(5)]
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
@@ -1172,7 +1181,7 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_crocodile())
+    print(scrape_el_corazon())
 
 
 

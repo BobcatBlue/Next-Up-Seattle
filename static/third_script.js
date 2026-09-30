@@ -3,19 +3,14 @@
 const btnsExpand = document.querySelectorAll(".expander");
 const collapsableElements = document.querySelectorAll(".rest_of_events");
 
-//const hamburger = document.getElementById("hamburger");
-//const sideMenu = document.getElementById("sideMenu");
-//
-//hamburger.addEventListener("click", function () {
-//    sideMenu.classList.toggle("open");
-//});
-
 const hamburger = document.getElementById("hamburger");
 const sideMenu = document.getElementById("sideMenu");
+
 
 hamburger.addEventListener("click", function () {
     sideMenu.classList.toggle("open");
 });
+
 
 document.addEventListener("click", function (event) {
     if (
@@ -27,21 +22,19 @@ document.addEventListener("click", function (event) {
     }
 });
 
+
 console.log(btnsExpand);
 console.log(collapsableElements);
 
+
 for(let i = 0; i < btnsExpand.length; i++) {
-    console.log(btnsExpand[i].classList.length);
-    console.log("");
+    //console.log(btnsExpand[i].classList.length);
+    //console.log("");
 
     btnsExpand[i].addEventListener("click", function() {
         let btnClicked = btnsExpand[i].classList.contains("clicked");  // boolean value
-        console.log(btnClicked);
-
-        console.log(btnsExpand[i].classList);
-
-
-
+        //console.log(btnClicked);
+        //console.log(btnsExpand[i].classList);
         if (btnClicked === false) {
 
             console.log(collapsableElements);

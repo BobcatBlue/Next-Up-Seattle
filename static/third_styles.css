@@ -159,18 +159,6 @@ a {
     /* border: 1px solid red; */
 }
 
-/*
-.home_title {
-    margin: auto;
-    background-image: url("/static/images/Seattle_Skyline_2019-1117.jpg");
-    background-position: bottom left;
-    background-size: cover;
-    display: flex;
-    align-items: center;
-    min-height: 250px;
-    justify-content: center;
-}*/
-
 .tagline {
     display: flex;
     flex-direction: column;
@@ -182,7 +170,7 @@ a {
 
 .tagline h1 {
     font-size: 6rem;
-    margin-bottom: 35px;
+    padding-bottom: 35px;
     color: white;
     text-shadow: 0 0 20px #003b30, 0 0 20px #00b38fee;
     margin: auto;
@@ -197,7 +185,7 @@ a {
     padding-left: 10px;
     padding-right: 10px;
     max-width: 60%;
-    background-color: rgba(0, 0, 0, 0.250);
+    background-color: rgba(0, 0, 0, 0.350);
     /*color: rgb(0, 0, 0); */
     color: white;
     text-shadow: 0 0 35px #0d1413, 0 0 30px #000000;

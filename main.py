@@ -75,7 +75,7 @@ def download_shows():
 
         if 0 <= 6 < len(item):
             ticket_urls = ast.literal_eval(item[6])
-            print(type(ticket_urls))
+            # print(type(ticket_urls))
             item[6] = ticket_urls
 
 
@@ -107,7 +107,7 @@ def download_shows():
     # pprint.pp(downloaded_shows)
     # print(type(show_dictionary))
     # print(show_dictionary)
-    pprint.pp(show_dictionary)
+    # pprint.pp(show_dictionary)
     """++++++++++++======================="""
 
 
@@ -217,8 +217,8 @@ def run_update_job():
         cr.scrape_funhouse(),
         cr.scrape_neumos(),
         cr.scrape_barboza(),
-        cr.scrape_showbox_presents()[0],
-        cr.scrape_showbox_presents()[1],
+        # cr.scrape_showbox_presents()[0],
+        # cr.scrape_showbox_presents()[1],
         cr.scrape_nectar(),
         cr.scrape_hidden_hall(),
         cr.scrape_substation(),
