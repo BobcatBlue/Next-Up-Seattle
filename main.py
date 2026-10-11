@@ -90,15 +90,13 @@ def download_shows():
 
             dt_list = []
             for iso in iso_list:
-                if iso == "--":
-                    dt_list.append(item)
-                else:
-                    dt_list.append(datetime.fromisoformat(iso))
+                    if iso == "--":
+                        dt_list.append(item)
+                    else:
+                        dt_list.append(datetime.fromisoformat(iso))
             item[5] = dt_list
             # for list_item in item[5]:
             #     print(list_item.strftime("%a %d %#I:%M %p"))
-        else:
-            pass
 
 
         show_dictionary[item[0]] = item[1:]
@@ -219,6 +217,8 @@ def run_update_job():
         cr.scrape_barboza(),
         # cr.scrape_showbox_presents()[0],
         # cr.scrape_showbox_presents()[1],
+        cr.scrape_td_mainstage(),
+        # cr.scrape_dimitrious(),
         cr.scrape_nectar(),
         cr.scrape_hidden_hall(),
         cr.scrape_substation(),
@@ -257,7 +257,7 @@ def run_update_job():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001, use_reloader=False)
-    # app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
+    # app.run(debug=True, port=5001, use_reloader=False)
+    app.run(debug=True, port=5001, use_reloader=False, host="0.0.0.0")
 
 

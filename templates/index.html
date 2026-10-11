@@ -5,9 +5,33 @@ Home Page
 {% endblock %}
 
 {% block content %}
+
+    <div class="live_music_header">
+        <h1 class="live_music_title font_jakarta">
+            Live Music
+        </h1>
+        <form action="" class="neighborhood_selector font_jakarta">
+            <label for="neighborhoods">📌 Select a Neighborhood 📌:  </label>
+            <select name="neighborhoods" id="neighborhoods">
+                <option value="all">All</option>
+                <option value="capitol_hill">Capitol Hill</option>
+                <option value="columbia_city">Columbia City</option>
+                <option value="downtown_and_sodo">Downtown & SODO</option>
+                <option value="fremont">Fremont</option>
+                <option value="ballard">Ballard</option>
+                <option value="pioneer_square">Pioneer Square</option>
+                <option value="belltown">Belltown</option>
+                <option value="wallingford">Wallingford</option>
+                <option value="west_seattle">West Seattle</option>
+            </select>
+        </form>
+    </div>
+
+
     <div class="venue_cal_cards">
         {% for key, info in dictionary.items() %}
-            <div class="cal_card font_jakarta">
+
+            <div class="cal_card font_jakarta" id="{{ info[1] }}">
                 <div class="venue_title_div">
                     <div class="washed-bg-layer" style="background-image: url('/static/images/{{ key }}.png');"></div>
                     <div class="badge_expand">
@@ -84,7 +108,7 @@ Home Page
                     <div class="rest_events">
                         {% for band in info[2] %}
                             {% if loop.index0 > 0 %}
-                                <div >
+                                <div>
                                 {% if info[4] is defined %}
                                     {% if info[4][0].strftime is defined %}
                                         <div class="date_badge" style="padding-top: 1px;">

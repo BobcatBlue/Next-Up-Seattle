@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 import yaml
 import json
 from bs4 import BeautifulSoup
+import pprint
 
 """
 ============================
@@ -115,11 +116,21 @@ def dtzip_12hr(dates, times):
     date_tuples = list(zip(dates, times))
     # print(date_tuples)
     iso_dates = []
-    for datetime_string in date_tuples:
-        dt = datetime.strptime(f"{datetime_string[0]} {datetime_string[1]}",
-                               "%b %d, %Y %I:%M %p")
-        dt = dt.replace(tzinfo=PACIFIC)
-        iso_dates.append(dt.isoformat())
+
+    try:
+        for datetime_string in date_tuples:
+            dt = datetime.strptime(f"{datetime_string[0]} {datetime_string[1]}",
+                                   "%b %d, %Y %I:%M %p")
+            dt = dt.replace(tzinfo=PACIFIC)
+            iso_dates.append(dt.isoformat())\
+
+    except ValueError:
+        for datetime_string in date_tuples:
+            dt = datetime.strptime(f"{datetime_string[0]} {datetime_string[1]}",
+                                   "%b %d, %Y %I:%M%p")
+            dt = dt.replace(tzinfo=PACIFIC)
+            iso_dates.append(dt.isoformat())
+
     return iso_dates
 
 
@@ -556,7 +567,7 @@ def scrape_showbox_presents():
                         showbox_dates[0:5],
                         showbox_iso_dates[0:5],
                         showbox_links[0:5]]
-        sodo_info = ["Showbox Sodo",
+        sodo_info = ["Showbox SODO",
                      url,
                      "SODO",
                      sodo_bands[0:5],
@@ -1147,24 +1158,125 @@ def scrape_rendezvous():
     return venue, website, neighborhood, bands, dates
 
 
-def scrape_triple_door():
-    venue = "The Triple Door - Mainstage"
+def scrape_td_mainstage():
+    venue = "The Triple Door Mainstage"
     website = "https://thetripledoor.net/mainstage-calendar"
     neighborhood = "Downtown"
-    url = "https://thetripledoor.net/mainstage-calendar"
+
+    page = 1
+    furl = "https://www.thetripledoor.net/mainstage-calendar/features/load/" \
+        "calendar_feature_906435.turbo_stream?calendar_page="
+
+    events = []
+    dates = []
+    times = []
+    ticket_links = []
+    mainstage_counter = 0
+
+    try:
+        while mainstage_counter < 5:
+            soup = get_soup(f"{furl}{page}")
+            event_wrappers = soup.find_all("div", class_="event-info-wrapper")
+
+            for wrapper in event_wrappers:
+                # Check the event date.  If it's in the past, skip it
+                date = wrapper.find("span", class_="date").string.strip()
+                date = add_years([date])[0].split(",", 1)[1].strip()
+                today = datetime.today().date()
+                date = datetime.strptime(date, "%B %d, %Y")
+                if today > date.date():
+                    continue
+
+                # Check the event location.  If it's not at the TD Mainstage, skip it.
+                location_wrapper = wrapper.find("p", class_="event-info event-location")
+
+                if location_wrapper.find("span") is None:
+                    continue
+                else:
+                    stage = location_wrapper.find("span").string
+                if "Mainstage Theatre" not in stage:
+                    continue
+
+                # If the event is at the TD Mainstage, append its details
+                event = wrapper.find("a").string.strip()
+                events.append(event)
+                ticket_link = wrapper.find("a", href=True)["href"]
+                ticket_links.append(ticket_link)
+                date = date.strftime("%b %d, %Y")
+                dates.append(date)  # date was already defined above
+                time = wrapper.find("span", class_="time").string.strip()
+                times.append(time)
+
+                # Once we gather 5 events at TD Mainstage, stop gathering
+                mainstage_counter += 1
+            page += 1
+
+        iso_dates = dtzip_12hr(dates, times)
+
+    except Exception:
+        events = ["No info - Click the venue name for info", "--", "--", "--", "--"]
+        dates = ["--", "--", "--", "--", "--"]
+        iso_dates = ["--", "--", "--", "--", "--"]
+        ticket_links = ["https://centralsaloon.com/music-events/" for _ in range(5)]
+
+    return venue, website, neighborhood, events, dates, iso_dates, ticket_links
+
+
+
+def scrape_dimitrious():
+    """
+    This module will be different from the others.
+
+    We are going to focus on the next five artists, rather than the next 5 shows.
+    Each artist has several dates they will be playing in a row.  If we focus on
+    just the next 5 shows, the cal_card is going to look monotonous and won't convey
+    the variety of music has to offer.
+
+    The HTML should then have an if-statement to check if the {{ key }} matches this venue's
+    name, and then dictates a special cal_card construction just for this venue.  The
+    date-badge will display the month, rather than the day of the week, and the date will be
+    a range.  For example:
+
+        Oct
+       10-15
+      "Times
+       Vary"
+
+    The artists and date ranges list will be pulled from the main calendar page,
+    along with the URL linking to the show's details.  Later on we can scrape the show's
+    details page for when wev incorporate a show-details page of our own, which will
+    view as a pop-up page when the user clicks the name of a show.
+
+    This may come in handy in the future, too, if we find other venues who structure booking
+    like this.
+    """
+
+    venue = "Dimitriou's Jazz Alley"
+    neighborhood = "Downtown"
+    url = "https://www.jazzalley.com/www-home/calendar.jsp"
+    base_url = "https://www.jazzalley.com"
+
+    events = []
+    date_strings = []
+    ticket_extensions = []
 
     soup = get_soup(url)
-    act_tags = soup.find_all("span", class_="event-name alt-font")
-    time_tags = soup.find_all("span", class_="time")
-    date_tags = soup.find_all("span", class_="date")
-    when_tags = soup.find_all("span", class_="event-when with-time")
-    description_tags = soup.find_all("div", class_="event-description")
-    # print(len(description_tags))
-    acts = [act.text for act in act_tags]
-    times = [time.text for time in time_tags]
-    dates = [date.text for date in date_tags]
+    text_boxes = soup.find_all("div", class_="text-box")
+    for text_box in text_boxes[0:5]:
+        events.append(text_box.find("h2").text)
+        date_strings.append(text_box.find("em", class_="date").text)
+        ticket_extensions.append(text_box.find("a", href=True)["href"])
 
-    print("hello")
+    ticket_links = [f"{base_url}{ticket_link}" for ticket_link in ticket_extensions]
+
+    for date in date_strings:
+        print(date)
+    date_ranges = [f"{item.split('-')[0][5:].strip()} - "
+                   f"{item.split('-')[1].split(',')[1].strip()}"
+                   for item in date_strings]
+
+
+    return venue, url, neighborhood, events, date_ranges, ticket_links
 
 
 def scrape_egans():
@@ -1176,7 +1288,7 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_el_corazon())
+    print(scrape_dimitrious())
 
 
 

@@ -141,7 +141,7 @@ a {
     margin-top: 75px;
     background-image: url("/static/images/Seattle_aerial_2,_May_2023.png");
     /* background-position: top left; */
-    background-position: top left;
+    background-position: top right;
     background-size: cover;
 }
 
@@ -149,7 +149,7 @@ a {
     background-color: rgba(230, 243, 210, 0.185);
     display: flex;
     align-items: center;
-    min-height: 350px;
+    /*min-height: 350px;*/
     height: 100%;
 }
 
@@ -162,6 +162,19 @@ a {
     /* border: 1px solid yellow; */
 }
 
+div.title_and_logo {
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    border: 2px solid yellow;
+    max-width: fit-content;
+}
+
+.tagline_logo {
+    max-height: 100px;
+    border: 1px solid turquoise;
+}
+
 .tagline h1 {
     font-size: 6rem;
     padding-bottom: 35px;
@@ -169,6 +182,7 @@ a {
     text-shadow: 0 0 20px #003b30, 0 0 20px #00b38fee;
     margin: auto;
     text-align: center;
+    max-width: fit-content;
 }
 
 .tagline h4 {
@@ -232,6 +246,51 @@ section > h1 {
     margin: auto;
     border: 1px solid purple;
     text-align: center;
+}
+
+.live_music_header {
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    max-width: 75%;
+    /* border: 1px solid tomato; */
+    border-radius: 11px;
+    overflow: hidden;
+}
+
+.live_music_title {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    padding: 7px;
+    color: #04200d;
+
+    background-color: #bfedf5;
+    text-align: center;
+}
+
+.neighborhood_selector {
+    font-size: 1.35rem;
+    padding: 10px;
+    /* margin: 10px; */
+    margin-top: 0px;
+    text-align: center;
+    background-color: #abd8ae;
+}
+
+#neighborhoods {
+    font-family: "Arial";
+    font-weight: bold;
+    background-color: rgb(205, 230, 191);
+    font-size: 1.02rem;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+select > option {
+    font-family:'Plus Jakarta Sans', Arial, monospace;
+    font-size: 1.0rem;
 }
 
 .venue_cal_cards {
@@ -354,6 +413,10 @@ section > h1 {
 .hidden {
     max-height: 0px;
     overflow: hidden;
+}
+
+.removed {
+    display: none;
 }
 
 .rest_of_events.hidden {
@@ -528,8 +591,14 @@ section > h1 {
         padding-bottom: 10px;
     }
 
-    h1.small-caps {
-        font-size: 3.0rem;
+    .tagline h1 {
+        font-size: 3.8rem;
+        margin-bottom: 10px;
+    }
+
+    .tagline h4 {
+        font-size: 1.3rem;
+        max-width: 90%;
     }
 
     .brandButton {
@@ -548,21 +617,40 @@ section > h1 {
         display: none;
     }
 
-    .tagline h1 {
-        /*font-size: 4.5rem;*/
-        font-size: 3.5rem;
-        margin-bottom: 10px;
+    .venue_cal_header{
+       margin-bottom: -25px;
     }
 
-    .tagline h4 {
-        font-size: 1.3rem;
-        max-width: 90%;
+    .live_music_title {
+        font-size: 1.9rem;
+        margin-bottom: 5px;
+        padding: 7px;
+        color: #04200d;
+
+        background-color: #bfedf5;
+        text-align: center;
+    }
+
+    .neighborhood_selector {
+        font-size: 1.0rem;
+        font-weight: bold;
+        padding: 10px;
+        /* margin: 10px; */
+        margin-top: 0px;
+        text-align: center;
+        background-color: #abd8ae;
+    }
+
+    #neighborhoods {
+        margin-top: 10px;
     }
 
     .venue_cal_cards {
         display: flex;
         flex-wrap: wrap;
+        margin-top: -35px;
     }
+
     .cal_card {
         margin: auto;
         margin-bottom: 15px;

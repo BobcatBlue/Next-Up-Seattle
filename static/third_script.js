@@ -22,9 +22,50 @@ document.addEventListener("click", function (event) {
     }
 });
 
+// define constant for neighborhood selector
+const music_neighborhood = document.getElementById("neighborhoods");
+const cal_cards = document.querySelectorAll(".cal_card")
 
-console.log(btnsExpand);
-console.log(collapsableElements);
+
+// If the neighborhood selector is changed, change which cal cards are displayed
+music_neighborhood.addEventListener("change", function() {
+    const selected_neighborhood = music_neighborhood.options[music_neighborhood.selectedIndex].text;
+    // console.log(selected_neighborhood);
+
+    for(let i = 0; i < cal_cards.length; i++){
+
+        // If "All" has been selected, do nothing
+        if (selected_neighborhood == "All") {
+            cal_cards[i].classList.remove("removed");
+        }
+
+        // If "Downtown & SODO" is selected
+        else if (selected_neighborhood == "Downtown & SODO") {
+            if (cal_cards[i].id == "Downtown" || cal_cards[i].id == "SODO") {
+                cal_cards[i].classList.remove("removed");
+            } else {
+                cal_cards[i].classList.add("removed");
+            }
+        }
+
+        // If any selection besides "All" or "Downtown & SODO" is selected, behave nominally
+        else {
+            if (cal_cards[i].id == selected_neighborhood) {
+            cal_cards[i].classList.remove("removed");
+            }
+
+            else if (cal_cards[i].id != selected_neighborhood) {
+            cal_cards[i].classList.add("removed");
+            }
+        }
+
+    }
+})
+
+
+
+//console.log(btnsExpand);
+//console.log(collapsableElements);
 
 
 for(let i = 0; i < btnsExpand.length; i++) {
