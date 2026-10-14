@@ -115,7 +115,7 @@ def download_shows():
 @app.route("/")
 def index():
     dictionary = download_shows()
-    # pprint.pp(dictionary)
+    pprint.pp(dictionary)
 
     response = make_response(render_template("index.html",
                                              dictionary=dictionary,
@@ -225,7 +225,7 @@ def run_update_job():
         # cr.scrape_neptune(),
         cr.scrape_crocodile(),
         cr.scrape_rendezvous(),
-        cr.scrape_tractor_tavern(),
+        # cr.scrape_tractor_tavern(),
         cr.scrape_sunset_tavern(),
         cr.scrape_conor_byrne(),
         cr.scrape_seamonster(),
