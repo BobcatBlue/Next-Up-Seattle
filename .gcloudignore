@@ -17,3 +17,17 @@
 __pycache__/
 # Ignored by the build system
 /setup.cfg
+
+pycache/
+*.py[cod]
+
+venv/
+venv-/
+.venv/
+.venv-/
+venv-313/
+
+.idea/
+.vscode/
+
+/setup.cfg

@@ -177,7 +177,7 @@ def new_about_us():
     return response
 
 """
-=================================
+================================
        SCRAPE AND UPLOAD
 ================================
 """
@@ -215,8 +215,8 @@ def run_update_job():
         cr.scrape_funhouse(),
         cr.scrape_neumos(),
         cr.scrape_barboza(),
-        # cr.scrape_showbox_presents()[0],
-        # cr.scrape_showbox_presents()[1],
+        cr.scrape_showbox_presents()[0],
+        cr.scrape_showbox_presents()[1],
         cr.scrape_td_mainstage(),
         # cr.scrape_dimitrious(),
         cr.scrape_nectar(),

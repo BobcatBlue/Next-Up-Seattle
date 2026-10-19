@@ -365,7 +365,7 @@ def scrape_el_corazon():
                 band = f"{supporting_acts[index]}"
             else:
                 band = f"{headliner}, {supporting_acts[index]}"
-            bands.append(band)
+            bands.append(band.strip(", "))
 
         # This block creates a list of 2-item lists made of a weekday ("Sun") and date ("May 17")
         day_dates = [date.find_all("div", class_="text-block-72") for date
@@ -423,7 +423,7 @@ def scrape_funhouse():
                 band = f"{supporting_acts[index]}"
             else:
                 band = f"{headliner}, {supporting_acts[index]}"
-            bands.append(band)
+            bands.append(band.strip(", "))
 
         day_dates = [date.find_all("div", class_="text-block-72") for date
                      in funhouse_calendar.find_all("div", class_="day-date")][0:5]
@@ -508,7 +508,7 @@ def scrape_barboza():
 
     return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
 
-
+"""
 def scrape_showbox_presents():
     url = "https://www.showboxpresents.com"
     try:
@@ -593,6 +593,101 @@ def scrape_showbox_presents():
                               ["", "", "", "", ""]]
 
     return showbox_info, sodo_info
+"""
+
+
+def scrape_showbox_presents():
+    url = "https://www.showboxpresents.com/events/all"
+    soup = get_soup(url)
+
+    sb_acts = []
+    sb_dates = []
+    sb_iso = []
+    sb_links = []
+
+    sodo_acts = []
+    sodo_dates = []
+    sodo_iso = []
+    sodo_links = []
+
+    try:
+        events_cards = soup.find_all("div", attrs={"data-state": "WA"})
+
+        for card in events_cards:
+            block = card.find("div", class_="info")
+            stage = block.find("span", class_="venue").text.strip("@").strip()
+            if stage != "Showbox SoDo" and stage != "The Showbox":
+                continue
+            headliner = block.find("h3", class_="carousel_item_title_small").text.strip()
+            guest_perf = block.find("h4", class_="animated").text.strip()
+
+            if "POSTPONED" in headliner or guest_perf == "":
+                act = headliner
+            else:
+                act = f"{headliner} {guest_perf}"
+
+            date_str = block.find("span", class_="date").text.strip()[5:]
+            time_str = block.find("span", class_="time").text.strip().strip("Show").strip()
+            iso_date = dtzip_12hr([date_str], [time_str])[0]
+            tix_link = card.find("a", class_="btn-tickets")["href"]
+
+            match stage:
+                case "The Showbox":
+                    if len(sb_acts) < 5:
+                        sb_acts.append(act)
+                        sb_dates.append(date_str)
+                        sb_iso.append(iso_date)
+                        sb_links.append(tix_link)
+                case "Showbox SoDo":
+                    if len(sodo_acts) < 5:
+                        sodo_acts.append(act)
+                        sodo_dates.append(date_str)
+                        sodo_iso.append(iso_date)
+                        sodo_links.append(tix_link)
+
+            if len(sb_acts) == 5 and len(sodo_acts) == 5:
+                break
+
+        sb_info = ["The Showbox at the Market",
+                        url,
+                        "Downtown",
+                        sb_acts,
+                        sb_dates,
+                        sb_iso,
+                        sb_links]
+        sodo_info = ["Showbox SODO",
+                     url,
+                     "SODO",
+                     sodo_acts,
+                     sodo_dates,
+                     sodo_iso,
+                     sodo_links]
+
+    except Exception:
+        sb_info = ["The Showbox at the Market",
+                        url,
+                        "Downtown",
+                        ["No info - Click the venue name for info", "--", "--", "--", "--"],
+                        ["--", "--", "--", "--", "--"],
+                        ["--", "--", "--", "--", "--"],
+                        ["", "", "", "", ""]]
+
+        sodo_info = ["The Showbox SODO",
+                     url,
+                     "SODO",
+                     ["No info - Click the venue name for info", "--", "--", "--", "--"],
+                     ["--", "--", "--", "--", "--"],
+                     ["--", "--", "--", "--", "--"],
+                     ["", "", "", "", ""]]
+
+
+    for item in sb_info:
+        pprint.pp(item)
+    print("\n\n")
+    for item in sodo_info:
+        pprint.pp(item)
+
+    return sb_info, sodo_info
 
 
 def scrape_nectar():
@@ -1288,7 +1383,7 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_tractor_tavern())
+    print(scrape_showbox_presents())
 
 
 
