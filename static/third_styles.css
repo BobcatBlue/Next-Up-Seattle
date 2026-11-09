@@ -75,15 +75,15 @@ a {
     display: inline-block;
 }
 
+/*
 .hamburger_icon {
-    /* border: 1px solid red; */
     width: 40px;
     height: 40px;
     cursor: pointer;
     display: block;
     margin-right: 15px;
-    /* background-color:#64d3a8; */
 }
+*/
 
 .bar {
     height: 4px;
@@ -647,11 +647,13 @@ select > option {
     }
 }
 
+/*
 @media screen and (min-width: 599px) {
     .hamburger_icon {
         display: none;
     }
 }
+*/
 
 @media screen and (max-width: 600px) {
     .venue_cal_header {
