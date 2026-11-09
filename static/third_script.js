@@ -5,12 +5,27 @@ const collapsableElements = document.querySelectorAll(".rest_of_events");
 
 const hamburger = document.getElementById("hamburger");
 const sideMenu = document.getElementById("sideMenu");
+const closeMenu = document.getElementById("closeMenu");
 
 
 hamburger.addEventListener("click", function () {
     sideMenu.classList.toggle("open");
 });
 
+
+document.addEventListener("click", function (event) {
+    if (
+        sideMenu.classList.contains("open") &&
+        !sideMenu.contains(event.target) &&
+        !hamburger.contains(event.target)
+    ) {
+        sideMenu.classList.remove("open");
+    }
+});
+
+closeMenu.addEventListener("click", function () {
+    sideMenu.classList.remove("open");
+});
 
 document.addEventListener("click", function (event) {
     if (

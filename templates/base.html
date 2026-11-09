@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-MT4274D7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    </script>
     <meta http-equiv="X-UA-Compatible" name="viewport" content="IE=edge, width-
     device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/third_styles.css">
@@ -12,44 +18,68 @@
 </head>
 
 <body>
-<header style="max-width: 1600px;">
-<div class="container">
-    <nav class="navbar">
-        <a href="/" class="nav-branding font_jakarta" style="font-size: 1.75rem;">
-            <img src="/static/images/Next Up Logo Transparent and Narrow.png" alt="" style="padding-top: 5px; padding-bottom: 5px;" class="logo_image">
-            <div class="brandButton" style=" padding: 15px;">
-                <!-- <b>Next Up, <br>Seattle!</b> -->
-            </div>
-        </a>
-        <ul class="nav-menu">
-            <li class="nav-link" style="text-align: center;"><a href="/">Live Music</a></li>
-            <li class="nav-link"><a href="/About">About Next Up</a></li>
-            <li class="nav-link"><a href="/Contact">Contact</a></li>
-        </ul>
-        <div class="hamburger_icon" id="hamburger">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-    </nav>
-</div>
-</header>
+<!--<header style="max-width: 1600px;">-->
+<!--<div class="container">-->
+<!--    <nav class="navbar">-->
+<!--        <a href="/" class="nav-branding font_jakarta" style="font-size: 1.75rem;">-->
+<!--            <img src="/static/images/next up logo green cropped.png" alt="" style="padding-top: 5px; padding-bottom: 5px;" class="logo_image">-->
+<!--            <div class="brandButton" style=" padding: 15px;">-->
+<!--                &lt;!&ndash; <b>Next Up, <br>Seattle!</b> &ndash;&gt;-->
+<!--            </div>-->
+<!--        </a>-->
+<!--        <ul class="nav-menu">-->
+<!--            <li class="nav-link" style="text-align: center;"><a href="/">Live Music</a></li>-->
+<!--            <li class="nav-link"><a href="/About">About Next Up</a></li>-->
+<!--            <li class="nav-link"><a href="/Contact">Contact</a></li>-->
+<!--        </ul>-->
+<!--        <div class="hamburger_icon" id="hamburger">-->
+<!--            <div class="bar"></div>-->
+<!--            <div class="bar"></div>-->
+<!--            <div class="bar"></div>-->
+<!--        </div>-->
+<!--    </nav>-->
+<!--</div>-->
+<!--</header>-->
 
-<div class="container venue_cal_header">
-    <div class="home_title">
-        <div class="tagline">
-            <h1 class="font_jakarta">NEXT UP, SEATTLE!</h1>
-            <h4>
-                The fastest way to find out who's playing next in Seattle
-            </h4>
-        </div>
-    </div>
-</div>
+<!--<div class="container venue_cal_header">-->
+<!--    <div class="home_title">-->
+<!--        <div class="tagline">-->
+<!--            <h1 class="font_jakarta">NEXT UP, SEATTLE!</h1>-->
+<!--            <h4>-->
+<!--                The fastest way to find out who's playing next in Seattle-->
+<!--            </h4>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
-<div class="side_menu" id="sideMenu"">
+<!--<div class="side_menu" id="sideMenu">-->
+<!--    <a href="/">Live Music</a>-->
+<!--    <a href="/About">About Next Up</a>-->
+<!--    <a href="/Contact">Contact</a>-->
+<!--</div>-->
+
+<div class="side_menu" id="sideMenu">
+    <button class="close_menu" id="closeMenu">&times;</button>
     <a href="/">Live Music</a>
     <a href="/About">About Next Up</a>
     <a href="/Contact">Contact</a>
+</div>
+<div class="venue_cal_header">
+    <div class="banner_and_hamburger">
+        <div class="banner_container">
+            <img class="music_page_banner" src="/static/images/next up banner 2.png" alt="">
+        </div>
+    </div>
+    <div class="hamburger_icon" id="hamburger">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <div class="home_options">
+        <a href="/">Live Music</a>
+        <a href="/About">About Next Up</a>
+        <a href="/Contact">Contact</a>
+    </div>
 </div>
     {% block content %}{% endblock %}
     <script src="/static/third_script.js"></script>

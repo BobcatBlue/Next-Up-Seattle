@@ -10,8 +10,16 @@ Home Page
         <h1 class="live_music_title font_jakarta">
             Live Music
         </h1>
+        <hr style="coloR: rgb(207, 207, 207)">
+<!--        <br>-->
+    </div>
+
+
+    <div class="venue_cal_cards">
+
         <form action="" class="neighborhood_selector font_jakarta">
-            <label for="neighborhoods">📌 Select a Neighborhood 📌:  </label>
+            <label for="neighborhoods">Pick Your Neighborhood 📌: </label>
+            <br>
             <select name="neighborhoods" id="neighborhoods">
                 <option value="all">All</option>
                 <option value="capitol_hill">Capitol Hill</option>
@@ -25,10 +33,7 @@ Home Page
                 <option value="west_seattle">West Seattle</option>
             </select>
         </form>
-    </div>
 
-
-    <div class="venue_cal_cards">
         {% for key, info in dictionary.items() %}
 
             <div class="cal_card font_jakarta" id="{{ info[1] }}">

@@ -131,6 +131,7 @@ def dtzip_12hr(dates, times):
             dt = dt.replace(tzinfo=PACIFIC)
             iso_dates.append(dt.isoformat())
 
+
     return iso_dates
 
 
@@ -354,7 +355,7 @@ def scrape_el_corazon():
                       for showtime in
                       el_corazon_calendar.find_all("div", class_="show-times")[0:5]]
 
-        ticket_links = [f"www.elcorazonseattle.com{a['href']}"
+        ticket_links = [f"https://elcorazonseattle.com{a['href']}"
                        for a in
                        el_corazon_calendar.find_all("a", class_="uui-button w-inline-block")[0:5]]
 
@@ -410,8 +411,7 @@ def scrape_funhouse():
         times = [showtime.find_all("div", class_="text-block-75")[4].text
                       for showtime in
                       funhouse_calendar.find_all("div", class_="show-times")[0:5]]
-
-        ticket_links = [f"www.elcorazonseattle.com{a['href']}"
+        ticket_links = [f"https://elcorazonseattle.com{a['href']}"
                        for a in
                        funhouse_calendar.find_all("a", class_="uui-button w-inline-block")[0:5]]
 
@@ -665,12 +665,12 @@ def scrape_showbox_presents():
 
     except Exception:
         sb_info = ["The Showbox at the Market",
-                        url,
-                        "Downtown",
-                        ["No info - Click the venue name for info", "--", "--", "--", "--"],
-                        ["--", "--", "--", "--", "--"],
-                        ["--", "--", "--", "--", "--"],
-                        ["", "", "", "", ""]]
+                   url,
+                   "Downtown",
+                   ["No info - Click the venue name for info", "--", "--", "--", "--"],
+                   ["--", "--", "--", "--", "--"],
+                   ["--", "--", "--", "--", "--"],
+                   ["", "", "", "", ""]]
 
         sodo_info = ["The Showbox SODO",
                      url,
@@ -679,13 +679,6 @@ def scrape_showbox_presents():
                      ["--", "--", "--", "--", "--"],
                      ["--", "--", "--", "--", "--"],
                      ["", "", "", "", ""]]
-
-
-    for item in sb_info:
-        pprint.pp(item)
-    print("\n\n")
-    for item in sodo_info:
-        pprint.pp(item)
 
     return sb_info, sodo_info
 
@@ -877,32 +870,34 @@ def scrape_tractor_tavern():
     venue = "Tractor Tavern"
     website = "https://tractortavern.com/"
     neighborhood = "Ballard"
-    try:
-        url = "https://tractortavern.com/"
-        soup = get_soup(url)
-        bands = [band.text for band in soup.find_all("span", class_="artisteventsname")[0:5]]
-        days_and_times = [daytime.text.split("@")
-                          for daytime in soup.find_all("span", class_="artisteventstime")[0:5]]
-        dates_no_years = [day[0].strip() for day in days_and_times]
-        times = [time[1].strip() for time in days_and_times]
-        ticket_links = [a["href"]
-                        for a in
-                        soup.select("div.eventsbutton a.button")[0:5]]
+    url = "https://app.opendate.io/c/tractor-tavern-13?layout=iframe"
 
-        dates = add_years(dates_no_years)
+    try:
+        soup = get_soup(url)
+        event_cards = soup.find_all("div", class_="card confirm-card")[0:5]
+
+        acts = [event.find("a", class_="public-listing-text").text.strip() for event in event_cards]
+        tix_links = [event.find("a", class_="public-listing-text")["href"]for event in event_cards]
+        raw_dates = [event.find_all("p", class_="mb-0 public-listing-date")[0].text.strip()
+                 for event in event_cards]
+        dates = [f"{date[0:3]} {date[-8:]}" for date in raw_dates]
+        raw_times = [event.find_all("p", class_="mb-0 public-listing-date")[1].text.split("-")[1]
+                     for event in event_cards]
+        times = [time.strip("Show: ").strip() for time in raw_times]
         iso_dates = dtzip_12hr(dates, times)
 
+
     except Exception:
-        bands = ["No info - Click the venue name for info", "--", "--", "--", "--"]
+        acts = ["No info - Click the venue name for info", "--", "--", "--", "--"]
         dates = ["--", "--", "--", "--", "--"]
         iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["https://tractortavern.com/",
+        tix_links = ["https://tractortavern.com/",
                         "https://tractortavern.com/",
                         "https://tractortavern.com/",
                         "https://tractortavern.com/",
                         "https://tractortavern.com/"]
 
-    return venue, website, neighborhood, bands, dates, iso_dates, ticket_links
+    return venue, website, neighborhood, acts, dates, iso_dates, tix_links
 
 
 def scrape_conor_byrne():
@@ -1267,52 +1262,56 @@ def scrape_td_mainstage():
     times = []
     ticket_links = []
     mainstage_counter = 0
+    today = datetime.today().date()
 
-    try:
-        while mainstage_counter < 5:
-            soup = get_soup(f"{furl}{page}")
-            event_wrappers = soup.find_all("div", class_="event-info-wrapper")
+    # try:
+    while mainstage_counter < 5:
+        soup = get_soup(f"{furl}{page}")
+        event_wrappers = soup.find_all("div", class_="event-info-wrapper")
 
-            for wrapper in event_wrappers:
-                # Check the event date.  If it's in the past, skip it
-                date = wrapper.find("span", class_="date").string.strip()
-                date = add_years([date])[0].split(",", 1)[1].strip()
-                today = datetime.today().date()
-                date = datetime.strptime(date, "%B %d, %Y")
-                if today > date.date():
-                    continue
+        for wrapper in event_wrappers:
+            if mainstage_counter >= 5:
+                break
+            # Check the event date.  If it's in the past, skip it
+            date = wrapper.find("span", class_="date").string.strip()
+            date = add_years([date])[0].split(",", 1)[1].strip()
+            date = datetime.strptime(date, "%B %d, %Y")
+            if today > date.date():
+                continue
 
-                # Check the event location.  If it's not at the TD Mainstage, skip it.
-                location_wrapper = wrapper.find("p", class_="event-info event-location")
+            # Check the event stage.  If it's not at the TD Mainstage, skip it.
+            location_wrapper = wrapper.find("p", class_="event-info event-location")
 
-                if location_wrapper.find("span") is None:
-                    continue
-                else:
-                    stage = location_wrapper.find("span").string
-                if "Mainstage Theatre" not in stage:
-                    continue
+            if location_wrapper.find("span") is None:
+                continue
+            else:
+                stage = location_wrapper.find("span").string
+            if "Mainstage Theatre" not in stage:
+                continue
 
-                # If the event is at the TD Mainstage, append its details
-                event = wrapper.find("a").string.strip()
-                events.append(event)
-                ticket_link = wrapper.find("a", href=True)["href"]
-                ticket_links.append(ticket_link)
-                date = date.strftime("%b %d, %Y")
-                dates.append(date)  # date was already defined above
-                time = wrapper.find("span", class_="time").string.strip()
-                times.append(time)
+            # If the event is at the TD Mainstage, append its details
+            event = wrapper.find("a").string.strip()
+            if event == "Closed for a private event":
+                continue
+            events.append(event)
+            ticket_link = wrapper.find("a", href=True)["href"]
+            ticket_links.append(ticket_link)
+            date = date.strftime("%b %d, %Y")
+            dates.append(date)  # date was already defined above
+            time = wrapper.find("span", class_="time").string.strip()
+            times.append(time)
 
-                # Once we gather 5 events at TD Mainstage, stop gathering
-                mainstage_counter += 1
-            page += 1
+            # Once we gather 5 events at TD Mainstage, stop gathering
+            mainstage_counter += 1
+        page += 1
 
-        iso_dates = dtzip_12hr(dates, times)
+    iso_dates = dtzip_12hr(dates, times)
 
-    except Exception:
-        events = ["No info - Click the venue name for info", "--", "--", "--", "--"]
-        dates = ["--", "--", "--", "--", "--"]
-        iso_dates = ["--", "--", "--", "--", "--"]
-        ticket_links = ["https://centralsaloon.com/music-events/" for _ in range(5)]
+    # except Exception:
+    #     events = ["No info - Click the venue name for info", "--", "--", "--", "--"]
+    #     dates = ["--", "--", "--", "--", "--"]
+    #     iso_dates = ["--", "--", "--", "--", "--"]
+    #     ticket_links = ["https://centralsaloon.com/music-events/" for _ in range(5)]
 
     return venue, website, neighborhood, events, dates, iso_dates, ticket_links
 
@@ -1383,7 +1382,7 @@ def scrape_wamu():
 
 
 if __name__ == "__main__":
-    print(scrape_showbox_presents())
+    print(scrape_conor_byrne())
 
 
 
